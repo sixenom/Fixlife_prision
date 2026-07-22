@@ -11,7 +11,7 @@ infoLoc = 1
 time = 0
 local difftime = {Hours = 0, Mins = 0, Seconds = 0}
 
-local soltime = 0
+soltime = 0
 local diffSol = {Hours = 0, Mins = 0, Seconds = 0}
 
 isDead = false
@@ -25,7 +25,7 @@ jailCell = 0
 solcell = 0
 
 canGrab = false
-local itemzie = {}
+itemzie = {}
 
 createdCamera = 0
 beingMsg = {msg = nil, size = 0.0}
@@ -43,8 +43,8 @@ local diffBreak = {Hours = 0, Mins = 0, Seconds = 0}
 breakout2 = false
 breakout3 = false
 breakout4 = true
-local closestTower = 1
-local closestBreak = 1
+closestTower = 1
+closestBreak = 1
 
 inMenu = {is = false, coords = nil}
 inAnim = {Dict = nil, Anim = nil, Atr = 0, Freeze = false}
@@ -61,7 +61,7 @@ switchie = false
 lockieDown = false
 inJailMenu = false
 
-local closestPoliceInv = 1 
+closestPoliceInv = 1 
 
 pedsie = nil
 

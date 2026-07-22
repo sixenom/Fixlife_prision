@@ -28,7 +28,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
-						TriggerEvent('HD_Jail:GetJailInfo', GetPlayerServerId(GetPlayerPed(closestPlayer)), nil, nil)
+						TriggerEvent('HD_Jail:GetJailInfo', GetPlayerServerId(closestPlayer), nil, nil)
 					else
 						Notification(Config.Sayings[135])
 					end
@@ -59,7 +59,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
-						TriggerServerEvent('HD_Jail:UnJailPlayer', GetPlayerServerId(GetPlayerPed(closestPlayer)), true)
+						TriggerServerEvent('HD_Jail:UnJailPlayer', GetPlayerServerId(closestPlayer), true)
 					else
 						Notification(Config.Sayings[135])
 					end
@@ -91,7 +91,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
-						TriggerEvent('HD_Jail:AddJailTime', GetPlayerServerId(GetPlayerPed(closestPlayer)), nil, nil)
+						TriggerEvent('HD_Jail:AddJailTime', GetPlayerServerId(closestPlayer), nil, nil)
 					else
 						Notification(Config.Sayings[135])
 					end
@@ -122,7 +122,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
-						TriggerEvent('HD_Jail:RemoveJailTime', GetPlayerServerId(GetPlayerPed(closestPlayer)), nil, nil)
+						TriggerEvent('HD_Jail:RemoveJailTime', GetPlayerServerId(closestPlayer), nil, nil)
 					else
 						Notification(Config.Sayings[135])
 					end
@@ -154,7 +154,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 						local closestPlayer, closestDistance = GetClosestPlayer()
 						if closestPlayer ~= -1 and closestDistance <= 3.0 then
 							inJailMenu = false
-							TriggerEvent('HD_Jail:SolitaryMenu', GetPlayerServerId(GetPlayerPed(closestPlayer)), nil, nil)
+							TriggerEvent('HD_Jail:SolitaryMenu', GetPlayerServerId(closestPlayer), nil, nil)
 						else
 							Notification(Config.Sayings[135])
 						end
@@ -188,7 +188,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
-						TriggerServerEvent('HD_Jail:UnSol', GetPlayerServerId(GetPlayerPed(closestPlayer)))
+						TriggerServerEvent('HD_Jail:UnSol', GetPlayerServerId(closestPlayer))
 					else
 						Notification(Config.Sayings[135])
 					end
