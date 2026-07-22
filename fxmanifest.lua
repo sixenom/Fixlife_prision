@@ -4,7 +4,13 @@ lua54 'yes'
 client_scripts {
     '@qbx_core/modules/playerdata.lua',
     'Config.lua',
-    'qbox_compat.lua',
+    'client/ui.lua',
+    'client/utils.lua',
+    'client/breakout_menu.lua',
+    'client/inventory_menu.lua',
+    'client/police_menu.lua',
+    'client/admin_jail_menu.lua',
+    'client/player_events.lua',
     'client/client.lua',
     'client/targetmenus.lua'
 }
@@ -12,7 +18,8 @@ client_scripts {
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'Config.lua',
-    'qbox_compat.lua',
+    'server/core.lua',
+    'server/inventory.lua',
     'server/server.lua',
     'server/items.lua',
 }

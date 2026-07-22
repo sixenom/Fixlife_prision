@@ -1,4 +1,4 @@
-﻿ESX.RegisterUsableItem('hd_Shank', function(source)
+Qbox.RegisterUsableItem('hd_Shank', function(source)
     local xPlayer = Qbox.GetPlayer(source)
 
     if Config.ShankAllowed then
@@ -11,7 +11,7 @@
     end
 end)
 
-ESX.RegisterUsableItem('hd_booze', function(source)
+Qbox.RegisterUsableItem('hd_booze', function(source)
     local xPlayer = Qbox.GetPlayer(source)
 
     if Config.BoozeAllowed then
@@ -26,7 +26,7 @@ ESX.RegisterUsableItem('hd_booze', function(source)
     end
 end)
 
-ESX.RegisterUsableItem('hd_pPunch', function(source)
+Qbox.RegisterUsableItem('hd_pPunch', function(source)
     local xPlayer = Qbox.GetPlayer(source)
 
     if Config.PunchAllowed then
