@@ -32,9 +32,10 @@ function TaskComplete()
 		FreezeEntityPosition(ped, true)
 		-- exports.rprogress:Start(Config.Sayings[23] ,Config.JobOptions[job].Tasks[doneTasks].Time *1000)
 		-- Citizen.Wait(Config.JobOptions[job].Tasks[doneTasks].Time *1000)
-		lib.progressCircle({ --Creando
+		lib.progressBar({ --Creando
 			duration =  Config.JobOptions[job].Tasks[doneTasks].Time *1000,
 			label =  Config.Sayings[23],
+			icon = 'fixlife.svg',
 			position = 'bottom',
 			useWhileDead = false,
 			canCancel = false,
@@ -421,9 +422,10 @@ function OpenFood()
 		inAnim.Freeze = true
 		FreezeEntityPosition(ped, true)
 		-- exports.rprogress:Start(Config.Sayings[43] , Config.GrabFoodTime *1000)
-		lib.progressCircle({ --tomando bandeja
+		lib.progressBar({ --tomando bandeja
 			duration =  Config.GrabFoodTime *1000,
 			label =  Config.Sayings[43],
+			icon = 'fixlife.svg',
 			position = 'bottom',
 			useWhileDead = false,
 			canCancel = false,

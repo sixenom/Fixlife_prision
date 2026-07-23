@@ -16,7 +16,7 @@ AddEventHandler('HD_Jail:ReJail', function(id, values)
 
     if tots >= Config.MaxPerCell then
         for i = 1, #inJail, 1 do
-            if inJail[i].Players ~= nil then
+            if inJail[i] and inJail[i].Players ~= nil then
                 local total = 0
                 for p = 1, #inJail[i].Players, 1 do
                     total = total + 1
@@ -106,7 +106,7 @@ AddEventHandler('HD_Jail:ReJail', function(id, values)
             end
         end
         TriggerEvent('HD_Jail:UpdateCell', lowest.val, id)
-        if theS.clothes[1] ~= nil then
+        if type(theS.clothes) == 'table' and next(theS.clothes) ~= nil then
             TriggerClientEvent('HD_Jail:GoToJail', id, theS.jailtime, theS.job, false)
             Wait(4000)
             TriggerClientEvent('HD_Jail:UpBreaks', id, theS.breaks, false)
@@ -188,7 +188,7 @@ AddEventHandler('HD_Jail:ReJail', function(id, values)
                 sendToDiscord(this, 16562691, "Re-Jailing Player")
             end
         end
-        if theS.clothes[1] ~= nil then
+        if type(theS.clothes) == 'table' and next(theS.clothes) ~= nil then
             TriggerClientEvent('HD_Jail:GoToJail', id, theS.jailtime, theS.job, false)
             Wait(4000)
             TriggerClientEvent('HD_Jail:UpBreaks', id, theS.breaks, false)
@@ -213,7 +213,9 @@ Citizen.CreateThread(function()
     while true do
         Citizen.Wait(1000)
         for i = 1, #inJail, 1 do
-            for k = 1, #inJail[i].Players, 1 do
+            local cell = inJail[i]
+            if cell and cell.Players then
+            for k = 1, #cell.Players, 1 do
                 if inJail[i].Players[k].Player ~= nil then
                     if not inJail[i].Players[k].Dead then
                         if inJail[i].Players[k].Breako > 0 then
@@ -237,6 +239,7 @@ Citizen.CreateThread(function()
                     end
                 end
             end
+            end
         end
     end
 end)
@@ -252,7 +255,7 @@ AddEventHandler('playerDropped', function(reason)
         local found2 = 0
     
         for i = 1, #inJail, 1 do
-            if inJail[i].Players[1] ~= nil then
+            if inJail[i] and inJail[i].Players and inJail[i].Players[1] ~= nil then
                 for j = 1, #inJail[i].Players, 1 do
                     if inJail[i].Players[j].Player == cert then
                         found1 = i
@@ -344,6 +347,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(Config.SyncInterval* 60000)
 
         for i = 1, #inJail, 1 do
+            if inJail[i] and inJail[i].Players then
             for k = 1, #inJail[i].Players, 1 do
                 if inJail[i].Players[k].Player ~= nil then
                     local player = inJail[i].Players[k]
@@ -353,6 +357,7 @@ Citizen.CreateThread(function()
                         JailStorage.Save(player.Player, newData)
                     end)
                 end
+            end
             end
         end
     end

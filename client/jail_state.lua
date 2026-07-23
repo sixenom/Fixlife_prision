@@ -5,13 +5,9 @@ AddEventHandler('HD_Jail:JailStart', function(timez)
 	Citizen.CreateThread(function()
 		TriggerEvent('aty_hud_v2:ocultarhuds')
 		DoScreenFadeOut(1000)
-		TriggerEvent("jobs_creator:startProgressBar", 120000, "", "#ff8000")
 		RequestAnimDict('mp_character_creation@customise@male_a')
 		Citizen.Wait(3000)
-		beingMsg.msg = '~r~'..Config.Sayings[5]
-		beingMsg.size = 1.0
-		beingSent = true
-
+		
 		SetEntityCoords(ped, Config.HandCuffLoc.x, Config.HandCuffLoc.y, Config.HandCuffLoc.z - 1, false, false, false, false)
 		Citizen.Wait(500)
 		SetEntityCoords(ped, Config.HandCuffLoc.x, Config.HandCuffLoc.y, Config.HandCuffLoc.z - 1, false, false, false, false)
@@ -564,42 +560,34 @@ function LoadJailCell(timu, firstTime)
 
 					SetFocusArea(Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z, Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z)
 					ChangeSecurityCamera(Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z, Config.PrisonCamRot)
-					beingMsg.size = 0.75
-					beingMsg.msg = Config.Sayings[169]
 					Citizen.Wait(100)
 					DoScreenFadeIn(1000)
-					Citizen.Wait(perTime + 1000)
+					lib.progressBar({ duration = perTime, label = Config.Sayings[169], icon = 'fixlife.svg', canCancel = false })
 					DoScreenFadeOut(1000)
 					Citizen.Wait(1000)
 
 					SetFocusArea(Config.JobCam.x, Config.JobCam.y, Config.JobCam.z, Config.JobCam.x, Config.JobCam.y, Config.JobCam.z)
 					ChangeSecurityCamera(Config.JobCam.x, Config.JobCam.y, Config.JobCam.z, Config.JobCamRot)
-					beingMsg.size = 0.75
-					beingMsg.msg = Config.Sayings[170]
 					Citizen.Wait(100)
 					DoScreenFadeIn(1000)
-					Citizen.Wait(perTime + 1000)
+					lib.progressBar({ duration = perTime, label = Config.Sayings[170], icon = 'fixlife.svg', canCancel = false })
 					DoScreenFadeOut(1000)
 					Citizen.Wait(1000)
 
 					SetFocusArea(Config.FoodCam.x, Config.FoodCam.y, Config.FoodCam.z, Config.FoodCam.x, Config.FoodCam.y, Config.FoodCam.z)
 					ChangeSecurityCamera(Config.FoodCam.x, Config.FoodCam.y, Config.FoodCam.z, Config.FoodCamRot)
-					beingMsg.size = 0.75
-					beingMsg.msg = Config.Sayings[171]
 					Citizen.Wait(100)
 					DoScreenFadeIn(1000)
-					Citizen.Wait(perTime + 1000)
+					lib.progressBar({ duration = perTime, label = Config.Sayings[171], icon = 'fixlife.svg', canCancel = false })
 					DoScreenFadeOut(1000)
 					Citizen.Wait(1000)
 
 					if Config.Solitary then
 						SetFocusArea(Config.SolCam.x, Config.SolCam.y, Config.SolCam.z, Config.SolCam.x, Config.SolCam.y, Config.SolCam.z)
 						ChangeSecurityCamera(Config.SolCam.x, Config.SolCam.y, Config.SolCam.z, Config.SolCamRot)
-						beingMsg.size = 0.75
-						beingMsg.msg = Config.Sayings[172]
 						Citizen.Wait(100)
 						DoScreenFadeIn(1000)
-						Citizen.Wait(perTime + 1000)
+						lib.progressBar({ duration = perTime, label = Config.Sayings[172], icon = 'fixlife.svg', canCancel = false })
 						DoScreenFadeOut(1000)
 						Citizen.Wait(1000)
 					end
@@ -607,11 +595,9 @@ function LoadJailCell(timu, firstTime)
 					if Config.WorkingOut then
 						SetFocusArea(Config.WorkOutCam.x, Config.WorkOutCam.y, Config.WorkOutCam.z, Config.WorkOutCam.x, Config.WorkOutCam.y, Config.WorkOutCam.z)
 						ChangeSecurityCamera(Config.WorkOutCam.x, Config.WorkOutCam.y, Config.WorkOutCam.z, Config.WorkOutCamRot)
-						beingMsg.size = 0.75
-						beingMsg.msg = Config.Sayings[173]
 						Citizen.Wait(100)
 						DoScreenFadeIn(1000)
-						Citizen.Wait(perTime + 1000)
+						lib.progressBar({ duration = perTime, label = Config.Sayings[173], icon = 'fixlife.svg', canCancel = false })
 						DoScreenFadeOut(1000)
 						Citizen.Wait(1000)
 					end
@@ -619,11 +605,9 @@ function LoadJailCell(timu, firstTime)
 					if Config.Showers then
 						SetFocusArea(Config.ShowerCam.x, Config.ShowerCam.y, Config.ShowerCam.z, Config.ShowerCam.x, Config.ShowerCam.y, Config.ShowerCam.z)
 						ChangeSecurityCamera(Config.ShowerCam.x, Config.ShowerCam.y, Config.ShowerCam.z, Config.ShowerCamRot)
-						beingMsg.size = 0.75
-						beingMsg.msg = Config.Sayings[174]
 						Citizen.Wait(100)
 						DoScreenFadeIn(1000)
-						Citizen.Wait(perTime + 1000)
+						lib.progressBar({ duration = perTime, label = Config.Sayings[174], icon = 'fixlife.svg', canCancel = false })
 						DoScreenFadeOut(1000)
 						Citizen.Wait(1000)
 					end
@@ -631,38 +615,30 @@ function LoadJailCell(timu, firstTime)
 					if Config.Hospital then
 						SetFocusArea(Config.HospitalCam.x, Config.HospitalCam.y, Config.HospitalCam.z, Config.HospitalCam.x, Config.HospitalCam.y, Config.HospitalCam.z)
 						ChangeSecurityCamera(Config.HospitalCam.x, Config.HospitalCam.y, Config.HospitalCam.z, Config.HospitalCamRot)
-						beingMsg.size = 0.75
-						beingMsg.msg = Config.Sayings[175]
 						Citizen.Wait(100)
 						DoScreenFadeIn(1000)
-						Citizen.Wait(perTime + 1000)
+						lib.progressBar({ duration = perTime, label = Config.Sayings[175], icon = 'fixlife.svg', canCancel = false })
 						DoScreenFadeOut(1000)
 						Citizen.Wait(1000)
 					end
 
 					SetFocusArea(Config.ItemCam.x, Config.ItemCam.y, Config.ItemCam.z, Config.ItemCam.x, Config.ItemCam.y, Config.ItemCam.z)
 					ChangeSecurityCamera(Config.ItemCam.x, Config.ItemCam.y, Config.ItemCam.z, Config.ItemCamRot)
-					beingMsg.size = 0.75
-					beingMsg.msg = Config.Sayings[176]
 					Citizen.Wait(100)
 					DoScreenFadeIn(1000)
-					Citizen.Wait(perTime + 1000)
+					lib.progressBar({ duration = perTime, label = Config.Sayings[176], icon = 'fixlife.svg', canCancel = false })
 					DoScreenFadeOut(1000)
 					Citizen.Wait(1000)
 
 					SetFocusArea(Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z, Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z)
 					ChangeSecurityCamera(Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z, Config.PrisonCamRot)
-					beingMsg.size = 0.75
-					beingMsg.msg = Config.Sayings[177]
 					Citizen.Wait(100)
 					DoScreenFadeIn(1000)
-					Citizen.Wait(perTime + 1000)
+					lib.progressBar({ duration = perTime, label = Config.Sayings[177], icon = 'fixlife.svg', canCancel = false })
 					DoScreenFadeOut(1000)
 					Citizen.Wait(1000)
 					TriggerEvent('aty_hud_v2:mostrarhuds')
 				end
-				beingSent = false
-				beingMsg = {msg = nil, size = 0.0}
 				CloseSecurityCamera()
 				SetEntityCoords(ped, Config.Cells[cell].SpawnLoc.Loc.x, Config.Cells[cell].SpawnLoc.Loc.y, Config.Cells[cell].SpawnLoc.Loc.z - 1, false, false, false, false)
 				SetEntityHeading(ped, Config.Cells[cell].SpawnLoc.Heading)
@@ -778,34 +754,9 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-		if beingSent then
-			local ped = PlayerPedId()
-			pedsie = GetPeds({ped})
-			Citizen.Wait(250)
-		else
-			Citizen.Wait(500)
-		end
-	end
-end)
-
-Citizen.CreateThread(function()
-	while true do
 		local ped = PlayerPedId()
 		local coords = GetEntityCoords(ped)
-		if beingSent then
-			Citizen.Wait(5)
-			drawTxt(beingMsg.msg,0,1,0.5,0.8,beingMsg.size,255,255,255,255)
-			DisableAllControlActions(0)
-			if pedsie ~= nil then
-				for i=1, #pedsie, 1 do
-					local pedo = pedsie[i]
-					if IsPedAPlayer(pedo) then
-						SetEntityLocallyInvisible(pedo)
-						SetEntityNoCollisionEntity(ped, pedo, true)
-					end
-				end
-			end
-		elseif canGrab then
+		if canGrab then
 			local dist = Vdist(Config.ItemLoc.Loc.x, Config.ItemLoc.Loc.y, Config.ItemLoc.Loc.z, coords)
 			if not using then
 				if dist <= Config.ShowItemDist then
@@ -823,9 +774,10 @@ Citizen.CreateThread(function()
 							
 							LoadAnim('anim@amb@clubhouse@bar@drink@idle_a')
 
-							lib.progressCircle({ --pertenencias
+							lib.progressBar({ --pertenencias
 								duration = Config.RetreiveTime *1000,
 								label = Config.Sayings[13],
+								icon = 'fixlife.svg',
 								position = 'bottom',
 								useWhileDead = false,
 								canCancel = false,
@@ -1016,9 +968,10 @@ Citizen.CreateThread(function()
 						end
 						FreezeEntityPosition(ped, true)
 
-						lib.progressCircle({ --ejercicio
+						lib.progressBar({ --ejercicio
 							duration =  Config.WorkoutLocs[workoutLoc].Locs[closestOut].Time *1000,
 							label =  Config.Sayings[123],
+							icon = 'fixlife.svg',
 							position = 'bottom',
 							useWhileDead = false,
 							canCancel = false,

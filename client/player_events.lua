@@ -85,9 +85,10 @@ AddEventHandler('HD_Jail:onPlayerSpawn', function()
 				TaskAchieveHeading(byped, Config.BedLocs[numo].DocCheck.Heading, 1000)
 				Citizen.Wait(1000)
 				-- exports.rprogress:Start( Config.Sayings[70] ,Config.CheckUpTime *1000)
-				lib.progressCircle({ --tomando bandeja
+				lib.progressBar({ --tomando bandeja
 					duration =  Config.CheckUpTime *1000,
 					label =  Config.Sayings[70],
+					icon = 'fixlife.svg',
 					position = 'bottom',
 					useWhileDead = false,
 					canCancel = false,

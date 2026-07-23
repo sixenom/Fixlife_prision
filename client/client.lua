@@ -26,8 +26,6 @@ canGrab = false
 itemzie = {}
 
 createdCamera = 0
-beingMsg = {msg = nil, size = 0.0}
-beingSent = false
 
 blips = {}
 peds = {}
@@ -61,7 +59,6 @@ inJailMenu = false
 
 closestPoliceInv = 1 
 
-pedsie = nil
 
 Citizen.CreateThread(function()
 	Citizen.Wait(500)

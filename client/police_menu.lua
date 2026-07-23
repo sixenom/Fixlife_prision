@@ -48,9 +48,10 @@ function OpenPoliceMenu2(name, theirID)
 		inAnim.Atr = 1
 		inAnim.Freeze = true
 		FreezeEntityPosition(ped, true)
-		lib.progressCircle({ --comiendo
+	lib.progressBar({ --comiendo
 			duration =  Config.OpenCloseTime *1000,
 			label =  Config.Sayings[35],
+			icon = 'fixlife.svg',
 			position = 'bottom',
 			useWhileDead = false,
 			canCancel = false,
@@ -102,9 +103,10 @@ function OpenPoliceMenu2(name, theirID)
 					end, function(data, menu)
 						menu.close()
 						-- exports.rprogress:Start(Config.Sayings[36], Config.OpenCloseTime *1000)
-						lib.progressCircle({ --bajando cama
+						lib.progressBar({ --bajando cama
 							duration =  Config.OpenCloseTime *1000,
 							label =  Config.Sayings[36],
+							icon = 'fixlife.svg',
 							position = 'bottom',
 							useWhileDead = false,
 							canCancel = false,
@@ -235,9 +237,10 @@ function OpenCraftMenu(itnum)
 							FreezeEntityPosition(ped, true)
 							FreezeEntityPosition(pedi, true)
 							-- exports.rprogress:Start(Config.Sayings[85], Config.Crafts[itnum].Time *1000)
-							lib.progressCircle({ --Creando
+							lib.progressBar({ --Creando
 								duration =  Config.Crafts[itnum].Time *1000,
 								label =  Config.Sayings[85],
+								icon = 'fixlife.svg',
 								position = 'bottom',
 								useWhileDead = false,
 								canCancel = false,

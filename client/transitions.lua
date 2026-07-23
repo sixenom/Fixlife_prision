@@ -92,9 +92,10 @@ Citizen.CreateThread(function()
 			if IsControlJustReleased(0, 38) then
 				-- exports.rprogress:Start(Config.Sayings[139], Config.EatTime *1000)
 				-- Citizen.Wait(Config.EatTime *1000)
-				lib.progressCircle({ --comiendo
+				lib.progressBar({ --comiendo
 					duration =  Config.EatTime *1000,
 					label =  Config.Sayings[139],
+					icon = 'fixlife.svg',
 					position = 'bottom',
 					useWhileDead = false,
 					canCancel = false,
@@ -234,8 +235,6 @@ AddEventHandler('HD_Jail:UnnJail', function(itemie, clothesi)
 			solcell = 0
 			canGrab = false	
 			createdCamera = 0
-			beingSent = false
-			beingMsg = {msg = nil, size = 0.0}
 			closestLoc = 1
 			breakout = 0
 			breakout2 = false

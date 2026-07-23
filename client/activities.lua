@@ -19,9 +19,10 @@ function StartWorkout(Loc)
 		inAnim.Atr = 1
 		inAnim.Freeze = true
 		FreezeEntityPosition(ped, true)
-		lib.progressCircle({ --cambiar ropa en gimnasio
+		lib.progressBar({ --cambiar ropa en gimnasio
 			duration =  Config.WorkReadyTime *1000,
 			label =  Config.Sayings[114],
+			icon = 'fixlife.svg',
 			position = 'bottom',
 			useWhileDead = false,
 			canCancel = false,
@@ -79,9 +80,10 @@ function EndWorkout()
 		inAnim.Atr = 1
 		inAnim.Freeze = true
 		FreezeEntityPosition(ped, true)
-		lib.progressCircle({ --cambiar ropa en gimnasio
+		lib.progressBar({ --cambiar ropa en gimnasio
 		duration =  Config.WorkReadyTime *1000,
 		label =  Config.Sayings[114],
+		icon = 'fixlife.svg',
 		position = 'bottom',
 		useWhileDead = false,
 		canCancel = false,
@@ -142,9 +144,10 @@ function StartShower()
 		-- exports.rprogress:Start(Config.Sayings[114], Config.GetReadyTime *1000)
 		-- Citizen.Wait(Config.GetReadyTime *1000)
 		-- RemoveAnimDict("clothingtie")
-		lib.progressCircle({ --cambiar ropa en duchas
+		lib.progressBar({ --cambiar ropa en duchas
 			duration =  Config.WorkReadyTime *1000,
 			label =  Config.Sayings[114],
+			icon = 'fixlife.svg',
 			position = 'bottom',
 			useWhileDead = false,
 			canCancel = false,
@@ -223,9 +226,10 @@ function OpenBreakingMenu()
 							inAnim.Freeze = true
 							FreezeEntityPosition(ped, true)
 							-- exports.rprogress:Start(Config.Sayings[96], Config.RoomTools[data.current.value].Time *1000)
-							lib.progressCircle({ --cavar
+							lib.progressBar({ --cavar
 								duration =  Config.RoomTools[data.current.value].Time *1000,
 								label =  Config.Sayings[96],
+								icon = 'fixlife.svg',
 								position = 'bottom',
 								useWhileDead = false,
 								canCancel = false,
@@ -288,9 +292,10 @@ function OpenBreakingMenu()
 							-- exports.rprogress:Start(Config.Sayings[96], Config.RoomTools[data.current.value].Time *1000)
 							-- Citizen.Wait(Config.RoomTools[data.current.value].Time *1000)
 							-- RemoveAnimDict("mini@repair")
-							lib.progressCircle({ --cavar
+							lib.progressBar({ --cavar
 							duration =  Config.RoomTools[data.current.value].Time *1000,
 							label =  Config.Sayings[96],
+							icon = 'fixlife.svg',
 							position = 'bottom',
 							useWhileDead = false,
 							canCancel = false,
@@ -338,9 +343,10 @@ function OpenBreakingMenu()
 							inAnim.Freeze = true
 							FreezeEntityPosition(ped, true)
 							-- exports.rprogress:Start(Config.Sayings[97], Config.FenceTool[data.current.value].Time *1000)
-							lib.progressCircle({ --cortar
+							lib.progressBar({ --cortar
 								duration =  Config.FenceTool[data.current.value].Time *1000,
 								label =  Config.Sayings[97],
+								icon = 'fixlife.svg',
 								position = 'bottom',
 								useWhileDead = false,
 								canCancel = false,
@@ -387,9 +393,10 @@ function OpenBreakingMenu()
 							-- exports.rprogress:Start(Config.Sayings[97], Config.FenceTool[data.current.value].Time *1000)
 							-- Citizen.Wait(Config.FenceTool[data.current.value].Time *1000)
 							-- RemoveAnimDict("mp_arresting")
-							lib.progressCircle({ --cortar
+							lib.progressBar({ --cortar
 							duration =  Config.FenceTool[data.current.value].Time *1000,
 							label =  Config.Sayings[97],
+							icon = 'fixlife.svg',
 							position = 'bottom',
 							useWhileDead = false,
 							canCancel = false,
@@ -523,9 +530,10 @@ function OpenWallMenu()
 						-- exports.rprogress:Start(Config.Sayings[96], Config.RoomTools[data.current.value].Time *1000)
 						-- Citizen.Wait(Config.RoomTools[data.current.value].Time *1000)
 						-- RemoveAnimDict("mini@repair")
-						lib.progressCircle({ --cabando
+						lib.progressBar({ --cabando
 							duration =  Config.RoomTools[data.current.value].Time *1000,
 							label =  Config.Sayings[96],
+							icon = 'fixlife.svg',
 							position = 'bottom',
 							useWhileDead = false,
 							canCancel = false,
@@ -564,9 +572,10 @@ function OpenWallMenu()
 						-- exports.rprogress:Start(Config.Sayings[96] ,Config.RoomTools[data.current.value].Time *1000)
 						-- Citizen.Wait(Config.RoomTools[data.current.value].Time *1000)
 						-- RemoveAnimDict("mini@repair")
-						lib.progressCircle({ --cavando
+						lib.progressBar({ --cavando
 							duration =  Config.RoomTools[data.current.value].Time *1000,
 							label =  Config.Sayings[96],
+							icon = 'fixlife.svg',
 							position = 'bottom',
 							useWhileDead = false,
 							canCancel = false,
@@ -619,9 +628,10 @@ function BreakOutStart()
 		-- exports.rprogress:Start(Config.Sayings[161], Config.CrawlTime *1000)
 		-- Citizen.Wait(Config.CrawlTime *1000)
 		-- RemoveAnimDict("mini@repair")
-		lib.progressCircle({ --escapando por el tunel
+		lib.progressBar({ --escapando por el tunel
 			duration =  Config.CrawlTime *1000,
 			label =  Config.Sayings[161],
+			icon = 'fixlife.svg',
 			position = 'bottom',
 			useWhileDead = false,
 			canCancel = false,

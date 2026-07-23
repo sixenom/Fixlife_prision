@@ -4,6 +4,7 @@ lua54 'yes'
 client_scripts {
     '@qbx_core/modules/playerdata.lua',
     'Config.lua',
+    'client/appearance.lua',
     'client/ui.lua',
     'client/utils.lua',
     'client/breakout_menu.lua',
@@ -41,6 +42,7 @@ dependencies {
     'qbx_core',
     'ox_inventory',
     'oxmysql',
+    'illenium-appearance',
 }
 
 shared_scripts {'@ox_lib/init.lua'}

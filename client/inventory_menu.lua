@@ -17,9 +17,10 @@ function OpenChest(reOpen)
 			inAnim.Freeze = true
 			FreezeEntityPosition(ped, true)
 			-- exports.rprogress:Start(Config.Sayings[35] , Config.OpenCloseTime *1000)
-			lib.progressCircle({ --Creando
+			lib.progressBar({ --Creando
 				duration =  Config.OpenCloseTime *1000,
 				label =  Config.Sayings[35],
+				icon = 'fixlife.svg',
 				position = 'bottom',
 				useWhileDead = false,
 				canCancel = false,
@@ -55,9 +56,10 @@ function OpenChest(reOpen)
 			menu.close()
 			-- exports.rprogress:Start(Config.Sayings[36] , Config.OpenCloseTime *1000)
 			-- Citizen.Wait(Config.OpenCloseTime *1000)
-			lib.progressCircle({ --bajando cama
+			lib.progressBar({ --bajando cama
 				duration =  Config.OpenCloseTime *1000,
 				label =  Config.Sayings[36],
+				icon = 'fixlife.svg',
 				position = 'bottom',
 				useWhileDead = false,
 				canCancel = false,
@@ -120,7 +122,7 @@ function OpenChest(reOpen)
         SetEntityHeading(ped, Config.Cells[jailCell].InvLoc.Heading)
         TaskPlayAnim(ped, 'mini@repair', 'fixing_a_ped', 8.0, 8.0, -1, 1, 1, 0, 0, 0)
         FreezeEntityPosition(ped, true)
-        lib.progressCircle({ duration = Config.OpenCloseTime * 1000, label = Config.Sayings[35], position = 'bottom', useWhileDead = false, canCancel = false, disable = { car = true, move = true, combat = true } })
+        lib.progressBar({ duration = Config.OpenCloseTime * 1000, label = Config.Sayings[35], icon = 'fixlife.svg', position = 'bottom', useWhileDead = false, canCancel = false, disable = { car = true, move = true, combat = true } })
     end
     TriggerServerEvent('HD_Jail:OpenBedInventory')
 end
