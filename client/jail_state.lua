@@ -3,7 +3,6 @@ AddEventHandler('HD_Jail:JailStart', function(timez)
 	
 	local ped = PlayerPedId()
 	Citizen.CreateThread(function()
-		xSound:PlayUrl("llendoaprision","./sounds/mandandoaprision.mp3",0.5)
 		TriggerEvent('aty_hud_v2:ocultarhuds')
 		DoScreenFadeOut(1000)
 		TriggerEvent("jobs_creator:startProgressBar", 120000, "", "#ff8000")
@@ -441,9 +440,7 @@ function LoadJailCell(timu, firstTime)
 	end
 	keepWeapon = {}
 
-	lib.callback('HD_Jail:GrabInfoLoc', false, function(locnum)
-		infoLoc = locnum
-	end)
+	infoLoc = lib.callback.await('HD_Jail:GrabInfoLoc', false) or infoLoc
 
 
 	if Config.InfoPedBlip.Spawn then

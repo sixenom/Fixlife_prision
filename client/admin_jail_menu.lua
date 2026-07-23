@@ -24,7 +24,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 			elements = element
 		}, function(data, menu)
 			if data.current.value == 'jailplayer' then
-				if police then
+				if false then
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
@@ -55,7 +55,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					end)
 				end
 			elseif data.current.value == 'unjail' then
-				if police then
+				if false then
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
@@ -87,7 +87,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					end)
 				end
 			elseif data.current.value == 'add' then
-				if police then
+				if false then
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
@@ -118,7 +118,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					end)
 				end
 			elseif data.current.value == 'remove' then
-				if police then
+				if false then
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false
@@ -150,7 +150,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 				end
 			elseif data.current.value == 'solitary' then
 				if Config.Solitary then
-					if police then
+					if false then
 						local closestPlayer, closestDistance = GetClosestPlayer()
 						if closestPlayer ~= -1 and closestDistance <= 3.0 then
 							inJailMenu = false
@@ -184,7 +184,7 @@ AddEventHandler('HD_Jail:JailMenu', function()
 					Notification(Config.Sayings[136])
 				end
 			elseif data.current.value == 'unsolitary' then
-				if police then
+				if false then
 					local closestPlayer, closestDistance = GetClosestPlayer()
 					if closestPlayer ~= -1 and closestDistance <= 3.0 then
 						inJailMenu = false

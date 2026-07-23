@@ -1,5 +1,3 @@
-xSound = exports.xsound
-
 Citizen.CreateThread(function()
 	while QBX.PlayerData.job == nil do
 		Citizen.Wait(10)
@@ -9,10 +7,10 @@ end)
 infoLoc = 1
 
 time = 0
-local difftime = {Hours = 0, Mins = 0, Seconds = 0}
+difftime = {Hours = 0, Mins = 0, Seconds = 0}
 
 soltime = 0
-local diffSol = {Hours = 0, Mins = 0, Seconds = 0}
+diffSol = {Hours = 0, Mins = 0, Seconds = 0}
 
 isDead = false
 
@@ -39,7 +37,7 @@ jailLocs = {}
 closestLoc = 1
 
 breakout = 0
-local diffBreak = {Hours = 0, Mins = 0, Seconds = 0}
+diffBreak = {Hours = 0, Mins = 0, Seconds = 0}
 breakout2 = false
 breakout3 = false
 breakout4 = true
@@ -50,10 +48,10 @@ inMenu = {is = false, coords = nil}
 inAnim = {Dict = nil, Anim = nil, Atr = 0, Freeze = false}
 needsEat = false
 
-local closestShower = 1
+closestShower = 1
 showerNow = false
 
-local closestOut = 1
+closestOut = 1
 workoutNow = false
 workoutLoc = 0
 

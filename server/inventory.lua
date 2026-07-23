@@ -1,3 +1,18 @@
+RegisterNetEvent('HD_Jail:OpenBedInventory')
+AddEventHandler('HD_Jail:OpenBedInventory', function()
+    local src = source
+    local xPlayer = Qbox.GetPlayer(src)
+    if not xPlayer then return end
+
+    JailStorage.Get(xPlayer.identifier, function(data)
+        if (tonumber(data.jailtime) or 0) <= 0 then return end
+
+        local stashId = ('fixlife_bed_%s'):format(xPlayer.identifier)
+        exports.ox_inventory:RegisterStash(stashId, 'Cama de prisión', 30, 100000, xPlayer.identifier)
+        TriggerClientEvent('HD_Jail:OpenBedInventory', src, stashId, xPlayer.identifier)
+    end)
+end)
+
 Qbox.RegisterCallback('HD_Jail:GetChest', function(source, cb)
     local xPlayer = Qbox.GetPlayer(source)
     if not xPlayer then cb({}); return end
