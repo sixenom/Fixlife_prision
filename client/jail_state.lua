@@ -328,6 +328,21 @@ RegisterCommand('probarentrada', function()
 	TriggerEvent('HD_Jail:JailStart', 60)
 end)
 
+RegisterCommand('probarpresentacion', function()
+	exports['Fixlife_hud']:setCinematicMode(true)
+	DoScreenFadeOut(1000)
+	Citizen.Wait(1200)
+	StartPrisonIntro()
+	Citizen.Wait(100)
+	DoScreenFadeIn(1000)
+	Citizen.Wait(Config.PrisonIntroDuration * 1000)
+	DoScreenFadeOut(1000)
+	Citizen.Wait(1000)
+	CloseSecurityCamera()
+	exports['Fixlife_hud']:setCinematicMode(false)
+	DoScreenFadeIn(500)
+end)
+
 
 
 RegisterNetEvent('HD_Jail:TakeBooze')
@@ -582,11 +597,10 @@ function LoadJailCell(timu, firstTime)
 				if Config.HaveGuide and firstTime then
 					local perTime = Config.TimePer *1000
 
-					SetFocusArea(Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z, Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z)
-					ChangeSecurityCamera(Config.PrisonCam.x, Config.PrisonCam.y, Config.PrisonCam.z, Config.PrisonCamRot)
+					StartPrisonIntro()
 					Citizen.Wait(100)
 					DoScreenFadeIn(1000)
-					lib.progressBar({ duration = perTime, label = Config.Sayings[169], icon = 'fixlife.svg', canCancel = false })
+					lib.progressBar({ duration = Config.PrisonIntroDuration * 1000, label = Config.Sayings[169], icon = 'fixlife.svg', canCancel = false })
 					DoScreenFadeOut(1000)
 					Citizen.Wait(1000)
 

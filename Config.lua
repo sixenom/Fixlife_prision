@@ -98,6 +98,13 @@ Config.TimePer = 5 -- Cuánto tiempo por cámara para la guía (en segundos)
 
 Config.PrisonCam = vector3(3911.7275, -132.4698, 89.8866) --Posición de la vista de la cámara
 Config.PrisonCamRot = {x = -35.0, y = 0.0, z = -10.0} --Rotación de la vista de la cámara
+Config.PrisonIntroDuration = 20
+Config.PrisonIntroBlend = 1200
+Config.PrisonIntroPath = {
+    {Mode = 'Orbit', From = vector3(3720.70044, 32.40902, 53.0), To = vector3(3810.63916, -72.59, 53.0), Center = vector3(3810.63916, 32.40902, 14.8724775), Direction = 1},
+    {Mode = 'Linear', From = vector3(3810.63916, -72.59, 53.0), To = vector3(4065.01123, -72.59, 53.0), FixedRotation = {x = -18.0, y = 0.0, z = 0.0}},
+    {Mode = 'Orbit', From = vector3(4065.01123, -72.59, 53.0), To = vector3(4162.24072, 28.1750088, 53.0), Center = vector3(4065.01123, 28.1750088, 17.7991829), Direction = 1}
+}
 
 Config.JobCam = vector3(3915.46, 24.37, 23.89) --Posición de la vista de la cámara
 Config.JobCamRot = {x = 0.0, y = 0.0, z = 180.0} --Rotación de la vista de la cámara

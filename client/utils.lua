@@ -1,3 +1,110 @@
+function StartPrisonIntro()
+    if createdCamera ~= 0 then
+        DestroyCam(createdCamera, 0)
+    end
+
+    local path = Config.PrisonIntroPath
+    local cam = CreateCam('DEFAULT_SCRIPTED_CAMERA', true)
+    local function rotationTo(position, target)
+        local dx = target.x - position.x
+        local dy = target.y - position.y
+        local dz = target.z - position.z
+        return {
+            x = math.deg(math.atan(dz, math.sqrt(dx * dx + dy * dy))),
+            y = 0.0,
+            z = math.deg(math.atan(-dx, dy))
+        }
+    end
+    local totalDistance = 0.0
+    for _, segment in ipairs(path) do
+        totalDistance = totalDistance + #(segment.To - segment.From)
+    end
+
+    SetCamCoord(cam, path[1].From.x, path[1].From.y, path[1].From.z)
+    local firstTarget = path[1].Center or path[1].LookAt
+    local firstRotation = rotationTo(path[1].From, firstTarget)
+    SetCamRot(cam, firstRotation.x, firstRotation.y, firstRotation.z, 2)
+    RenderScriptCams(true, false, 0, true, true)
+    createdCamera = cam
+
+    CreateThread(function()
+        local fixedRotation
+        local function blendRotation(from, to, progress)
+            return {
+                x = from.x + (to.x - from.x) * progress,
+                y = from.y + (to.y - from.y) * progress,
+                z = from.z + (to.z - from.z) * progress
+            }
+        end
+
+        for _, segment in ipairs(path) do
+            local fromRotation = GetCamRot(cam, 2)
+            fixedRotation = nil
+            if segment.FixedRotation then
+                fixedRotation = segment.FixedRotation
+            elseif segment.HoldRotation then
+                fixedRotation = GetCamRot(cam, 2)
+            end
+
+            local distance = #(segment.To - segment.From)
+            local duration = Config.PrisonIntroDuration * 1000 * distance / totalDistance
+            local started = GetGameTimer()
+            local startAngle, angleDelta, startRadius, endRadius
+
+            if segment.Mode == 'Orbit' then
+                startAngle = math.atan(segment.From.y - segment.Center.y, segment.From.x - segment.Center.x)
+                local endAngle = math.atan(segment.To.y - segment.Center.y, segment.To.x - segment.Center.x)
+                angleDelta = endAngle - startAngle
+                if segment.Direction > 0 and angleDelta < 0 then angleDelta = angleDelta + math.pi * 2 end
+                if segment.Direction < 0 and angleDelta > 0 then angleDelta = angleDelta - math.pi * 2 end
+                startRadius = #(vector3(segment.From.x, segment.From.y, 0.0) - vector3(segment.Center.x, segment.Center.y, 0.0))
+                endRadius = #(vector3(segment.To.x, segment.To.y, 0.0) - vector3(segment.Center.x, segment.Center.y, 0.0))
+            end
+
+            while GetGameTimer() - started < duration do
+                local elapsed = GetGameTimer() - started
+                local progress = math.min(elapsed / duration, 1.0)
+                local x, y, z
+                if segment.Mode == 'Orbit' then
+                    local angle = startAngle + angleDelta * progress
+                    local radius = startRadius + (endRadius - startRadius) * progress
+                    x = segment.Center.x + math.cos(angle) * radius
+                    y = segment.Center.y + math.sin(angle) * radius
+                    z = segment.From.z + (segment.To.z - segment.From.z) * progress
+                else
+                    x = segment.From.x + (segment.To.x - segment.From.x) * progress
+                    y = segment.From.y + (segment.To.y - segment.From.y) * progress
+                    z = segment.From.z + (segment.To.z - segment.From.z) * progress
+                end
+                SetCamCoord(cam, x, y, z)
+                if fixedRotation then
+                    local rotation = elapsed < Config.PrisonIntroBlend and blendRotation(fromRotation, fixedRotation, elapsed / Config.PrisonIntroBlend) or fixedRotation
+                    SetCamRot(cam, rotation.x, rotation.y, rotation.z, 2)
+                elseif segment.Mode == 'Orbit' then
+                    local targetRotation = rotationTo(vector3(x, y, z), segment.Center)
+                    local rotation = elapsed < Config.PrisonIntroBlend and blendRotation(fromRotation, targetRotation, elapsed / Config.PrisonIntroBlend) or targetRotation
+                    SetCamRot(cam, rotation.x, rotation.y, rotation.z, 2)
+                else
+                    local targetRotation = rotationTo(vector3(x, y, z), segment.LookAt)
+                    SetCamRot(cam, targetRotation.x, targetRotation.y, targetRotation.z, 2)
+                end
+                Wait(0)
+            end
+
+            SetCamCoord(cam, segment.To.x, segment.To.y, segment.To.z)
+            if fixedRotation then
+                SetCamRot(cam, fixedRotation.x, fixedRotation.y, fixedRotation.z, 2)
+            elseif segment.Mode == 'Orbit' then
+                local targetRotation = rotationTo(segment.To, segment.Center)
+                SetCamRot(cam, targetRotation.x, targetRotation.y, targetRotation.z, 2)
+            else
+                local targetRotation = rotationTo(segment.To, segment.LookAt)
+                SetCamRot(cam, targetRotation.x, targetRotation.y, targetRotation.z, 2)
+            end
+        end
+    end)
+end
+
 function GetClosestPlayer()
     local closest, distance = -1, -1
     local coords = GetEntityCoords(PlayerPedId())
