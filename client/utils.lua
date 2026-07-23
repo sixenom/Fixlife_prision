@@ -315,6 +315,32 @@ function CloseSecurityCamera()
     FreezeEntityPosition(GetPlayerPed(PlayerId()), false)
 end
 
+function StartJobIntro(duration)
+    if createdCamera ~= 0 then
+        DestroyCam(createdCamera, 0)
+    end
+
+    local from = Config.JobIntroCam1
+    local to = Config.JobIntroCam2
+    local cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", 1)
+    createdCamera = cam
+    RenderScriptCams(1, 0, 0, 1, 1)
+
+    local started = GetGameTimer()
+    while GetGameTimer() - started < duration do
+        local progress = math.min((GetGameTimer() - started) / duration, 1.0)
+        SetCamCoord(cam,
+            from.x + (to.x - from.x) * progress,
+            from.y + (to.y - from.y) * progress,
+            from.z + (to.z - from.z) * progress
+        )
+        SetCamRot(cam, 0.0, 0.0, Config.JobIntroCamHeading, 2)
+        Wait(0)
+    end
+
+    SetCamCoord(cam, to.x, to.y, to.z)
+end
+
 function Notification(text)
 	if Config.Notifications == 'esx' then
 		-- ESX.ShowNotification(text)

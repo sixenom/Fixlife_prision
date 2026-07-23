@@ -2065,3 +2065,6 @@ Config.Sayings = { --Todos los mensajes del recurso
     [178] = " ¡No Está en su Celda! ¡Escapó de la Cárcel!"
 
 }
+Config.JobIntroCam1 = vector3(3916.00928, 26.9864845, 25.4628868)
+Config.JobIntroCam2 = vector3(3915.631, 22.7850742, 23.87154)
+Config.JobIntroCamHeading = 173.9453
