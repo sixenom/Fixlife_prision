@@ -100,6 +100,8 @@ Config.PrisonCam = vector3(3911.7275, -132.4698, 89.8866) --Posición de la vist
 Config.PrisonCamRot = {x = -35.0, y = 0.0, z = -10.0} --Rotación de la vista de la cámara
 Config.PrisonIntroDuration = 20
 Config.PrisonIntroBlend = 1200
+Config.PrisonIntroBank = 6.0
+Config.PrisonIntroBob = 0.12
 Config.PrisonIntroPath = {
     {Mode = 'Orbit', From = vector3(3720.70044, 32.40902, 53.0), To = vector3(3810.63916, -72.59, 53.0), Center = vector3(3810.63916, 32.40902, 14.8724775), Direction = 1},
     {Mode = 'Linear', From = vector3(3810.63916, -72.59, 53.0), To = vector3(4065.01123, -72.59, 53.0), FixedRotation = {x = -18.0, y = 0.0, z = 0.0}},

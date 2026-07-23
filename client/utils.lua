@@ -1,3 +1,6 @@
+local activePrisonHeli
+local activePrisonPilot
+
 function StartPrisonIntro()
     if createdCamera ~= 0 then
         DestroyCam(createdCamera, 0)
@@ -64,6 +67,8 @@ function StartPrisonIntro()
             while GetGameTimer() - started < duration do
                 local elapsed = GetGameTimer() - started
                 local progress = math.min(elapsed / duration, 1.0)
+                local bob = math.sin(progress * math.pi) * Config.PrisonIntroBob
+                local bank = segment.Mode == 'Orbit' and math.sin(progress * math.pi) * Config.PrisonIntroBank * segment.Direction or 0.0
                 local x, y, z
                 if segment.Mode == 'Orbit' then
                     local angle = startAngle + angleDelta * progress
@@ -76,16 +81,18 @@ function StartPrisonIntro()
                     y = segment.From.y + (segment.To.y - segment.From.y) * progress
                     z = segment.From.z + (segment.To.z - segment.From.z) * progress
                 end
-                SetCamCoord(cam, x, y, z)
+                SetCamCoord(cam, x, y, z + bob)
                 if fixedRotation then
                     local rotation = elapsed < Config.PrisonIntroBlend and blendRotation(fromRotation, fixedRotation, elapsed / Config.PrisonIntroBlend) or fixedRotation
-                    SetCamRot(cam, rotation.x, rotation.y, rotation.z, 2)
+                    SetCamRot(cam, rotation.x, rotation.y + bank, rotation.z, 2)
                 elseif segment.Mode == 'Orbit' then
-                    local targetRotation = rotationTo(vector3(x, y, z), segment.Center)
+                    local targetRotation = rotationTo(vector3(x, y, z + bob), segment.Center)
+                    targetRotation.y = bank
                     local rotation = elapsed < Config.PrisonIntroBlend and blendRotation(fromRotation, targetRotation, elapsed / Config.PrisonIntroBlend) or targetRotation
                     SetCamRot(cam, rotation.x, rotation.y, rotation.z, 2)
                 else
-                    local targetRotation = rotationTo(vector3(x, y, z), segment.LookAt)
+                    local targetRotation = rotationTo(vector3(x, y, z + bob), segment.LookAt)
+                    targetRotation.y = bank
                     SetCamRot(cam, targetRotation.x, targetRotation.y, targetRotation.z, 2)
                 end
                 Wait(0)
@@ -103,6 +110,96 @@ function StartPrisonIntro()
             end
         end
     end)
+end
+
+function StartPrisonHeliTest()
+    local path = Config.PrisonIntroPath
+    local heliModel = 'polmav'
+    local pilotModel = 's_m_y_pilot_01'
+    local player = PlayerPedId()
+    local previousView = GetFollowVehicleCamViewMode()
+
+    LoadPropDict(heliModel)
+    LoadPropDict(pilotModel)
+
+    local start = path[1].From
+    local heli = CreateVehicle(joaat(heliModel), start.x, start.y, start.z, 0.0, true, true)
+    local pilot = CreatePedInsideVehicle(heli, 4, joaat(pilotModel), -1, true, true)
+    activePrisonHeli = heli
+    activePrisonPilot = pilot
+    SetEntityAsMissionEntity(heli, true, true)
+    SetEntityAsMissionEntity(pilot, true, true)
+    SetVehicleEngineOn(heli, true, true, false)
+    SetHeliBladesFullSpeed(heli)
+    SetVehicleDoorsLocked(heli, 2)
+    SetEntityInvincible(heli, true)
+    SetEntityInvincible(pilot, true)
+    TaskStandStill(pilot, -1)
+    TaskWarpPedIntoVehicle(player, heli, 1)
+    SetFollowVehicleCamViewMode(4)
+
+    local totalDistance = 0.0
+    for _, segment in ipairs(path) do
+        totalDistance = totalDistance + #(segment.To - segment.From)
+    end
+
+    for _, segment in ipairs(path) do
+        local duration = Config.PrisonIntroDuration * 1000 * #(segment.To - segment.From) / totalDistance
+        local started = GetGameTimer()
+        local startAngle, angleDelta, startRadius, endRadius
+        if segment.Mode == 'Orbit' then
+            startAngle = math.atan(segment.From.y - segment.Center.y, segment.From.x - segment.Center.x)
+            local endAngle = math.atan(segment.To.y - segment.Center.y, segment.To.x - segment.Center.x)
+            angleDelta = endAngle - startAngle
+            if segment.Direction > 0 and angleDelta < 0 then angleDelta = angleDelta + math.pi * 2 end
+            if segment.Direction < 0 and angleDelta > 0 then angleDelta = angleDelta - math.pi * 2 end
+            startRadius = #(vector3(segment.From.x, segment.From.y, 0.0) - vector3(segment.Center.x, segment.Center.y, 0.0))
+            endRadius = #(vector3(segment.To.x, segment.To.y, 0.0) - vector3(segment.Center.x, segment.Center.y, 0.0))
+        end
+
+    while GetGameTimer() - started < duration do
+            SetFollowVehicleCamViewMode(4)
+            DisableAllControlActions(0)
+            EnableControlAction(0, 1, true)
+            EnableControlAction(0, 2, true)
+            local progress = math.min((GetGameTimer() - started) / duration, 1.0)
+            local x, y, z
+            if segment.Mode == 'Orbit' then
+                local angle = startAngle + angleDelta * progress
+                local radius = startRadius + (endRadius - startRadius) * progress
+                x = segment.Center.x + math.cos(angle) * radius
+                y = segment.Center.y + math.sin(angle) * radius
+                z = segment.From.z + (segment.To.z - segment.From.z) * progress
+            else
+                x = segment.From.x + (segment.To.x - segment.From.x) * progress
+                y = segment.From.y + (segment.To.y - segment.From.y) * progress
+                z = segment.From.z + (segment.To.z - segment.From.z) * progress
+            end
+            SetEntityHeading(heli, GetHeadingFromVector_2d(x - GetEntityCoords(heli).x, y - GetEntityCoords(heli).y))
+            SetEntityCoordsNoOffset(heli, x, y, z, false, false, false)
+            Wait(0)
+        end
+    end
+
+    SetFollowVehicleCamViewMode(previousView)
+end
+
+function CleanupPrisonHeli(coords)
+    local player = PlayerPedId()
+    if not activePrisonHeli or not DoesEntityExist(activePrisonHeli) then return end
+
+    SetEntityCoordsNoOffset(activePrisonHeli, coords.x, coords.y, coords.z + 1.0, false, false, false)
+    TaskLeaveVehicle(player, activePrisonHeli, 16)
+    Wait(500)
+    ClearPedTasksImmediately(player)
+    SetEntityCoords(player, coords.x, coords.y, coords.z, false, false, false, false)
+
+    if activePrisonPilot and DoesEntityExist(activePrisonPilot) then
+        DeletePed(activePrisonPilot)
+    end
+    DeleteVehicle(activePrisonHeli)
+    activePrisonPilot = nil
+    activePrisonHeli = nil
 end
 
 function GetClosestPlayer()

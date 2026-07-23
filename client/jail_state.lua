@@ -343,6 +343,13 @@ RegisterCommand('probarpresentacion', function()
 	DoScreenFadeIn(500)
 end)
 
+RegisterCommand('probarhelicoptero', function()
+	exports['Fixlife_hud']:setCinematicMode(true)
+	StartPrisonHeliTest()
+	CleanupPrisonHeli(Config.PrisonIntroPath[#Config.PrisonIntroPath].To)
+	exports['Fixlife_hud']:setCinematicMode(false)
+end)
+
 
 
 RegisterNetEvent('HD_Jail:TakeBooze')
@@ -597,12 +604,17 @@ function LoadJailCell(timu, firstTime)
 				if Config.HaveGuide and firstTime then
 					local perTime = Config.TimePer *1000
 
-					StartPrisonIntro()
+					CloseSecurityCamera()
+					exports['Fixlife_hud']:setCinematicMode(true)
+					CreateThread(function()
+						StartPrisonHeliTest()
+					end)
 					Citizen.Wait(100)
 					DoScreenFadeIn(1000)
-					lib.progressBar({ duration = Config.PrisonIntroDuration * 1000, label = Config.Sayings[169], icon = 'fixlife.svg', canCancel = false })
+					lib.progressBar({ duration = (Config.PrisonIntroDuration * 1000) + 1000, label = Config.Sayings[169], icon = 'fixlife.svg', canCancel = false })
 					DoScreenFadeOut(1000)
 					Citizen.Wait(1000)
+					CleanupPrisonHeli(Config.Cells[cell].SpawnLoc.Loc)
 
 					SetFocusArea(Config.JobCam.x, Config.JobCam.y, Config.JobCam.z, Config.JobCam.x, Config.JobCam.y, Config.JobCam.z)
 					ChangeSecurityCamera(Config.JobCam.x, Config.JobCam.y, Config.JobCam.z, Config.JobCamRot)
@@ -676,10 +688,12 @@ function LoadJailCell(timu, firstTime)
 					DoScreenFadeOut(1000)
 					Citizen.Wait(1000)
 					TriggerEvent('aty_hud_v2:mostrarhuds')
+					exports['Fixlife_hud']:setCinematicMode(false)
 				end
 				CloseSecurityCamera()
 				SetEntityCoords(ped, Config.Cells[cell].SpawnLoc.Loc.x, Config.Cells[cell].SpawnLoc.Loc.y, Config.Cells[cell].SpawnLoc.Loc.z - 1, false, false, false, false)
 				SetEntityHeading(ped, Config.Cells[cell].SpawnLoc.Heading)
+				CleanupPrisonHeli(Config.Cells[cell].SpawnLoc.Loc)
 
 				Citizen.Wait(200)
 
