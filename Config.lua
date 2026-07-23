@@ -5,7 +5,7 @@ Config.CurrentV = "1.0 HD" -- No modificar
 -- Configuraciones Importantes
 Config.OLDESX = false -- Si estás usando un Sistema de Peso = false, Sistema de Límites = true
 Config.ESXVersion = '1.2' -- Ejemplos (1.0, 1.1, 1.2)
-Config.MenuLoc = 'right' -- Dónde se mostrarán todos los menús de ESX en este script
+Config.MenuLoc = 'right' -- Dónde se mostrarán todos los menús de ESX en este scrip
 Config.Notifications = 'esx' -- Puede ser {esx, mythic, tnotify}
 Config.UsingHDBlips = true -- Esto es si estás usando mi script de manejo gratuito de indicadores (blips). Si es así, solo funcionará para el indicador de prisión.
 Config.SyncInterval = 2 -- Con qué frecuencia el servidor actualiza la base de datos para los tiempos restantes de los jugadores
@@ -96,46 +96,49 @@ Config.HaveGuide = true -- Si hay una guía de la prisión cuando son enviados p
 Config.TimePer = 5 -- Cuánto tiempo por cámara para la guía (en segundos)
 
 
-Config.PrisonCam = vector3(3911.7275, -132.4698, 89.8866) --Position of the camera view 
-Config.PrisonCamRot = {x = -35.0, y = 0.0, z = -10.0} --Rotation of the camera view 
+Config.PrisonCam = vector3(3911.7275, -132.4698, 89.8866) --Posición de la vista de la cámara
+Config.PrisonCamRot = {x = -35.0, y = 0.0, z = -10.0} --Rotación de la vista de la cámara
 
-Config.JobCam = vector3(3915.46, 24.37, 23.89) --Position of the camera view 
-Config.JobCamRot = {x = 0.0, y = 0.0, z = 180.0} --Rotation of the camera view 
+Config.JobCam = vector3(3915.46, 24.37, 23.89) --Posición de la vista de la cámara
+Config.JobCamRot = {x = 0.0, y = 0.0, z = 180.0} --Rotación de la vista de la cámara
 
-Config.SolCam = vector3(3889.2332, 26.5927, 27.4285) --Position of the camera view (Only Will Show If Solitary Is On)
-Config.SolCamRot = {x = -10.0, y = 0.0, z = 90.0} --Rotation of the camera view (Only Will Show If Solitary Is On)
+Config.SolCam = vector3(3889.2332, 26.5927, 27.4285) --Posición de la vista de la cámara (Solo se muestra si el aislamiento está activado)
+Config.SolCamRot = {x = -10.0, y = 0.0, z = 90.0} --Rotación de la vista de la cámara (Solo se muestra si el aislamiento está activado)
 
-Config.WorkOutCam = vector3(3957.4907, 43.9866, 24.9793) --Position of the camera view (Only Will Show If WorkOut Is On)
-Config.WorkOutCamRot = {x = -25.0, y = 0.0, z = 45.0} --Rotation of the camera view (Only Will Show If WorkOut Is On)
+Config.WorkOutCam = vector3(3957.4907, 43.9866, 24.9793) --Posición de la vista de la cámara (Solo se muestra si el ejercicio está activado)
+Config.WorkOutCamRot = {x = -25.0, y = 0.0, z = 45.0} --Rotación de la vista de la cámara (Solo se muestra si el ejercicio está activado)
 
-Config.ShowerCam = vector3(3910.1936, 39.0764, 24.9793) --Position of the camera view (Only Will Show If Shower Is On)
-Config.ShowerCamRot = {x = -20.0, y = 0.0, z = 90.0} --Rotation of the camera view (Only Will Show If Shower Is On)
+Config.ShowerCam = vector3(3910.1936, 39.0764, 24.9793) --Posición de la vista de la cámara (Solo se muestra si las duchas están activadas)
+Config.ShowerCamRot = {x = -20.0, y = 0.0, z = 90.0} --Rotación de la vista de la cámara (Solo se muestra si las duchas están activadas)
 
-Config.FoodCam = vector3(3929.5596, 29.0406, 24.9793) --Position of the camera view 
-Config.FoodCamRot = {x = 0.0, y = 0.0, z = 70.0} --Rotation of the camera view 
+Config.FoodCam = vector3(3929.5596, 29.0406, 24.9793) --Posición de la vista de la cámara
+Config.FoodCamRot = {x = 0.0, y = 0.0, z = 70.0} --Rotación de la vista de la cámara
 
-Config.HospitalCam = vector3(4032.4121, 0.2040, 20.0884) --Position of the camera view (Only Will Show If Hospital Is On)
-Config.HospitalCamRot = {x = -25.0, y = 0.0, z = 180.0} --Rotation of the camera view (Only Will Show If Hospital Is On)
+Config.HospitalCam = vector3(4032.4121, 0.2040, 20.0884) --Posición de la vista de la cámara (Solo se muestra si el hospital está activado)
+Config.HospitalCamRot = {x = -25.0, y = 0.0, z = 180.0} --Rotación de la vista de la cámara (Solo se muestra si el hospital está activado)
 
-Config.ItemCam = vector3(3865.8289, -23.6205, 7.8507) --Position of the camera view (Only Will Show If There Is Items To Keep)
-Config.ItemCamRot = {x = -10.0, y = 0.0, z = 0.0} --Rotation of the camera view (Only Will Show If There Is Items To Keep)
+Config.ItemCam = vector3(3865.8289, -23.6205, 7.8507) --Posición de la vista de la cámara (Solo se muestra si hay objetos para guardar)
+Config.ItemCamRot = {x = -10.0, y = 0.0, z = 0.0} --Rotación de la vista de la cámara (Solo se muestra si hay objetos para guardar)
 
---Entering Prison Cutscene Configs (Don't touch this unless you know what you're doing!)
-Config.GuardPed = 'csb_cop' --The ped that carries you in
-Config.GuardSpawn = {Loc = vector3(405.60272216797, -1000.9990844727, -99.004028320312), Heading = 2.9} --Where the guard spawns
-Config.HandCuffLoc = vector3(405.94161987305, -999.58270263672, -99.004028320312) --Where it spawns you
-Config.ClothesLoc = {Loc = vector3(402.74792480469, -1000.0263671875, -99.004043579102), Heading = 183.02} --Where the gaurd carries you to
-Config.ClothesProp = 'prop_cs_t_shirt_pile' --Prop that is in hands and on table
-Config.ClothPropLoc = {Loc = vector3(402.36535644531, -1001.2421264648, -98.086471557617), Heading = 356.48} --Location of the prop spawn
-Config.ComputerLoc = {Loc = vector3(401.48217773438, -1001.8327026367, -99.004035949707), Heading = 1.97} --Where the gaurd looks at his computer
-Config.PointLoc = {Loc = vector3(402.08111572266, -1001.8852539062, -99.004035949707), Heading = 357.9} --Where the gaurd comes and points
-Config.GrabLoc = {Loc = vector3(403.19427490234, -997.42065429688, -99.001533508301), Heading = 12.43} --Where the gaurd goes to grab the player after
-Config.GrabTurnHead = 258.46 --Heading which faces the exit
-Config.PedGrabHeading = 24.44 --Which heading you face when grabbed
-Config.StopnLook = {Loc = vector3(403.37203979492, -1002.0308837891, -99.004119873047), Heading = 359.19} --Stop and go point for gaurd so they don't have issues
-Config.StopnLook2 = 85.28 --Heading for second stop n go
-Config.StopnTurn = {Loc = vector3(405.93243408203, -997.45745849609, -99.004119873047), Heading = 97.76} --Another stop n go poi
-Config.Undressed = { --Undressed Player Outfit
+--Configuraciones de la escena de entrada a prisión (No modificar si no sabes lo que haces)
+Config.GuardPed = 'csb_cop' --Personaje que te lleva al interior
+Config.GuardSpawn = {Loc = vector3(465.0160, -998.6136, 22.8469), Heading =  300.0} --Ubicación donde aparece el guardia check
+Config.HandCuffLoc = {Loc = vector3(465.2975, -999.2302, 22.8469), Heading = 300.0}
+Config.ClothesLoc = {Loc = vector3(467.8503, -1001.4005, 22.8469), Heading = 90.0} --Ubicación a la que te lleva el guardia
+Config.ClothesProp = 'prop_cs_t_shirt_pile' --Objeto que aparece en las manos y sobre la mesa
+Config.ClothPropLoc = {Loc = vector3(466.706726, -1000.86926, 23.75275), Heading = 180.0} --Ubicación donde aparece el objeto
+
+Config.PreComputerLoc = {Loc = vector3(468.1209, -999.9722, 22.8469), Heading = 90.0}
+
+Config.ComputerLoc = {Loc = vector3(465.9052, -1002.4626, 22.8469), Heading = 270.0} --Ubicación donde el guardia mira su computadora
+Config.PointLoc = {Loc = vector3(465.9089, -1001.2302, 22.8418), Heading = 270.0} --Ubicación donde llega y señala el guardia
+Config.GrabLoc = {Loc = vector3(469.1391, -1000.9457, 22.8469), Heading = 270.0} --Ubicación a la que va el guardia para recoger al jugador
+Config.GrabTurnHead = 45.0 --Dirección hacia la salida
+Config.PedGrabHeading = 270.0 --Dirección hacia la que miras al ser sujetado
+Config.StopnLook = {Loc = vector3(465.6371, -999.6112, 22.8469), Heading = 270.0} --Punto de parada y avance del guardia para evitar problemas
+Config.StopnLook2 = 85.28 --Dirección del segundo punto de parada
+Config.StopnTurn = {Loc = vector3(464.8575, -998.8878, 22.8469), Heading = 90.0} --Otro punto de parada y avance
+Config.Undressed = { --Ropa del jugador sin prendas
     male = {
         ['tshirt_1'] = 15,  ['tshirt_2'] = 0,
         ['torso_1']  = 346, ['torso_2']  = 0,
@@ -163,12 +166,14 @@ Config.Undressed = { --Undressed Player Outfit
         ['glasses_2'] = 0
     }
 }
-Config.EnterLoc = vector3(402.86895751953, -996.55413818359, -99.00025177002) -- Ubicación del letrero
-Config.EnterHeadings = {Front = 178.32, Side = 264.63} -- Encabezados del letrero, ambos
-Config.WalkLoc = vector3(406.04782104492, -997.09332275391, -99.004028320312) -- Caminata final hacia el destino en el pasillo
+Config.EnterLoc = vector3(470.2050, -1000.9194, 22.8469) -- Ubicación del letrero
+Config.EnterHeadings = {Front = 90.0, Side = 0.0} -- Encabezados del letrero, ambos
+Config.WalkLoc = vector3(465.0607, -998.9862, 22.8469) -- Caminata final hacia el destino en el pasillo
 
-Config.Cam = vector3(402.91775512695, -1002.5331420898, -99.004035949707) -- Posición de la vista de la cámara
-Config.CamRot = {x = 0.0, y = 0.0, z = 0.0} -- Rotación de la vista de la cámara
+Config.Cam = vector3(464.937317, -998.060303, 25.576260)
+Config.CamRot = {x = -27.302866, y = 0.061999, z = -141.093887}
+Config.TestSceneOnly = false
+
 
 Config.DontTakeGunUponEntry = { -- Todas las armas que no se quitan al entrar en la cárcel
 
@@ -181,7 +186,7 @@ Config.DontGiveBackItems = { -- Estos son todos los objetos que no se devolverá
     'meth_glass'
 }
 
- 
+
 Config.AlertServerUponJail = true -- Si se envía un mensaje en el chat cuando alguien es encarcelado
 
 -- Configuraciones de Salida
@@ -659,9 +664,9 @@ Config.JobOptions = {
         TimeRemove = 25,
         StealChance = 3,
         StealItems = {
-            [1] = {Name = "Cleaner", Item = 'hd_cleaner', Chance = 5},
-            [2] = {Name = "Cloth", Item = 'hd_cloth', Chance = 3},
-            [3] = {Name = "Dirty Liquid", Item = 'hd_dliquid', Chance = 7}
+            [1] = {Name = "Limpiador", Item = 'hd_cleaner', Chance = 5},
+            [2] = {Name = "Tela", Item = 'hd_cloth', Chance = 3},
+            [3] = {Name = "Líquido sucio", Item = 'hd_dliquid', Chance = 7}
         },
         Tasks = {
             [1] = {
@@ -887,8 +892,8 @@ Config.JobOptions = {
         TimeRemove = 10,
         StealChance = 2,
         StealItems = {
-            [1] = {Name = "Bottle", Item = 'hd_bottle', Chance = 1},
-            [2] = {Name = "Cloth", Item = 'hd_cloth', Chance = 6},
+            [1] = {Name = "Botella", Item = 'hd_bottle', Chance = 1},
+            [2] = {Name = "Tela", Item = 'hd_cloth', Chance = 6},
         },
         Tasks = {
             [1] = {
@@ -994,12 +999,12 @@ Config.JobOptions = {
         TimeRemove = 25,
         StealChance = 4,
         StealItems = {
-            [1] = {Name = "Bottle", Item = 'hd_bottle', Chance = 2},
-            [2] = {Name = "Grease", Item = 'hd_grease', Chance = 5},
-            [3] = {Name = "Dirty Liquid", Item = 'hd_dliquid', Chance = 5},
-            [4] = {Name = "Spoon", Item = 'hd_spoon', Chance = 8},
-            [5] = {Name = "Ladle", Item = 'hd_ladle', Chance = 7},
-            [6] = {Name = "Flavor Packet", Item = 'hd_fpacket', Chance = 10}
+            [1] = {Name = "Botella", Item = 'hd_bottle', Chance = 2},
+            [2] = {Name = "Grasa", Item = 'hd_grease', Chance = 5},
+            [3] = {Name = "Líquido sucio", Item = 'hd_dliquid', Chance = 5},
+            [4] = {Name = "Cuchara", Item = 'hd_spoon', Chance = 8},
+            [5] = {Name = "Cucharón", Item = 'hd_ladle', Chance = 7},
+            [6] = {Name = "Sobre de sabor", Item = 'hd_fpacket', Chance = 10}
         },
         Tasks = {
             [1] = {
@@ -1141,13 +1146,13 @@ Config.JobOptions = {
         TimeRemove = 25,
         StealChance = 3,
         StealItems = {
-            [1] = {Name = "Bottle", Item = 'hd_bottle', Chance = 2},
-            [2] = {Name = "Rock", Item = 'hd_rock', Chance = 5},
-            [3] = {Name = "Broken Ladle", Item = 'hd_bladle', Chance = 3},
+            [1] = {Name = "Botella", Item = 'hd_bottle', Chance = 2},
+            [2] = {Name = "Roca", Item = 'hd_rock', Chance = 5},
+            [3] = {Name = "Cucharón roto", Item = 'hd_bladle', Chance = 3},
             [4] = {Name = "Metal", Item = 'hd_metal', Chance = 4},
-            [5] = {Name = "Broken Spoon", Item = 'hd_jspoon', Chance = 6},
-            [6] = {Name = "Spare Change", Item = 'hd_schange', Chance = 6},
-            [7] = {Name = "Plug", Item = 'hd_plug', Chance = 4}
+            [5] = {Name = "Cuchara rota", Item = 'hd_jspoon', Chance = 6},
+            [6] = {Name = "Monedas sueltas", Item = 'hd_schange', Chance = 6},
+            [7] = {Name = "Enchufe", Item = 'hd_plug', Chance = 4}
         },
         Tasks = {
             [1] = {
@@ -1310,8 +1315,8 @@ Config.JobOptions = {
     }
 }
 
---Uniform Configs
-Config.Uniforms = { --The outfit for the uniforms
+--Configuraciones de uniformes
+Config.Uniforms = { --Ropa de los uniformes
     male = {
         ['tshirt_1'] = 15,  ['tshirt_2'] = 0,
         ['torso_1']  = 146, ['torso_2']  = 0,
@@ -1340,13 +1345,13 @@ Config.Uniforms = { --The outfit for the uniforms
     }
 }
 
---Cell Configs
-Config.Cells = { --All cells in the prison
+--Configuraciones de celdas
+Config.Cells = { --Todas las celdas de la prisión
     [1] = {
-        SpawnLoc = {Loc = vector3(3909.2427, 31.8089, 23.8882), Heading = 173.5104}, --Spawning in location (usually the middle of cell)
-        InvLoc = {Loc = vector3(3910.2151, 31.9358, 23.8882), Heading = 267.5397}, --Inventory location or Bed location
-        BreakLoc = {Loc = vector3(3909.5969, 33.7807, 23.8882), Heading = 1.6232}, --Breaking out location 
-        ExitLoc = {Loc = vector3(3910.5522, 43.4814, 21.6951), Heading = 3.5825} --Exit after crawling throug for breakout (usually on outside of building)
+        SpawnLoc = {Loc = vector3(3909.2427, 31.8089, 23.8882), Heading = 173.5104}, --Ubicación de aparición (normalmente en el centro de la celda)
+        InvLoc = {Loc = vector3(3910.2151, 31.9358, 23.8882), Heading = 267.5397}, --Ubicación del inventario o de la cama
+        BreakLoc = {Loc = vector3(3909.5969, 33.7807, 23.8882), Heading = 1.6232}, --Ubicación de escape
+        ExitLoc = {Loc = vector3(3910.5522, 43.4814, 21.6951), Heading = 3.5825} --Salida después de arrastrarse durante el escape (normalmente fuera del edificio)
     },
     [2] = {
         SpawnLoc = {Loc = vector3(3905.59, 32.29, 23.89), Heading = 173.82},
@@ -1512,22 +1517,22 @@ Config.Cells = { --All cells in the prison
     -- }
 }
 
---Solitary Configs
-Config.Solitary = true --If you want there to be solitary
+--Configuraciones de aislamiento
+Config.Solitary = true --Si quieres que haya aislamiento
 
-Config.Sol4Run = true --If you want solitary for when they run away without using the jail script (ex. Using emotes to get through fences and other stuff)
-Config.SolRunTime = 1 --Time in mins for the one above
+Config.Sol4Run = true --Si quieres enviar a aislamiento a quienes escapen sin usar el recurso de prisión (por ejemplo, usando emotes para atravesar vallas y otros obstáculos)
+Config.SolRunTime = 1 --Tiempo en minutos para la opción anterior
 
-Config.FailBreakToSol = true --If you want solitary for when they fail to breakout in time
-Config.SolBreakTime = 1 --Time in mins for the one above
+Config.FailBreakToSol = true --Si quieres enviar a aislamiento a quienes no escapen a tiempo
+Config.SolBreakTime = 1 --Tiempo en minutos para la opción anterior
 
-Config.Sol4Lock = false --If you want solitary for when they try to leave their cell on lockdown
-Config.SolLockTime = 1 --Time in mins for the one above
+Config.Sol4Lock = false --Si quieres enviar a aislamiento a quienes intenten salir de su celda durante el bloqueo
+Config.SolLockTime = 1 --Tiempo en minutos para la opción anterior
 
-Config.Sol4Kill = true --IF you want solitary for when you kill someone
-Config.SolKillTime = 1 --Time in mins for the one above
+Config.Sol4Kill = true --Si quieres enviar a aislamiento a quienes maten a alguien
+Config.SolKillTime = 1 --Tiempo en minutos para la opción anterior
 
-Config.SolCells = { --All of the solitary locations
+Config.SolCells = { --Todas las ubicaciones de aislamiento
     [1] = {Loc = vector3(3909.3259, 32.1250, 27.4285), Heading = 173.8917},
     -- [2] = {Loc = vector3(1765.9827880859, 2594.2705078125, 50.54963684082), Heading = 93.12},
     -- [3] = {Loc = vector3(1765.9401855469, 2591.3493652344, 50.549640655518), Heading = 89.13},
@@ -1538,16 +1543,16 @@ Config.SolCells = { --All of the solitary locations
     -- [8] = {Loc = vector3(1761.8892822266, 2597.021484375, 50.549640655518), Heading = 278.27}
 }
 
---Revive Configs
-Config.Hospital = true --If you want the hospital
-Config.DoctorPed = 's_m_m_doctor_01' --Doctor ped for the hospital
-Config.CheckUpTime = 10 --How long it takes to checkup a prisoner (in secs)
+--Configuraciones de reanimación
+Config.Hospital = true --Si quieres que haya hospital
+Config.DoctorPed = 's_m_m_doctor_01' --Personaje médico del hospital
+Config.CheckUpTime = 10 --Tiempo necesario para revisar a un prisionero (en segundos)
 Config.BedLocs = {
     [1] = {
-        SpawnLoc = {Loc = vector3(1777.4617919922, 2565.4919433594, 46.722312927246), Heading = 268.2}, --Ped Spawn location
-        DoctorSpawn = {Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041), Heading = 189.93}, --Doctor spawn location
-        DocCheck = {Loc = vector3(1779.1821289062, 2564.9467773438, 45.797836303711), Heading = 65.82}, --Where the doctor walks to, to check up
-        DocWalkTime = 7 --How long it should take the doctor to walk there (in secs)
+        SpawnLoc = {Loc = vector3(1777.4617919922, 2565.4919433594, 46.722312927246), Heading = 268.2}, --Ubicación de aparición del médico
+        DoctorSpawn = {Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041), Heading = 189.93}, --Ubicación de aparición del médico
+        DocCheck = {Loc = vector3(1779.1821289062, 2564.9467773438, 45.797836303711), Heading = 65.82}, --Ubicación a la que camina el médico para revisar
+        DocWalkTime = 7 --Tiempo que debe tardar el médico en llegar (en segundos)
     },
     -- [2] = {
     --     SpawnLoc = {Loc = vector3(1777.5457763672, 2563.3625488281, 46.722332000732), Heading = 267.57},
@@ -1587,23 +1592,23 @@ Config.BedLocs = {
     -- }
 }
 
---All Breaking Out Configs
-Config.Breakout = true --If prisoners can breakout of the prison
-Config.BreakHole = 2 --How many successful digs they need
+--Configuraciones de escape
+Config.Breakout = true --Si los prisioneros pueden escapar de la prisión
+Config.BreakHole = 2 --Cantidad de excavaciones exitosas necesarias
 
-Config.CrawlTime = 15 --How long it takes to crawl through the wall (in secs)
-Config.BreakoutTime = 120  --How long they are able to breakout before being caught (in seconds)
+Config.CrawlTime = 15 --Tiempo necesario para atravesar la pared arrastrándose (en segundos)
+Config.BreakoutTime = 120  --Tiempo disponible para escapar antes de ser atrapado (en segundos)
 
-Config.BreakMarkNum = 22 --Breakout marker num
-Config.BreakMarkColor = {r = 255, g = 255, b = 255} --Breakout marker color
-Config.BreakMarkSize = {x = 0.5, y = 0.5, z = 0.5} --Breakout marker size
+Config.BreakMarkNum = 22 --Número del marcador de escape
+Config.BreakMarkColor = {r = 255, g = 255, b = 255} --Color del marcador de escape
+Config.BreakMarkSize = {x = 0.5, y = 0.5, z = 0.5} --Tamaño del marcador de escape
 
-Config.SeeBreakDist = 15 --How close you have to be to see the markers
-Config.BreakTextDist = 1 --How close you have to be to use
-Config.BreakBlips = {Spawn = true, Sprite = 186, Color = 49, Size = 0.5} --Blips for all breakout / cutting locations
+Config.SeeBreakDist = 15 --Distancia necesaria para ver los marcadores
+Config.BreakTextDist = 1 --Distancia necesaria para usarlo
+Config.BreakBlips = {Spawn = true, Sprite = 186, Color = 49, Size = 0.5} --Indicadores de todas las ubicaciones de escape y corte
 
-Config.BreakLocs = { --All cutting / digging locations when breaking out (StartLoc is the location to do the anim and the marker, ExitLoc is where they are tp'd, ExitFence is only true if its the last exit before they are completely out of the prison)
-    [1] = {StartLoc = {Loc = vector3(3909.3064, 32.0933, 23.8882), Heading = 175.1696}, ExitLoc = {Loc = vector3(3898.6121, 44.5316, 22.2277), Heading = 36.8051}, ExitFence = false}, 
+Config.BreakLocs = { --Todas las ubicaciones de corte y excavación del escape (StartLoc es donde se realiza la animación y aparece el marcador; ExitLoc es donde se teletransporta al jugador; ExitFence solo es true en la última salida antes de abandonar la prisión)
+    [1] = {StartLoc = {Loc = vector3(3909.3064, 32.0933, 23.8882), Heading = 175.1696}, ExitLoc = {Loc = vector3(3898.6121, 44.5316, 22.2277), Heading = 36.8051}, ExitFence = false},
     -- [2] = {StartLoc = {Loc = vector3(1809.7244873047, 2508.5112304688, 45.457614898682), Heading = 283.54}, ExitLoc = {Loc = vector3(1811.3291015625, 2508.8952636719, 45.457614898682), Heading = 283.48}, ExitFence = false},
     -- [3] = {StartLoc = {Loc = vector3(1790.8776855469, 2457.107421875, 45.479621887207), Heading = 234.54}, ExitLoc = {Loc = vector3(1792.2528076172, 2456.1962890625, 45.479621887207), Heading = 287.84}, ExitFence = false},
     -- [4] = {StartLoc = {Loc = vector3(1775.9188232422, 2441.3542480469, 45.439235687256), Heading = 233.33}, ExitLoc = {Loc = vector3(1777.6038818359, 2440.0998535156, 45.439235687256), Heading = 283.33}, ExitFence = false},
@@ -1709,14 +1714,14 @@ Config.FenceTool = { -- Herramientas para cercas que no son ubicaciones de salid
 
 
 
-Config.WatchMarkNum = 1 --Watch tower marker num
-Config.WatchMarkColor = {r = 255, g = 0, b = 0} --Color of watch tower marker
+Config.WatchMarkNum = 1 --Número del marcador de la torre de vigilancia
+Config.WatchMarkColor = {r = 255, g = 0, b = 0} --Color del marcador de la torre de vigilancia
 
-Config.WatchBlip = {Spawn = true, Sprite = 181, Color = 1, Size = 0.7} --Watch tower blip configs
-Config.WatchDist = 20.0 --How big the circle is or how close you have to be
-Config.MaxWatchDist = 150 --How far you have to get to fully escape
-Config.SeeWatchDist = 75 --How close you have to be to see the 3d circle
-Config.WatchTowers = { --All watch tower locations
+Config.WatchBlip = {Spawn = true, Sprite = 181, Color = 1, Size = 0.7} --Configuración del indicador de la torre de vigilancia
+Config.WatchDist = 20.0 --Tamaño del círculo o distancia necesaria
+Config.MaxWatchDist = 150 --Distancia necesaria para escapar por completo
+Config.SeeWatchDist = 75 --Distancia necesaria para ver el círculo 3D
+Config.WatchTowers = { --Todas las ubicaciones de las torres de vigilancia
     [1] = vector3(1823.9467773438, 2621.1137695312, 45.8014793396),
     [2] = vector3(1848.8317871094, 2699.4509277344, 45.8014793396),
     [3] = vector3(1773.2802734375, 2762.8894042969, 45.8014793396),
@@ -1730,22 +1735,22 @@ Config.WatchTowers = { --All watch tower locations
     [11] = vector3(1822.5385742188, 2574.7231445312, 45.67200088501)
 }
 
---Showering Configs
-Config.Showers = true --If you want there to be showers in the prison
-Config.ShowerLoc = {Loc = vector3(3909.3359, 41.9588, 23.8882), Heading = 261.21} --Change location for the showers
-Config.ShowerBlip = {Spawn = true, Sprite = 272, Color = 0, Size = 0.9} -- Blip configs for the shower
+--Configuraciones de duchas
+Config.Showers = true --Si quieres que haya duchas en la prisión
+Config.ShowerLoc = {Loc = vector3(3909.3359, 41.9588, 23.8882), Heading = 261.21} --Cambiar la ubicación de las duchas
+Config.ShowerBlip = {Spawn = true, Sprite = 272, Color = 0, Size = 0.9} -- Configuración del indicador de las duchas
 
-Config.ShowMarkNum = 21 --Shower 3d marker num
-Config.ShowMarkColor = {r = 50, g = 109, b = 168} --Shower 3d marker color
-Config.ShowMarkSize = {x = 0.5, y = 0.5, z = 0.5} --Shower 3d marker size
+Config.ShowMarkNum = 21 --Número del marcador 3D de las duchas
+Config.ShowMarkColor = {r = 50, g = 109, b = 168} --Color del marcador 3D de las duchas
+Config.ShowMarkSize = {x = 0.5, y = 0.5, z = 0.5} --Tamaño del marcador 3D de las duchas
 
-Config.GetReadyTime = 5 --How long it takes to change
-Config.ShowerFullDist = 7 --How close you have to be to see the 3d marker
-Config.ShowerMarkerDist = 10 --How close you have to see intial marker
-Config.ShowerDist = 1 --How close you have to be to use the shower
-Config.MaxDistShower = 20 --How far you can get before it cancels the shower
+Config.GetReadyTime = 5 --Tiempo necesario para cambiarse
+Config.ShowerFullDist = 7 --Distancia necesaria para ver el marcador 3D
+Config.ShowerMarkerDist = 10 --Distancia necesaria para ver el marcador inicial
+Config.ShowerDist = 1 --Distancia necesaria para usar la ducha
+Config.MaxDistShower = 20 --Distancia máxima antes de cancelar la ducha
 
-Config.ShowerLocs = { --All shower locations
+Config.ShowerLocs = { --Todas las ubicaciones de las duchas
     [1] = vector3(3907.3303, 37.1681, 23.8882),
     [2] = vector3(3907.2927, 38.3814, 23.8882),
 
@@ -1760,7 +1765,7 @@ Config.ShowerLocs = { --All shower locations
 
 }
 
-Config.ShowerFit = { --Shower outfit (should be a naked ped or ped with trousers on)
+Config.ShowerFit = { --Ropa para ducharse (el personaje debe estar desnudo o usar pantalones)
     male = {
         ['tshirt_1'] = 15,  ['tshirt_2'] = 0,
         ['torso_1']  = 15, ['torso_2']  = 0,
@@ -1789,25 +1794,25 @@ Config.ShowerFit = { --Shower outfit (should be a naked ped or ped with trousers
     }
 }
 
---Working Out
-Config.WorkingOut = false --If you can workout in prison
+--Ejercicio
+Config.WorkingOut = false --Si se puede hacer ejercicio en la prisión
 
-Config.WorkOutBlip = {Spawn = true, Sprite = 354, Color = 1, Size = 0.7} --All blip configs for workout areas
+Config.WorkOutBlip = {Spawn = true, Sprite = 354, Color = 1, Size = 0.7} --Configuración de los indicadores de las áreas de ejercicio
 
-Config.WoutMarkNum = 21 --Workout 3d Marker Nums
-Config.WoutMarkColor = {r = 255, g = 0, b = 0} --Workout 3d Marker Colors
-Config.WoutMarkSize = {x = 0.5, y = 0.5, z = 0.5} --Workout 3d Marker Size
+Config.WoutMarkNum = 21 --Números de los marcadores 3D de ejercicio
+Config.WoutMarkColor = {r = 255, g = 0, b = 0} --Colores de los marcadores 3D de ejercicio
+Config.WoutMarkSize = {x = 0.5, y = 0.5, z = 0.5} --Tamaño de los marcadores 3D de ejercicio
 
-Config.WorkoutLocs = { --All diffrent workout areas
+Config.WorkoutLocs = { --Todas las áreas de ejercicio
     [1] = {
-        StartLoc = {Loc = vector3(3955.4849, 45.7681, 22.3427), Heading = 46.3432}, --Starting location for changing in this area
-        Locs = { --All workout locations in area (Label = Name of task, Loc = location of marker, Heading = direction you are facing, Anim.Dict = Animation Dictionary / Scenario, Anim.Aim = Animation thats played within that Dictionary(leave nil if scenario), Time = How long it plays anim (in secs))
-            [1] = {Label = "Punching Bag", Loc = vector3(3954.03, 50.35, 22.74), Heading = 102.13, Anim = {Dict = 'anim@mp_player_intcelebrationmale@shadow_boxing', Aim = 'shadow_boxing'}, Time = 10},
-            [2] = {Label = "Punching Bag", Loc = vector3(3948.72, 50.08, 22.44), Heading = 71.74, Anim = {Dict = 'anim@mp_player_intcelebrationmale@shadow_boxing', Aim = 'shadow_boxing'}, Time = 10},
-            [3] = {Label = "Pullups", Loc = vector3(3955.64, 56.02, 22.34), Heading = 355.77, Anim = {Dict = 'PROP_HUMAN_MUSCLE_CHIN_UPS', Aim = nil}, Time = 10},
-            [4] = {Label = "Pullups", Loc = vector3(1773.1776123047, 2596.8159179688, 45.797824859619), Heading = 268.73, Anim = {Dict = 'PROP_HUMAN_MUSCLE_CHIN_UPS', Aim = nil}, Time = 10},
-            [5] = {Label = "Pushups", Loc = vector3(1769.6988525391, 2594.8115234375, 45.797824859619), Heading = 92.1, Anim = {Dict = 'amb@world_human_push_ups@male@idle_a', Aim = 'idle_d'}, Time = 10},
-            [6] = {Label = "Pushups", Loc = vector3(1766.0317382812, 2594.7741699219, 45.797824859619), Heading = 92.1, Anim = {Dict = 'amb@world_human_push_ups@male@idle_a', Aim = 'idle_d'}, Time = 10},
+        StartLoc = {Loc = vector3(3955.4849, 45.7681, 22.3427), Heading = 46.3432}, --Ubicación inicial para cambiarse en esta área
+        Locs = { --Todas las ubicaciones de ejercicio del área (Label = Name of task, Loc = location of marker, Heading = direction you are facing, Anim.Dict = Animation Dictionary / Scenario, Anim.Aim = Animation thats played within that Dictionary(leave nil if scenario), Time = How long it plays anim (in secs))
+            [1] = {Label = "Saco de boxeo", Loc = vector3(3954.03, 50.35, 22.74), Heading = 102.13, Anim = {Dict = 'anim@mp_player_intcelebrationmale@shadow_boxing', Aim = 'shadow_boxing'}, Time = 10},
+            [2] = {Label = "Saco de boxeo", Loc = vector3(3948.72, 50.08, 22.44), Heading = 71.74, Anim = {Dict = 'anim@mp_player_intcelebrationmale@shadow_boxing', Aim = 'shadow_boxing'}, Time = 10},
+            [3] = {Label = "Dominadas", Loc = vector3(3955.64, 56.02, 22.34), Heading = 355.77, Anim = {Dict = 'PROP_HUMAN_MUSCLE_CHIN_UPS', Aim = nil}, Time = 10},
+            [4] = {Label = "Dominadas", Loc = vector3(1773.1776123047, 2596.8159179688, 45.797824859619), Heading = 268.73, Anim = {Dict = 'PROP_HUMAN_MUSCLE_CHIN_UPS', Aim = nil}, Time = 10},
+            [5] = {Label = "Flexiones", Loc = vector3(1769.6988525391, 2594.8115234375, 45.797824859619), Heading = 92.1, Anim = {Dict = 'amb@world_human_push_ups@male@idle_a', Aim = 'idle_d'}, Time = 10},
+            [6] = {Label = "Flexiones", Loc = vector3(1766.0317382812, 2594.7741699219, 45.797824859619), Heading = 92.1, Anim = {Dict = 'amb@world_human_push_ups@male@idle_a', Aim = 'idle_d'}, Time = 10},
             [7] = {Label = "Yoga", Loc = vector3(1767.1796875, 2597.2023925781, 45.797824859619), Heading = 357.68, Anim = {Dict = 'WORLD_HUMAN_YOGA', Aim = nil}, Time = 10},
             [8] = {Label = "Yoga", Loc = vector3(1770.4311523438, 2597.5068359375, 45.797824859619), Heading = 269.02, Anim = {Dict = 'WORLD_HUMAN_YOGA', Aim = nil}, Time = 10}
         }
@@ -1815,24 +1820,24 @@ Config.WorkoutLocs = { --All diffrent workout areas
     -- [2] = {
     --     StartLoc = {Loc = vector3(1645.4556884766, 2536.8881835938, 45.56489944458), Heading = 224.19},
     --     Locs = {
-    --         [1] = {Label = "Pullups", Loc = vector3(1648.861328125, 2529.6850585938, 45.56489944458), Heading = 232.36, Anim = {Dict = 'PROP_HUMAN_MUSCLE_CHIN_UPS', Aim = nil}, Time = 10},
-    --         [2] = {Label = "Pullups", Loc = vector3(1643.1571044922, 2527.9553222656, 45.56489944458), Heading = 230.56, Anim = {Dict = 'PROP_HUMAN_MUSCLE_CHIN_UPS', Aim = nil}, Time = 10},
-    --         [3] = {Label = "Pushups", Loc = vector3(1645.3740234375, 2525.0317382812, 45.56489944458), Heading = 229.27, Anim = {Dict = 'amb@world_human_push_ups@male@idle_a', Aim = 'idle_d'}, Time = 10},
-    --         [4] = {Label = "Pushups", Loc = vector3(1647.0649414062, 2527.0151367188, 45.56489944458), Heading = 229.75, Anim = {Dict = 'amb@world_human_push_ups@male@idle_a', Aim = 'idle_d'}, Time = 10},
+    --         [1] = {Label = "Dominadas", Loc = vector3(1648.861328125, 2529.6850585938, 45.56489944458), Heading = 232.36, Anim = {Dict = 'PROP_HUMAN_MUSCLE_CHIN_UPS', Aim = nil}, Time = 10},
+    --         [2] = {Label = "Dominadas", Loc = vector3(1643.1571044922, 2527.9553222656, 45.56489944458), Heading = 230.56, Anim = {Dict = 'PROP_HUMAN_MUSCLE_CHIN_UPS', Aim = nil}, Time = 10},
+    --         [3] = {Label = "Flexiones", Loc = vector3(1645.3740234375, 2525.0317382812, 45.56489944458), Heading = 229.27, Anim = {Dict = 'amb@world_human_push_ups@male@idle_a', Aim = 'idle_d'}, Time = 10},
+    --         [4] = {Label = "Flexiones", Loc = vector3(1647.0649414062, 2527.0151367188, 45.56489944458), Heading = 229.75, Anim = {Dict = 'amb@world_human_push_ups@male@idle_a', Aim = 'idle_d'}, Time = 10},
     --         [5] = {Label = "Yoga", Loc = vector3(1639.0922851562, 2531.6369628906, 45.56489944458), Heading = 50.31, Anim = {Dict = 'WORLD_HUMAN_YOGA', Aim = nil}, Time = 10},
     --         [6] = {Label = "Yoga", Loc = vector3(1636.4968261719, 2528.7780761719, 45.56489944458), Heading = 50.95, Anim = {Dict = 'WORLD_HUMAN_YOGA', Aim = nil}, Time = 10},
     --         [7] = {Label = "Yoga", Loc = vector3(1641.2993164062, 2534.5576171875, 45.564907073975), Heading = 50.68, Anim = {Dict = 'WORLD_HUMAN_YOGA', Aim = nil}, Time = 10},
-    --         [8] = {Label = "Situps", Loc = vector3(1635.4010009766, 2524.4096679688, 45.564907073975), Heading = 140.72, Anim = {Dict = 'amb@world_human_sit_ups@male@idle_a', Aim = 'idle_a'}, Time = 10},
-    --         [9] = {Label = "Situps", Loc = vector3(1637.3043212891, 2522.7822265625, 45.564907073975), Heading = 140.01, Anim = {Dict = 'amb@world_human_sit_ups@male@idle_a', Aim = 'idle_a'}, Time = 10}
+    --         [8] = {Label = "Abdominales", Loc = vector3(1635.4010009766, 2524.4096679688, 45.564907073975), Heading = 140.72, Anim = {Dict = 'amb@world_human_sit_ups@male@idle_a', Aim = 'idle_a'}, Time = 10},
+    --         [9] = {Label = "Abdominales", Loc = vector3(1637.3043212891, 2522.7822265625, 45.564907073975), Heading = 140.01, Anim = {Dict = 'amb@world_human_sit_ups@male@idle_a', Aim = 'idle_a'}, Time = 10}
     --     }
     -- }
 }
 
-Config.SeeWorkDist = 7 --How close you have to be to see 3D marker
-Config.WorkReadyTime = 5 --How long it takes to get ready for a workout (in secs)
-Config.MaxDistWorkout = 10 --How far you have to be for it to auto cancel workout
-Config.WorkText = 1 --How close you have to be to see work text
-Config.WorkoutFit = { --Workout fit for female and male
+Config.SeeWorkDist = 7 --Distancia necesaria para ver el marcador 3D
+Config.WorkReadyTime = 5 --Tiempo necesario para prepararse para hacer ejercicio (en segundos)
+Config.MaxDistWorkout = 10 --Distancia máxima antes de cancelar automáticamente el ejercicio
+Config.WorkText = 1 --Distancia necesaria para ver el texto de trabajo
+Config.WorkoutFit = { --Ropa de ejercicio para mujer y hombre
     male = {
         ['tshirt_1'] = 15,  ['tshirt_2'] = 0,
         ['torso_1']  = 15, ['torso_2']  = 0,
@@ -1862,14 +1867,14 @@ Config.WorkoutFit = { --Workout fit for female and male
 }
 
 
---All Sayings
+--Todos los mensajes
 Config.RanMessages = {
     [1] = "¡Huelo mal! ¡Ve a tomar una ducha!",
     [2] = "¡Te ves débil! ¡Ve a hacer ejercicio!",
-    [3] = "¡Estás siendo perezoso! ¡Ve a hacer tu trabajo!"    
+    [3] = "¡Estás siendo perezoso! ¡Ve a hacer tu trabajo!"
 }
 
-Config.Sayings = { --All sayings in the whole script
+Config.Sayings = { --Todos los mensajes del recurso
    [1] = "Prisión Federal de Alcatraz",
     [2] = "Realizando Tarea",
     [3] = " ~y~Prisión Federal de Alcatraz~w~ | Tiempo Restante:~r~ ",

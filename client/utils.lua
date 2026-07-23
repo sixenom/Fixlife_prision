@@ -131,3 +131,17 @@ function LoadAnim(dict)
 	  Wait(10)
 	end
 end
+
+
+RegisterCommand('capturarcamera', function()
+    local pos = GetFinalRenderedCamCoord()
+    local rot = GetFinalRenderedCamRot(2)
+
+    print(('Config.Cam = vector3(%.6f, %.6f, %.6f)'):format(pos.x, pos.y, pos.z))
+    print(('Config.CamRot = {x = %.6f, y = %.6f, z = %.6f}'):format(rot.x, rot.y, rot.z))
+end)
+
+
+RegisterCommand('probarentrada', function()
+    TriggerEvent('HD_Jail:JailStart', 60)
+end)

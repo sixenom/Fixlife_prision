@@ -4,13 +4,16 @@ AddEventHandler('HD_Jail:JailStart', function(timez)
 	local ped = PlayerPedId()
 	Citizen.CreateThread(function()
 		TriggerEvent('aty_hud_v2:ocultarhuds')
+		exports['Fixlife_hud']:setCinematicMode(true)
 		DoScreenFadeOut(1000)
 		RequestAnimDict('mp_character_creation@customise@male_a')
 		Citizen.Wait(3000)
 		
-		SetEntityCoords(ped, Config.HandCuffLoc.x, Config.HandCuffLoc.y, Config.HandCuffLoc.z - 1, false, false, false, false)
+		SetEntityCoords(ped, Config.HandCuffLoc.Loc.x, Config.HandCuffLoc.Loc.y, Config.HandCuffLoc.Loc.z - 1, false, false, false, false)
+		SetEntityHeading(ped, Config.HandCuffLoc.Heading)
 		Citizen.Wait(500)
-		SetEntityCoords(ped, Config.HandCuffLoc.x, Config.HandCuffLoc.y, Config.HandCuffLoc.z - 1, false, false, false, false)
+		SetEntityCoords(ped, Config.HandCuffLoc.Loc.x, Config.HandCuffLoc.Loc.y, Config.HandCuffLoc.Loc.z - 1, false, false, false, false)
+		SetEntityHeading(ped, Config.HandCuffLoc.Heading)
 		RequestModel(Config.GuardPed)
 		RequestModel(Config.ClothesProp)
 		RequestAnimDict('mp_arresting')
@@ -79,6 +82,8 @@ AddEventHandler('HD_Jail:JailStart', function(timez)
 			Citizen.Wait(0)
 		end
 
+		TaskGoStraightToCoord(byped, Config.PreComputerLoc.Loc.x, Config.PreComputerLoc.Loc.y, Config.PreComputerLoc.Loc.z, 1.0, 2000, Config.PreComputerLoc.Heading, 0)
+		Citizen.Wait(2000)
 		TaskGoStraightToCoord(byped, Config.StopnLook.Loc.x, Config.StopnLook.Loc.y, Config.StopnLook.Loc.z, 1.0, 1500, Config.StopnLook2, 0)
 
 		RequestAnimDict('mp_prison_break')
@@ -299,9 +304,28 @@ AddEventHandler('HD_Jail:JailStart', function(timez)
 		end
 		DoScreenFadeOut(1000)
 		Citizen.Wait(1000)
+		if Config.TestSceneOnly then
+			exports['Fixlife_hud']:setCinematicMode(false)
+			CloseSecurityCamera()
+			ClearPedTasksImmediately(ped)
+			SetEnableHandcuffs(ped, false)
+			DisablePlayerFiring(ped, false)
+			SetPedCanPlayGestureAnims(ped, true)
+			FreezeEntityPosition(ped, false)
+			DoScreenFadeIn(500)
+			TriggerEvent('aty_hud_v2:mostrarhuds')
+			Config.TestSceneOnly = false
+			return
+		end
+		exports['Fixlife_hud']:setCinematicMode(false)
 		LoadJailCell(timez, true)
 	end)
 
+end)
+
+RegisterCommand('probarentrada', function()
+	Config.TestSceneOnly = true
+	TriggerEvent('HD_Jail:JailStart', 60)
 end)
 
 
