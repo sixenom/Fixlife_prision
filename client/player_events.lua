@@ -209,7 +209,7 @@ end)
 
 RegisterNetEvent('HD_Jail:CountWarn')
 AddEventHandler('HD_Jail:CountWarn', function(time)
-	if QBX.PlayerData.job.name == 'prisoner' or QBX.PlayerData.job.name == 'police'  then
+	if QBX.PlayerData.job.name == 'prisoner' then
 		if time > 0 then
 			Notification(time..Config.Sayings[149])
 		end

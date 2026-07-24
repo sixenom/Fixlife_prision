@@ -45,7 +45,8 @@ end)
 
 RegisterServerEvent('HD_Jail:RetrieveItems')
 AddEventHandler('HD_Jail:RetrieveItems', function(itoms)
-    local xPlayer = Qbox.GetPlayer(source)
+    local src = source
+    local xPlayer = Qbox.GetPlayer(src)
     if not xPlayer then return end
 
     JailStorage.Get(xPlayer.identifier, function(newData)
@@ -53,12 +54,12 @@ AddEventHandler('HD_Jail:RetrieveItems', function(itoms)
 
         local remaining = {}
         for _, item in ipairs(newData.items or {}) do
-            local amount = math.floor(tonumber(item.Amt) or 0)
+            local amount = math.floor(tonumber(item.Amt or item.amount or item.amt) or 0)
             if type(item.item) == 'string' and amount > 0 then
-                if xPlayer.canCarryItem(item.item, amount) then
-                    xPlayer.addInventoryItem(item.item, amount)
-                else
+                local success, response = exports.ox_inventory:AddItem(src, item.item, amount, item.metadata)
+                if not success then
                     remaining[#remaining + 1] = item
+                    print(('[Fixlife_prision] No se pudo devolver %sx %s al jugador %s: %s'):format(amount, item.item, src, response or 'sin respuesta'))
                 end
             end
         end

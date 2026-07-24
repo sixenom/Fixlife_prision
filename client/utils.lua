@@ -505,17 +505,18 @@ function StartFoodIntro(duration, customCenter, customDirection, customRadius, c
 end
 
 function Notification(text)
-	if Config.Notifications == 'esx' then
-		-- ESX.ShowNotification(text)
-		TriggerEvent('Fix_systems:notificacioneslibfix', 'PRISION', text, 5000,  'handcuffs',  '#ff00ff', 'bottom')
-	elseif Config.Notifications == 'tnotify' then
-		exports['t-notify']:Alert({
-			style = 'message', 
-			message = text
-		})
-	elseif Config.Notifications == 'mythic' then
-		exports['mythic_notify']:DoHudText('inform', text)
-	end
+    exports.qbx_core:Notify(Config.Sayings[1], nil, 5000, text, "center-left", nil, "fa-solid fa-handcuffs", "#ffffff")
+	-- if Config.Notifications == 'esx' then
+	-- 	-- ESX.ShowNotification(text)
+	-- 	TriggerEvent('Fix_systems:notificacioneslibfix', 'PRISION', text, 5000,  'handcuffs',  '#ff00ff', 'bottom')
+	-- elseif Config.Notifications == 'tnotify' then
+	-- 	exports['t-notify']:Alert({
+	-- 		style = 'message', 
+	-- 		message = text
+	-- 	})
+	-- elseif Config.Notifications == 'mythic' then
+	-- 	exports['mythic_notify']:DoHudText('inform', text)
+	-- end
 end
 
 function LoadAnim(dict)

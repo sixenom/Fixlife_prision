@@ -40,10 +40,6 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                     clothie = newData.clothes
                     newData.clothes = {}
                     itemzz = newData.items
-                    newData.items = {}
-                    data = json.encode(newData)
-                    TriggerClientEvent('HD_Jail:UnnJail', id, itemzz, clothie)
-    
                     if Log.UnJail then
                         local this = {
                             {
@@ -65,7 +61,9 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                         sendToDiscord(this, 16515843, "Un-Jailing Player")
                     end
     
-                    JailStorage.Save(xPlayer.identifier, newData)
+                    JailStorage.Save(xPlayer.identifier, newData, function()
+                        TriggerClientEvent('HD_Jail:UnnJail', id, itemzz, clothie)
+                    end)
                 end)
             else
                 JailStorage.Get(xPlayer.identifier, function(newData)
@@ -124,10 +122,6 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                         clothie = newData.clothes
                         newData.clothes = {}
                         itemzz = newData.items
-                        newData.items = {}
-                        data = json.encode(newData)
-                        TriggerClientEvent('HD_Jail:UnnJail', id, itemzz, clothie)
-        
                         if Log.UnJail then
                             local this = {
                                 {
@@ -149,7 +143,9 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                             sendToDiscord(this, 16515843, "Un-Jailing Player")
                         end
         
-                        JailStorage.Save(xPlayer.identifier, newData)
+                        JailStorage.Save(xPlayer.identifier, newData, function()
+                            TriggerClientEvent('HD_Jail:UnnJail', id, itemzz, clothie)
+                        end)
                     end)
                 else
                     JailStorage.Get(xPlayer.identifier, function(newData)

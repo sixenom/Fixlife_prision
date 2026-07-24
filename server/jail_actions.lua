@@ -29,15 +29,11 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                         print(('[Fixlife_prision] No se encontrÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³ hdjail_data para citizenid %s (source %s)'):format(tostring(xPlayer.identifier), tostring(id)))
                     end
                     xPlayer.setJob('prisoner', 0)
-                    local itemz = xPlayer.inventory
-                    local inventory = nil
+                    local itemz = exports.ox_inventory:GetInventoryItems(id) or {}
                     local keep = {}
-                    inventory = {itemz = itemz}
-                    for i=1, #inventory.itemz, 1 do
-                        local item = inventory.itemz[i]
+                    for _, item in pairs(itemz) do
             
-                        if item.count > 0 then
-                            local item = inventory.itemz[i]
+                        if item and item.count > 0 then
                             local bad2 = false
                             for j=1, #Config.DontGiveBackItems, 1 do
                                 if item.name == Config.DontGiveBackItems[j] then
@@ -46,15 +42,13 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                             end
 
                             if not bad2 then
-                                table.insert(keep, {item = item.name, Amt = item.count})
+                                table.insert(keep, {item = item.name, Amt = item.count, metadata = item.metadata})
                             end
                         end
                     end
-                    for i=1, #inventory.itemz, 1 do
-                        local item = inventory.itemz[i]
+                    for _, item in pairs(itemz) do
             
-                        if item.count > 0 then
-                            local item = inventory.itemz[i]
+                        if item and item.count > 0 then
 
                             local keepo = false
                             for j=1, #Config.DontTakeItemsUponEntry, 1 do
@@ -63,7 +57,7 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                                 end
                             end
                             if not keepo then
-                                xPlayer.removeInventoryItem(item.name, item.count)
+                                exports.ox_inventory:RemoveItem(id, item.name, item.count)
                             end
                         end
                     end

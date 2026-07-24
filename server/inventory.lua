@@ -94,7 +94,7 @@ RegisterServerEvent('HD_Jail:RemoveItem')
 AddEventHandler('HD_Jail:RemoveItem', function(items, amti, namo, idie)
     local xPlayer = Qbox.GetPlayer(source)
     amti = math.floor(tonumber(amti) or 0)
-    if not xPlayer or amti <= 0 then return end
+    if not xPlayer or type(items) ~= 'string' or amti <= 0 or not xPlayer.canCarryItem(items, amti) then return end
 
     JailStorage.Get(xPlayer.identifier, function(newData)
         local removie = {}
@@ -162,7 +162,7 @@ AddEventHandler('HD_Jail:RemoveItem2', function(items, amti, namo, idie)
     local xPlayer = Qbox.GetPlayer(source)
     local xTarget = Qbox.GetPlayer(idie)
     amti = math.floor(tonumber(amti) or 0)
-    if not Config.PoliceCanSearchInv or not CheckUser(source, 'jail') or not xPlayer or not xTarget or amti <= 0 then return end
+    if not Config.PoliceCanSearchInv or not CheckUser(source, 'jail') or not xPlayer or not xTarget or type(items) ~= 'string' or amti <= 0 or not xPlayer.canCarryItem(items, amti) then return end
 
     JailStorage.Get(xTarget.identifier, function(newData)
         local removie = {}
@@ -195,7 +195,7 @@ AddEventHandler('HD_Jail:AddItem', function(items, amti, namo, idie)
 
     amti = math.floor(tonumber(amti) or 0)
     local owned = xPlayer and xPlayer.getInventoryItem(items).count or 0
-    if amti <= 0 or amti > owned then return end
+    if type(items) ~= 'string' or amti <= 0 or amti > owned then return end
 
     JailStorage.Get(xPlayer.identifier, function(newData)
         for i=1, #newData.chest, 1 do
