@@ -1,5 +1,5 @@
 Citizen.CreateThread(function()
-	while QBX.PlayerData.job == nil do
+	while not QBX or not QBX.PlayerData or not QBX.PlayerData.job do
 		Citizen.Wait(10)
 	end
 end)
@@ -71,7 +71,7 @@ Citizen.CreateThread(function()
 		AddTextComponentString(Config.Sayings[160])
 		EndTextCommandSetBlipName(blip2)
 		SetBlipAsShortRange(blip2, true)
-		if Config.UsingHDBlips then
+		if Config.UsingHDBlips and GetResourceState('HD_Blips') == 'started' then
 			exports['HD_Blips']:addBlip('Prison', 'emergency', 'prison', {name = "Name_Of_Blip", coords = Config.JailLoc, sprite = Config.JailBlip.Sprite, color = Config.JailBlip.Color, size = Config.JailBlip.Size, short = true, pulse = false}, blip2, GetCurrentResourceName())
 		end
 	end

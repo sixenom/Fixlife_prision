@@ -42,6 +42,7 @@ dependencies {
     'qbx_core',
     'ox_inventory',
     'oxmysql',
+    'ox_target',
     'illenium-appearance',
 }
 
