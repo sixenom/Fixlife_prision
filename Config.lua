@@ -103,9 +103,9 @@ Config.PrisonIntroBlend = 1200
 Config.PrisonIntroBank = 6.0
 Config.PrisonIntroBob = 0.12
 Config.PrisonIntroPath = {
-    {Mode = 'Orbit', From = vector3(3720.70044, 32.40902, 53.0), To = vector3(3810.63916, -72.59, 53.0), Center = vector3(3810.63916, 32.40902, 14.8724775), Direction = 1},
-    {Mode = 'Linear', From = vector3(3810.63916, -72.59, 53.0), To = vector3(4065.01123, -72.59, 53.0), FixedRotation = {x = -18.0, y = 0.0, z = 0.0}},
-    {Mode = 'Orbit', From = vector3(4065.01123, -72.59, 53.0), To = vector3(4162.24072, 28.1750088, 53.0), Center = vector3(4065.01123, 28.1750088, 17.7991829), Direction = 1}
+    {Mode = 'Orbit', From = vector3(4162.24072, 28.1750088, 53.0), To = vector3(4065.01123, -72.59, 53.0), Center = vector3(4065.01123, 28.1750088, 17.7991829), Direction = -1},
+    {Mode = 'Linear', From = vector3(4065.01123, -72.59, 53.0), To = vector3(3810.63916, -72.59, 53.0), FixedRotation = {x = -18.0, y = 0.0, z = 0.0}},
+    {Mode = 'Orbit', From = vector3(3810.63916, -72.59, 53.0), To = vector3(3720.70044, 32.40902, 53.0), Center = vector3(3810.63916, 32.40902, 14.8724775), Direction = -1}
 }
 
 Config.JobCam = vector3(3915.46, 24.37, 23.89) --Posición de la vista de la cámara
@@ -199,12 +199,12 @@ Config.DontGiveBackItems = { -- Estos son todos los objetos que no se devolverá
 Config.AlertServerUponJail = true -- Si se envía un mensaje en el chat cuando alguien es encarcelado
 
 -- Configuraciones de Salida
-Config.LeaveLoc = {Loc = vector3(1830.3531494141, 2585.8728027344, 45.954323913574), Heading = 266.75} -- Ubicación de salida con orientación
+Config.LeaveLoc = {Loc = vector3(1829.1700, 2599.7073, 45.5638), Heading = 4.0136} -- Ubicación de salida con orientación
 
 Config.LMarkNum = 22 -- Número del marcador para recoger objetos
 Config.LMarkColor = {r = 235, g = 116, b = 52} -- Color del marcador para recoger objetos
 Config.LMarkSize = {x = 0.5, y = 0.5, z = 0.3} -- Tamaño del marcador para recoger objetos
-Config.ItemLoc = {Loc = vector3(1832.1635742188, 2584.6281738281, 45.952304840088), Heading = 185.68} -- Ubicación de dónde recoger objetos
+Config.ItemLoc = {Loc = vector3(1829.0867, 2602.6274, 45.8891), Heading = 359.1612} -- Ubicación de dónde recoger objetos
 Config.ItemBlip = {Spawn = true, Sprite = 475, Color = 1, Size = 0.7} -- Indicador (blip) para recoger objetos
 Config.ShowItemDist = 7 -- Distancia para mostrar el marcador 3D
 Config.ItemTextDist = 1 -- Distancia para mostrar el texto 3D sobre el marcador
@@ -2068,3 +2068,39 @@ Config.Sayings = { --Todos los mensajes del recurso
 Config.JobIntroCam1 = vector3(3916.00928, 26.9864845, 25.4628868)
 Config.JobIntroCam2 = vector3(3915.631, 22.7850742, 23.87154)
 Config.JobIntroCamHeading = 173.9453
+
+
+Config.FoodIntroCenter = vector3(3926.05786, 30.2985, 24.194)
+Config.FoodIntroRadius = 0.1
+Config.FoodIntroAngle = 45.0
+Config.FoodIntroDirection = 1
+
+
+Config.SolIntroCam1 = vector3(3884.96, 27.3138256, 33.2573948)
+Config.SolIntroCam2 = vector3(3901.6377, 25.8523674, 28.6279068)
+Config.SolIntroCamHeading = 262.7419
+
+Config.ShowerIntroCenter = vector3(3907.371, 39.12199, 23.887785)
+Config.ShowerIntroRadius = 3.0
+Config.ShowerIntroAngle = 90.0
+Config.ShowerIntroDirection = -1
+Config.ShowerIntroStartAngle = 40.0
+
+Config.ItemIntroCam1 = vector3(3865.28223, -19.403944, 7.0)
+Config.ItemIntroCam2 = vector3(3870.54, -23.69, 8.39)
+Config.ItemIntroHeading1 = 4.6474
+Config.ItemIntroHeading2 = 43.1045
+
+
+Config.FinalHeliStart = vector3(3711.5129, 31.0118, 44.5234)
+Config.FinalHeliStartHeading = 273.8299
+Config.FinalHeliLanding = vector3(3810.4983, 31.9246, 20.1497)
+Config.FinalHeliLandingHeading = 270.2020
+Config.FinalOrbitCenter = vector3(3810.63916, 32.40902, 14.8724775)
+Config.FinalOrbitRadius = 15.0
+Config.FinalOrbitHeight = 20.0
+Config.FinalOrbitAngle = 45.0
+Config.FinalOrbitDirection = -1
+Config.FinalHeliDuration = 8
+Config.FinalHeliTouchdownZ = 18.5
+Config.FinalHeliDescentDuration = 4

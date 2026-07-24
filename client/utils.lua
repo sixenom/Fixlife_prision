@@ -1,7 +1,7 @@
 local activePrisonHeli
 local activePrisonPilot
 
-function StartPrisonIntro()
+function StartPrisonIntro(extraTime)
     if createdCamera ~= 0 then
         DestroyCam(createdCamera, 0)
     end
@@ -19,6 +19,7 @@ function StartPrisonIntro()
         }
     end
     local totalDistance = 0.0
+    local introDuration = (Config.PrisonIntroDuration * 1000) + (extraTime or 0)
     for _, segment in ipairs(path) do
         totalDistance = totalDistance + #(segment.To - segment.From)
     end
@@ -50,7 +51,7 @@ function StartPrisonIntro()
             end
 
             local distance = #(segment.To - segment.From)
-            local duration = Config.PrisonIntroDuration * 1000 * distance / totalDistance
+            local duration = introDuration * distance / totalDistance
             local started = GetGameTimer()
             local startAngle, angleDelta, startRadius, endRadius
 
@@ -112,7 +113,7 @@ function StartPrisonIntro()
     end)
 end
 
-function StartPrisonHeliTest()
+function StartPrisonHeliTest(extraTime)
     local path = Config.PrisonIntroPath
     local heliModel = 'polmav'
     local pilotModel = 's_m_y_pilot_01'
@@ -134,17 +135,19 @@ function StartPrisonHeliTest()
     SetVehicleDoorsLocked(heli, 2)
     SetEntityInvincible(heli, true)
     SetEntityInvincible(pilot, true)
+    SetEntityHasGravity(heli, false)
     TaskStandStill(pilot, -1)
-    TaskWarpPedIntoVehicle(player, heli, 1)
+    TaskWarpPedIntoVehicle(player, heli, 2)
     SetFollowVehicleCamViewMode(4)
 
     local totalDistance = 0.0
+    local introDuration = (Config.PrisonIntroDuration * 1000) + (extraTime or 0)
     for _, segment in ipairs(path) do
         totalDistance = totalDistance + #(segment.To - segment.From)
     end
 
     for _, segment in ipairs(path) do
-        local duration = Config.PrisonIntroDuration * 1000 * #(segment.To - segment.From) / totalDistance
+        local duration = introDuration * #(segment.To - segment.From) / totalDistance
         local started = GetGameTimer()
         local startAngle, angleDelta, startRadius, endRadius
         if segment.Mode == 'Orbit' then
@@ -181,18 +184,25 @@ function StartPrisonHeliTest()
         end
     end
 
+    local finalPoint = path[#path].To
+    SetEntityCoordsNoOffset(heli, finalPoint.x, finalPoint.y, finalPoint.z, false, false, false)
+    SetEntityVelocity(heli, 0.0, 0.0, 0.0)
+    SetEntityHasGravity(heli, false)
+    FreezeEntityPosition(heli, true)
     SetFollowVehicleCamViewMode(previousView)
 end
 
-function CleanupPrisonHeli(coords)
-    local player = PlayerPedId()
+function CleanupPrisonHeli(coords, movePlayer)
     if not activePrisonHeli or not DoesEntityExist(activePrisonHeli) then return end
 
     SetEntityCoordsNoOffset(activePrisonHeli, coords.x, coords.y, coords.z + 1.0, false, false, false)
-    TaskLeaveVehicle(player, activePrisonHeli, 16)
-    Wait(500)
-    ClearPedTasksImmediately(player)
-    SetEntityCoords(player, coords.x, coords.y, coords.z, false, false, false, false)
+    if movePlayer ~= false then
+        local player = PlayerPedId()
+        TaskLeaveVehicle(player, activePrisonHeli, 16)
+        Wait(500)
+        ClearPedTasksImmediately(player)
+        SetEntityCoords(player, coords.x, coords.y, coords.z, false, false, false, false)
+    end
 
     if activePrisonPilot and DoesEntityExist(activePrisonPilot) then
         DeletePed(activePrisonPilot)
@@ -200,6 +210,124 @@ function CleanupPrisonHeli(coords)
     DeleteVehicle(activePrisonHeli)
     activePrisonPilot = nil
     activePrisonHeli = nil
+end
+
+function ParkPrisonHeli(coords, heliCoords)
+    if not activePrisonHeli or not DoesEntityExist(activePrisonHeli) then return end
+
+    local player = PlayerPedId()
+    SetEntityInvincible(player, true)
+    FreezeEntityPosition(activePrisonHeli, false)
+    SetEntityHasGravity(activePrisonHeli, false)
+    SetEntityCoordsNoOffset(activePrisonHeli, coords.x, coords.y, coords.z + 1.0, false, false, false)
+    SetEntityVelocity(activePrisonHeli, 0.0, 0.0, 0.0)
+    TaskLeaveVehicle(player, activePrisonHeli, 16)
+    Wait(250)
+    ClearPedTasksImmediately(player)
+    SetEntityCoordsNoOffset(player, coords.x, coords.y, coords.z, false, false, false)
+    SetEntityVelocity(player, 0.0, 0.0, 0.0)
+    SetEntityCoordsNoOffset(activePrisonHeli, heliCoords.x, heliCoords.y, heliCoords.z, false, false, false)
+    SetEntityHeading(activePrisonHeli, Config.FinalHeliStartHeading)
+    SetEntityHasGravity(activePrisonHeli, false)
+    SetEntityVelocity(activePrisonHeli, 0.0, 0.0, 0.0)
+    FreezeEntityPosition(activePrisonHeli, true)
+    SetEntityInvincible(player, false)
+end
+
+function StartFinalPrisonHeli()
+    local heliModel = 'polmav'
+    local pilotModel = 's_m_y_pilot_01'
+
+    LoadPropDict(heliModel)
+    LoadPropDict(pilotModel)
+
+    local start = Config.FinalHeliStart
+    local landing = Config.FinalHeliLanding
+    local heli = activePrisonHeli
+    local pilot = activePrisonPilot
+    if not heli or not DoesEntityExist(heli) then
+        heli = CreateVehicle(joaat(heliModel), start.x, start.y, start.z, Config.FinalHeliStartHeading, true, true)
+        pilot = CreatePedInsideVehicle(heli, 4, joaat(pilotModel), -1, true, true)
+        activePrisonHeli = heli
+        activePrisonPilot = pilot
+        SetEntityAsMissionEntity(heli, true, true)
+        SetEntityAsMissionEntity(pilot, true, true)
+    else
+        FreezeEntityPosition(heli, false)
+        SetEntityCoordsNoOffset(heli, start.x, start.y, start.z, false, false, false)
+        SetEntityHeading(heli, Config.FinalHeliStartHeading)
+    end
+    SetVehicleEngineOn(heli, true, true, false)
+    SetHeliBladesFullSpeed(heli)
+    SetVehicleDoorsLocked(heli, 2)
+    SetEntityInvincible(heli, true)
+    SetEntityInvincible(pilot, true)
+    TaskStandStill(pilot, -1)
+    local started = GetGameTimer()
+    while GetGameTimer() - started < Config.FinalHeliDuration * 1000 do
+        DisableAllControlActions(0)
+        EnableControlAction(0, 1, true)
+        EnableControlAction(0, 2, true)
+        local progress = math.min((GetGameTimer() - started) / (Config.FinalHeliDuration * 1000), 1.0)
+        progress = progress * progress * (3.0 - 2.0 * progress)
+        local x = start.x + (landing.x - start.x) * progress
+        local y = start.y + (landing.y - start.y) * progress
+        local z = start.z + (landing.z - start.z) * progress
+        SetEntityHeading(heli, Config.FinalHeliStartHeading + (Config.FinalHeliLandingHeading - Config.FinalHeliStartHeading) * progress)
+        SetEntityCoordsNoOffset(heli, x, y, z, false, false, false)
+        SetEntityVelocity(heli, 0.0, 0.0, 0.0)
+        Wait(0)
+    end
+
+    SetEntityCoordsNoOffset(heli, landing.x, landing.y, landing.z, false, false, false)
+    SetEntityHeading(heli, Config.FinalHeliLandingHeading)
+
+    local descentStarted = GetGameTimer()
+    while GetGameTimer() - descentStarted < Config.FinalHeliDescentDuration * 1000 do
+        local progress = math.min((GetGameTimer() - descentStarted) / (Config.FinalHeliDescentDuration * 1000), 1.0)
+        progress = progress * progress * (3.0 - 2.0 * progress)
+        local z = landing.z + (Config.FinalHeliTouchdownZ - landing.z) * progress
+        SetEntityCoordsNoOffset(heli, landing.x, landing.y, z, false, false, false)
+        SetEntityHeading(heli, Config.FinalHeliLandingHeading)
+        SetEntityVelocity(heli, 0.0, 0.0, 0.0)
+        Wait(0)
+    end
+
+    SetEntityCoordsNoOffset(heli, landing.x, landing.y, Config.FinalHeliTouchdownZ, false, false, false)
+    SetVehicleForwardSpeed(heli, 0.0)
+    SetEntityVelocity(heli, 0.0, 0.0, 0.0)
+    FreezeEntityPosition(heli, true)
+end
+
+function StartFinalOrbit(duration)
+    if createdCamera ~= 0 then
+        DestroyCam(createdCamera, 0)
+    end
+
+    local center = Config.FinalOrbitCenter
+    local radius = Config.FinalOrbitRadius
+    local startAngle = 0.0
+    local endAngle = math.rad(Config.FinalOrbitAngle) * Config.FinalOrbitDirection
+    local cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", 1)
+    createdCamera = cam
+    RenderScriptCams(1, 0, 0, 1, 1)
+
+    local started = GetGameTimer()
+    while GetGameTimer() - started < duration do
+        local progress = math.min((GetGameTimer() - started) / duration, 1.0)
+        local angle = startAngle + endAngle * progress
+        local x = center.x + math.cos(angle) * radius
+        local y = center.y + math.sin(angle) * radius
+        local z = Config.FinalOrbitHeight
+        local rotation = {
+            x = math.deg(math.atan(center.z - z, radius)),
+            y = 0.0,
+            z = math.deg(math.atan(-(center.x - x), center.y - y))
+        }
+        SetCamCoord(cam, x, y, z)
+        SetCamRot(cam, rotation.x, rotation.y, rotation.z, 2)
+        Wait(0)
+    end
 end
 
 function GetClosestPlayer()
@@ -315,13 +443,15 @@ function CloseSecurityCamera()
     FreezeEntityPosition(GetPlayerPed(PlayerId()), false)
 end
 
-function StartJobIntro(duration)
+function StartJobIntro(duration, customFrom, customTo, customHeading, customEndHeading)
     if createdCamera ~= 0 then
         DestroyCam(createdCamera, 0)
     end
 
-    local from = Config.JobIntroCam1
-    local to = Config.JobIntroCam2
+    local from = customFrom or Config.JobIntroCam1
+    local to = customTo or Config.JobIntroCam2
+    local heading = customHeading or Config.JobIntroCamHeading
+    local endHeading = customEndHeading or heading
     local cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", 1)
     createdCamera = cam
     RenderScriptCams(1, 0, 0, 1, 1)
@@ -334,11 +464,44 @@ function StartJobIntro(duration)
             from.y + (to.y - from.y) * progress,
             from.z + (to.z - from.z) * progress
         )
-        SetCamRot(cam, 0.0, 0.0, Config.JobIntroCamHeading, 2)
+        SetCamRot(cam, 0.0, 0.0, heading + (endHeading - heading) * progress, 2)
         Wait(0)
     end
 
     SetCamCoord(cam, to.x, to.y, to.z)
+    SetCamRot(cam, 0.0, 0.0, endHeading, 2)
+end
+
+function StartFoodIntro(duration, customCenter, customDirection, customRadius, customAngle, customStartAngle)
+    if createdCamera ~= 0 then
+        DestroyCam(createdCamera, 0)
+    end
+
+    local center = customCenter or Config.FoodIntroCenter
+    local radius = customRadius or Config.FoodIntroRadius
+    local startAngle = math.rad(customStartAngle or 0.0)
+    local angle = customAngle or Config.FoodIntroAngle
+    local endAngle = startAngle + math.rad(angle) * (customDirection or Config.FoodIntroDirection)
+    local cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", 1)
+    createdCamera = cam
+    RenderScriptCams(1, 0, 0, 1, 1)
+
+    local started = GetGameTimer()
+    while GetGameTimer() - started < duration do
+        local progress = math.min((GetGameTimer() - started) / duration, 1.0)
+        local angle = startAngle + (endAngle - startAngle) * progress
+        local x = center.x + math.cos(angle) * radius
+        local y = center.y + math.sin(angle) * radius
+        local z = center.z
+        local rotation = {
+            x = math.deg(math.atan(center.z - z, radius)),
+            y = 0.0,
+            z = math.deg(math.atan(-(center.x - x), center.y - y))
+        }
+        SetCamCoord(cam, x, y, z)
+        SetCamRot(cam, rotation.x, rotation.y, rotation.z, 2)
+        Wait(0)
+    end
 end
 
 function Notification(text)

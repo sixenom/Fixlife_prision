@@ -10,7 +10,9 @@ AddEventHandler('HD_Jail:ReJail', function(id, values)
     if theS.cell == 0 then
         theS.cell = 1
     end
-    for i = 1, #inJail[theS.cell], 1 do
+    local targetCell = inJail[theS.cell]
+    if not targetCell or not targetCell.Players then return end
+    for i = 1, #targetCell.Players, 1 do
         tots = tots + 1
     end
 
@@ -116,7 +118,7 @@ AddEventHandler('HD_Jail:ReJail', function(id, values)
             TriggerClientEvent('HD_Jail:UpBreaks', id, theS.breaks, false)
         end
     else
-        table.insert(inJail[theS.cell].Players, {Player = ident, Timie = theS.jailtime, ID = id, Sol = theS.soli, Dead = false, Breako = 0})
+        table.insert(targetCell.Players, {Player = ident, Timie = theS.jailtime, ID = id, Sol = theS.soli, Dead = false, Breako = 0})
         if Log.ReJail then
             if not Config.SimpleTime then
                 local this = {
@@ -216,7 +218,8 @@ Citizen.CreateThread(function()
             local cell = inJail[i]
             if cell and cell.Players then
             for k = 1, #cell.Players, 1 do
-                if inJail[i].Players[k].Player ~= nil then
+                local prisoner = cell.Players[k]
+                if prisoner and prisoner.Player ~= nil then
                     if not inJail[i].Players[k].Dead then
                         if inJail[i].Players[k].Breako > 0 then
                             inJail[i].Players[k].Breako = inJail[i].Players[k].Breako - 1
