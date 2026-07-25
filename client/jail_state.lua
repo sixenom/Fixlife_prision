@@ -834,6 +834,7 @@ function LoadJailCell(timu, firstTime)
 					end
 				end
 				time = timu
+				exports['Fixlife_hud']:setHudTimer(timu / 60, 'Tiempo restante')
 				Citizen.Wait(500)
 				injail = true
 				Citizen.Wait(1000)

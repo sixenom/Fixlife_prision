@@ -433,6 +433,7 @@ function IEscaped()
 	TriggerServerEvent('HD_Jail:UnJailPlayer', GetPlayerServerId(PlayerId()), false)
 	TriggerServerEvent('HD_Jail:PoliceNotify')
 	time = 0
+	exports['Fixlife_hud']:clearHudTimer()
 	soltime = 0
 	job = 0
 	doneTasks = 0

@@ -226,6 +226,7 @@ AddEventHandler('HD_Jail:UnnJail', function(itemie, clothesi)
 				TriggerEvent('skinchanger:loadClothes', skin, clothesi)
 			end)
 			time = 0
+			exports['Fixlife_hud']:clearHudTimer()
 			soltime = 0
 			job = 0
 			doneTasks = 0

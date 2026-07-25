@@ -74,6 +74,7 @@ function TaskComplete()
 			doneTasks = 1
 			Notification(Config.Sayings[25])
 			time = time - Config.JobOptions[job].TimeRemove
+			exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
 			TriggerServerEvent('HD_Jail:TaskComplete', job)
 		else
 			doneTasks = doneTasks + 1
@@ -200,6 +201,7 @@ Citizen.CreateThread(function()
 						difftime.Seconds = time
 					end
 				end
+				exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
 
 				if Config.TpBack then
 					local ped = PlayerPedId()
@@ -320,20 +322,6 @@ Citizen.CreateThread(function()
 				SetPlayerCanDoDriveBy(ped, false)
 				DisablePlayerFiring(ped, true)
 				DisableControlAction(0, 140)
-			else
-				if Config.SimpleTime then
-					if job ~= 0 then
-						drawTxt(Config.ServerName..Config.Sayings[3]..time..Config.Sayings[4]..Config.JobOptions[job].Name..Config.Sayings[26]..doneTasks..'~w~/~b~'..taskMax,0,1,0.5,0.9,0.35,255,255,255,255)
-					else
-						drawTxt(Config.ServerName..Config.Sayings[3]..time..Config.Sayings[4]..Config.Sayings[6],0,1,0.5,0.9,0.35,255,255,255,255)
-					end
-				else
-					if job ~= 0 then
-						drawTxt(Config.ServerName..Config.Sayings[137]..difftime.Hours..'~w~H~r~ '..difftime.Mins..'~w~M~r~ '..difftime.Seconds..'~w~S'..Config.Sayings[138]..Config.JobOptions[job].Name,0,1,0.5,0.9,0.35,255,255,255,255)
-					else
-						drawTxt(Config.ServerName..Config.Sayings[137]..difftime.Hours..'~w~H~r~ '..difftime.Mins..'~w~M~r~ '..difftime.Seconds..'~w~S'..Config.Sayings[138]..Config.Sayings[6],0,1,0.5,0.9,0.35,255,255,255,255)
-					end
-				end
 			end
 		else
 			Citizen.Wait(1000)

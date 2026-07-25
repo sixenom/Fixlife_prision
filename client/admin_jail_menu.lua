@@ -551,6 +551,7 @@ RegisterNetEvent('HD_Jail:AddItUp')
 AddEventHandler('HD_Jail:AddItUp', function(timy)
 	if time > 0 then
 		time = time + timy
+		exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
 
 		if not Config.SimpleTime then
 			local dope = {Hours = 0, Mins = 0, Seconds = 0}
@@ -586,6 +587,7 @@ RegisterNetEvent('HD_Jail:Removeit')
 AddEventHandler('HD_Jail:Removeit', function(timy)
 	if time > 0 then
 		time = time - timy
+		exports['Fixlife_hud']:setHudTimer(math.max(0, time) / 60, 'Tiempo restante')
 
 		if not Config.SimpleTime then
 			local dope = {Hours = 0, Mins = 0, Seconds = 0}
