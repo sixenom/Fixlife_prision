@@ -219,9 +219,6 @@ end)
 RegisterNetEvent('HD_Jail:TurnOffLock')
 AddEventHandler('HD_Jail:TurnOffLock', function()
 	lockieDown = false
-	if inJailMenu then
-		TriggerEvent('HD_Jail:JailMenu')
-	end
 	if time > 0 then
 		Notification(Config.Sayings[151])
 	end
@@ -229,9 +226,6 @@ end)
 
 RegisterNetEvent('HD_Jail:CountFinish')
 AddEventHandler('HD_Jail:CountFinish', function()
-	if inJailMenu then
-		TriggerEvent('HD_Jail:JailMenu')
-	end
 	lockieDown = true
 	DoLockCheck()
 	if time > 0 then

@@ -627,18 +627,6 @@ function LoadJailCell(timu, firstTime)
 		EndTextCommandSetBlipName(blip4)
 		table.insert(blips, {id = 'shower', data = blip4})
 	end
-	if Config.WorkOutBlip.Spawn and Config.WorkingOut then
-		for i = 1, #Config.WorkoutLocs, 1 do
-			local blip4 = AddBlipForCoord(Config.WorkoutLocs[i].StartLoc.Loc.x, Config.WorkoutLocs[i].StartLoc.Loc.y, Config.WorkoutLocs[i].StartLoc.Loc.z)
-			SetBlipSprite(blip4, Config.WorkOutBlip.Sprite)
-			SetBlipScale(blip4, Config.WorkOutBlip.Size)
-			SetBlipColour(blip4, Config.WorkOutBlip.Color)
-			BeginTextCommandSetBlipName("STRING")
-			AddTextComponentString(Config.Sayings[119])
-			EndTextCommandSetBlipName(blip4)
-			table.insert(blips, {id = 'workout'..i, data = blip4})
-		end
-	end
 
 
 	RequestModel(Config.InfoPed)
@@ -674,11 +662,6 @@ function LoadJailCell(timu, firstTime)
 	table.insert(jailLocs, {Text = Config.Sayings[30], Id = 'food', Loc = Config.GetFoodLoc.Loc, Sub = false, Mark = {Num = Config.FoMarkNum, Color = Config.FoMarkColor, Size = Config.FoMarkSize}})
 	if Config.Showers then
 		table.insert(jailLocs, {Text = Config.Sayings[113], Id = 'shower', Loc = Config.ShowerLoc.Loc, Sub = false, Mark = {Num = Config.ShowMarkNum, Color = Config.ShowMarkColor, Size = Config.ShowMarkSize}})
-	end
-	if Config.WorkingOut then
-		for i = 1, #Config.WorkoutLocs, 1 do
-			table.insert(jailLocs, {Text = Config.Sayings[120], Id = 'workout'..i, Loc = Config.WorkoutLocs[i].StartLoc.Loc, Sub = false, Mark = {Num = Config.WoutMarkNum, Color = Config.WoutMarkColor, Size = Config.WoutMarkSize}})
-		end
 	end
 
 
@@ -749,15 +732,6 @@ function LoadJailCell(timu, firstTime)
 						Citizen.Wait(1000)
 					end
 
-					if Config.WorkingOut then
-						SetFocusArea(Config.WorkOutCam.x, Config.WorkOutCam.y, Config.WorkOutCam.z, Config.WorkOutCam.x, Config.WorkOutCam.y, Config.WorkOutCam.z)
-						ChangeSecurityCamera(Config.WorkOutCam.x, Config.WorkOutCam.y, Config.WorkOutCam.z, Config.WorkOutCamRot)
-						Citizen.Wait(100)
-						DoScreenFadeIn(1000)
-						lib.progressBar({ duration = perTime, label = Config.Sayings[173], icon = 'fixlife.svg', canCancel = false })
-						DoScreenFadeOut(1000)
-						Citizen.Wait(1000)
-					end
 
 					if Config.Showers then
 						SetFocusArea(Config.ShowerCam.x, Config.ShowerCam.y, Config.ShowerCam.z, Config.ShowerCam.x, Config.ShowerCam.y, Config.ShowerCam.z)
@@ -815,6 +789,7 @@ function LoadJailCell(timu, firstTime)
 				SetEntityCoords(ped, Config.Cells[cell].SpawnLoc.Loc.x, Config.Cells[cell].SpawnLoc.Loc.y, Config.Cells[cell].SpawnLoc.Loc.z - 1, false, false, false, false)
 				SetEntityHeading(ped, Config.Cells[cell].SpawnLoc.Heading)
 				jailCell = cell
+				CreatePrisonInteractionPoints()
 				if not Config.SimpleTime then
 					local duration = timu
 					local extraSeconds = duration%60
@@ -893,15 +868,6 @@ Citizen.CreateThread(function()
 				end
 			end
 
-			if workoutNow then
-				for i = 1, #Config.WorkoutLocs[workoutLoc].Locs, 1 do
-					dist = Vdist(Config.WorkoutLocs[workoutLoc].Locs[i].Loc.x, Config.WorkoutLocs[workoutLoc].Locs[i].Loc.y, Config.WorkoutLocs[workoutLoc].Locs[i].Loc.z, coords)
-					if dist < minDistance3 then
-						minDistance3 = dist
-						closestOut = i
-					end
-				end
-			end
 
 			for i = 1, #Config.PoliceRoles, 1 do
 				if QBX.PlayerData.job and QBX.PlayerData.job.name == Config.PoliceRoles[i] then
@@ -929,10 +895,8 @@ Citizen.CreateThread(function()
 			if not using then
 				if dist <= Config.ShowItemDist then
 					Citizen.Wait(5)
-					DrawMarker(Config.LMarkNum, Config.ItemLoc.Loc.x, Config.ItemLoc.Loc.y, Config.ItemLoc.Loc.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.LMarkSize.x, Config.LMarkSize.y, Config.LMarkSize.z, Config.LMarkColor.r, Config.LMarkColor.g, Config.LMarkColor.b, 100, false, false, 2, true, nil, nil, false)
 					if dist <= Config.ItemTextDist then
-						DrawText3D(Config.ItemLoc.Loc.x, Config.ItemLoc.Loc.y, Config.ItemLoc.Loc.z, Config.Sayings[12])
-						if IsControlJustReleased(1,38) then
+						if false then
 							canGrab = false
 							SetEntityCoords(ped, Config.ItemLoc.Loc.x, Config.ItemLoc.Loc.y, Config.ItemLoc.Loc.z - 1, false, false, false, false)
 							SetEntityHeading(ped, Config.ItemLoc.Heading)
@@ -1000,7 +964,6 @@ Citizen.CreateThread(function()
 			if not using and not isDead then
 				if dist <= Config.SeeWatchDist then
 					Citizen.Wait(5)
-					DrawMarker(1, Config.WatchTowers[closestTower].x, Config.WatchTowers[closestTower].y, Config.WatchTowers[closestTower].z -1, 0, 0, 0, 0, 0, 0, Config.WatchDist * 2, Config.WatchDist * 2, 2.0, Config.WatchMarkColor.r, Config.WatchMarkColor.g, Config.WatchMarkColor.b, 155, 0, 0, 2, 0, 0, 0, 0)
 					if dist <= Config.WatchDist then
 						breakout2 = false
 						breakout4 = true
@@ -1025,15 +988,12 @@ Citizen.CreateThread(function()
 					Citizen.Wait(5)
 					if jailLocs[closestLoc] ~= nil then
 						if jailLocs[closestLoc].Sub then
-							DrawMarker(jailLocs[closestLoc].Mark.Num, jailLocs[closestLoc].Loc.x, jailLocs[closestLoc].Loc.y, jailLocs[closestLoc].Loc.z - 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, jailLocs[closestLoc].Mark.Size.x, jailLocs[closestLoc].Mark.Size.y, jailLocs[closestLoc].Mark.Size.z, jailLocs[closestLoc].Mark.Color.r, jailLocs[closestLoc].Mark.Color.g, jailLocs[closestLoc].Mark.Color.b, 100, false, false, 2, true, nil, nil, false)
 						else
-							DrawMarker(jailLocs[closestLoc].Mark.Num, jailLocs[closestLoc].Loc.x, jailLocs[closestLoc].Loc.y, jailLocs[closestLoc].Loc.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, jailLocs[closestLoc].Mark.Size.x, jailLocs[closestLoc].Mark.Size.y, jailLocs[closestLoc].Mark.Size.z, jailLocs[closestLoc].Mark.Color.r, jailLocs[closestLoc].Mark.Color.g, jailLocs[closestLoc].Mark.Color.b, 100, false, false, 2, true, nil, nil, false)
 						end
 					end
 					
 					if dist <= Config.TextDist then
-						DrawText3D(jailLocs[closestLoc].Loc.x, jailLocs[closestLoc].Loc.y, jailLocs[closestLoc].Loc.z + Config.TextLift, jailLocs[closestLoc].Text)
-						if IsControlJustReleased(1,38) then
+						if false then
 							if jailLocs[closestLoc].Id == 'jobman' then
 								inMenu.coords = Config.JobManLoc.Loc 
 								inMenu.is = true
@@ -1057,12 +1017,6 @@ Citizen.CreateThread(function()
 									inMenu.coords = Config.Cells[jailCell].BreakLoc.Loc
 									inMenu.is = true
 									OpenWallMenu()
-								end
-							else 
-								if not workoutNow then
-									StartWorkout(closestOut)
-								else
-									EndWorkout()
 								end
 							end
 						end
@@ -1088,12 +1042,9 @@ Citizen.CreateThread(function()
 
 			if dist <= Config.SeeBreakDist and not isDead then
 				Citizen.Wait(5)
-				DrawMarker(Config.BreakMarkNum, Config.BreakLocs[closestBreak].StartLoc.Loc.x, Config.BreakLocs[closestBreak].StartLoc.Loc.y, Config.BreakLocs[closestBreak].StartLoc.Loc.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.BreakMarkSize.x, Config.BreakMarkSize.y, Config.BreakMarkSize.z, Config.BreakMarkColor.r, Config.BreakMarkColor.g, Config.BreakMarkColor.b, 100, false, false, 2, true, nil, nil, false)
 
 				if dist <= Config.BreakTextDist then
-					DrawText3D(Config.BreakLocs[closestBreak].StartLoc.Loc.x, Config.BreakLocs[closestBreak].StartLoc.Loc.y, Config.BreakLocs[closestBreak].StartLoc.Loc.z + Config.TextLift, Config.Sayings[93])
-
-					if IsControlJustReleased(0, 38) then
+					if false then
 						OpenBreakingMenu()
 						inMenu.coords = Config.BreakLocs[closestBreak].StartLoc.Loc
 						inMenu.is = true
@@ -1101,90 +1052,6 @@ Citizen.CreateThread(function()
 				end
 			else
 				Citizen.Wait(1000)
-			end
-		elseif not isDead and workoutNow then
-			local ped = PlayerPedId()
-			local coords = GetEntityCoords(ped)
-			local dist = Vdist(Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.x, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.y, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.z, coords)
-
-			if dist <= Config.SeeWorkDist and not using then
-				Citizen.Wait(5)
-				DrawMarker(Config.WoutMarkNum, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.x, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.y, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.WoutMarkSize.x, Config.WoutMarkSize.y, Config.WoutMarkSize.z, Config.WoutMarkColor.r, Config.WoutMarkColor.g, Config.WoutMarkColor.b, 100, false, false, 2, true, nil, nil, false)
-
-				if dist <= Config.WorkText then
-					DrawText3D(Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.x, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.y, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.z + Config.TextLift, Config.Sayings[122]..Config.WorkoutLocs[workoutLoc].Locs[closestOut].Label)
-
-					if IsControlJustReleased(0, 47) then
-						using = true
-						SetEntityCoords(ped, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.x, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.y, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.z - 1, false, false, false, false)
-						SetEntityHeading(ped, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Heading)
-
-						if Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Aim ~= nil then
-							RequestAnimDict(Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Dict)
-		
-							if not HasAnimDictLoaded(Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Dict) then
-								Citizen.Wait(0)
-							end
-						
-							TaskPlayAnim(ped, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Dict, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Aim, 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-							inAnim.Dict = Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Dict
-							inAnim.Anim = Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Aim
-							inAnim.Atr = 1
-							inAnim.Freeze = true
-						else
-							TaskStartScenarioInPlace(ped, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Dict, 0, true)
-						end
-						FreezeEntityPosition(ped, true)
-
-						lib.progressBar({ --ejercicio
-							duration =  Config.WorkoutLocs[workoutLoc].Locs[closestOut].Time *1000,
-							label =  Config.Sayings[123],
-							icon = 'fixlife.svg',
-							position = 'bottom',
-							useWhileDead = false,
-							canCancel = false,
-							disable = {
-								car = true,
-								move = true,
-								combat = true,
-								mouse = false,
-							},
-						})	
-						
-						-- Citizen.Wait(Config.WorkoutLocs[workoutLoc].Locs[closestOut].Time *1000)
-						if Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Aim ~= nil then
-							TaskPlayAnim(ped, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Dict, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Aim, 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-							inAnim.Dict = nil
-							inAnim.Anim = nil
-							inAnim.Atr = 0
-							inAnim.Freeze = false
-							RemoveAnimDict(Config.WorkoutLocs[workoutLoc].Locs[closestOut].Anim.Dict)
-						end
-						ClearPedTasksImmediately(ped)
-						FreezeEntityPosition(ped, false)
-						using = false
-					end
-				end
-			else
-				local ped = PlayerPedId()
-				local coords = GetEntityCoords(ped)
-				local dist = Vdist(Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.x, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.y, Config.WorkoutLocs[workoutLoc].Locs[closestOut].Loc.z, coords)
-
-				if dist >= Config.MaxDistWorkout then
-					workoutNow = false
-					Wait(1000)
-					workoutLoc = 0
-					using = false
-					Notification(Config.Sayings[124])
-					TriggerEvent('skinchanger:getSkin', function(skin)
-						if skin.sex == 0 then
-							TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms.male)
-						else
-							TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms.female)
-						end
-					end)
-				end
-				Citizen.Wait(500)
 			end
 		elseif not isDead and showerNow then
 			local ped = PlayerPedId()
@@ -1196,14 +1063,11 @@ Citizen.CreateThread(function()
 				for i = 1, #Config.ShowerLocs, 1 do
 					local dist2 = Vdist(Config.ShowerLocs[i].x, Config.ShowerLocs[i].y, Config.ShowerLocs[i].z, coords)
 					if dist2 <= Config.ShowerMarkerDist then
-						DrawMarker(Config.ShowMarkNum, Config.ShowerLocs[i].x, Config.ShowerLocs[i].y, Config.ShowerLocs[i].z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.ShowMarkSize.x, Config.ShowMarkSize.y, Config.ShowMarkSize.z, Config.ShowMarkColor.r, Config.ShowMarkColor.g, Config.ShowMarkColor.b, 100, false, false, 2, true, nil, nil, false)
 					end
 				end
 
 				if dist <= Config.ShowerDist and not isDead then
-					DrawText3D(Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z + Config.TextLift, Config.Sayings[116])
-
-					if IsControlJustReleased(0, 47) then
+					if false then
 						showerNow = false
 						SetEntityCoords(ped, Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z - 1, false, false, false, false)
 
@@ -1236,6 +1100,7 @@ Citizen.CreateThread(function()
 				if dist >= Config.MaxDistShower then
 					showerNow = false
 					using = false
+					ResetShowerInteraction()
 					Notification(Config.Sayings[117])
 					TriggerEvent('skinchanger:getSkin', function(skin)
 						if skin.sex == 0 then

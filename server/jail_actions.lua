@@ -112,25 +112,8 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                                 args = { 'El ciudadano(a) ^3'.. fullname..'^0'..Config.Sayings[8]..'^3'..bruhTime.Hours..' aÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â±o(s) ^0 con ^3'..bruhTime.Mins..' mes(es) ^0 y ^3'..bruhTime.Seconds..' semana(s)^0, por un juez de la republica, en la '..Config.Sayings[1].. ', por el delito de ^3'..reason, currentTime }
                             })
                         end
-                        local cellies = {}
-                        local lowest = {val = 0, amtie = 30}
-                        for i = 1, #inJail, 1 do
-                            if inJail[i].Players ~= nil then
-                                local total = 0
-                                for p = 1, #inJail[i].Players, 1 do
-                                    total = total + 1
-                                end
-                                table.insert(cellies, {value = i, amt = total})
-                            else
-                                table.insert(cellies, {value = i, amt = 0})
-                            end
-                        end
-                        for i = 1, #cellies, 1 do
-                            if cellies[i].amt < lowest.amtie then
-                                lowest.val = cellies[i].value
-                                lowest.amtie = cellies[i].amt
-                            end
-                        end
+                        RemovePlayerFromCells(inJail, ident)
+                        local lowest = {val = GetRandomCell(inJail, Config.MaxPerCell)}
                         table.insert(inJail[lowest.val].Players, {Player = ident, Timie = time, ID = id, Sol = 0, Dead = false, Breako = 0})
                         if Log.Jail then
                             if Config.SimpleTime then

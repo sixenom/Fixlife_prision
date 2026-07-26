@@ -80,6 +80,7 @@ function TaskComplete()
 			doneTasks = doneTasks + 1
 			Notification(Config.Sayings[24])
 		end
+		UpdatePrisonTaskPoint()
 	
 		TriggerServerEvent('HD_Jail:TaskComplete1', job)
 	
@@ -136,8 +137,9 @@ Citizen.CreateThread(function()
 						diffBreak.Seconds = breakout
 					end
 				end
-		    elseif soltime > 0 then
+			elseif soltime > 0 then
 				soltime = soltime - 1
+				exports['Fixlife_hud']:setHudTimer(soltime / 60, 'Celda de castigo')
 
 				if not Config.SimpleTime then
 					local duration = soltime
@@ -312,12 +314,6 @@ Citizen.CreateThread(function()
 			elseif soltime > 0 then
 				local ped = PlayerPedId()
 
-				if not Config.SimpleTime then
-					drawTxt(Config.ServerName..Config.Sayings[53]..diffSol.Hours..'~w~H~y~ '..diffSol.Mins..'~w~M~y~ '..diffSol.Seconds..'~w~S',0,1,0.5,0.9,0.35,255,255,255,255)
-				else
-					drawTxt(Config.ServerName..Config.Sayings[53]..soltime..Config.Sayings[54],0,1,0.5,0.9,0.35,255,255,255,255)
-				end
-
 				SetEntityCanBeDamaged(ped, false)
 				SetPlayerCanDoDriveBy(ped, false)
 				DisablePlayerFiring(ped, true)
@@ -483,6 +479,7 @@ function StartJob(jobie, trip)
 	if jobie ~= 0 then
 		job = jobie
 		doneTasks = 1
+		UpdatePrisonTaskPoint()
 		taskMax = 0
 		for i = 1, #Config.JobOptions[jobie].Tasks, 1 do
 			taskMax = taskMax + 1

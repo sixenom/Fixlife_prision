@@ -32,6 +32,12 @@ function OpenPoliceShitMenu()
 end
 
 function OpenPoliceMenu2(name, theirID)
+	TriggerServerEvent('HD_Jail:OpenPoliceBedInventory', theirID)
+	using = false
+	return
+end
+
+--[[
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
 
@@ -136,6 +142,8 @@ function OpenPoliceMenu2(name, theirID)
 		end, theirID)
 	end)
 end
+
+]]
 
 function OpenInfoMenu()
 	local ped = PlayerPedId()

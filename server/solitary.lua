@@ -3,47 +3,19 @@ AddEventHandler('HD_Jail:CheckSol', function(id)
     local xPlayer = Qbox.GetPlayer(id)
     if not xPlayer then return end
     local ident = xPlayer.identifier
-    local cellies = {}
-    local lowest = {val = 0, amtie = 30}
-    local found1 = 0
-    local found2 = 0
-
-    for i = 1, #inJail, 1 do
-        if inJail[i].Players[1] ~= nil then
-            for j = 1, #inJail[i].Players, 1 do
-                if inJail[i].Players[j].Player == ident then
-                    found1 = i
-                    found2 = j
-                end
-            end
+    local found1, found2 = 0, 0
+    for i = 1, #inJail do
+        for j = 1, #inJail[i].Players do
+            if inJail[i].Players[j].Player == ident then found1, found2 = i, j end
         end
     end
-
-    if found1 ~= 0 then
-        if inJail[found1].Players[found2].Sol > 0 then
-            for i = 1, #solJail, 1 do
-                if solJail[i].Players ~= nil then
-                    local total = 0
-                    for p = 1, #solJail[i].Players, 1 do
-                        total = total + 1
-                    end
-                    table.insert(cellies, {value = i, amt = total})
-                else
-                    table.insert(cellies, {value = i, amt = 0})
-                end
-            end
-            for i = 1, #cellies, 1 do
-                if cellies[i].amt < lowest.amtie then
-                    lowest.val = cellies[i].value
-                    lowest.amtie = cellies[i].amt
-                end
-            end
-            table.insert(solJail[lowest.val].Players, {Player = ident})
-            TriggerClientEvent('HD_Jail:SendSol', id, inJail[found1].Players[found2].Sol, lowest.val)
-        else
-            TriggerClientEvent('HD_Jail:NotSol', id)
-        end
+    if found1 == 0 or inJail[found1].Players[found2].Sol <= 0 then
+        TriggerClientEvent('HD_Jail:NotSol', id)
+        return
     end
+    local cell = GetRandomCell(solJail, 1)
+    table.insert(solJail[cell].Players, {Player = ident})
+    TriggerClientEvent('HD_Jail:SendSol', id, inJail[found1].Players[found2].Sol, cell)
 end)
 
 RegisterServerEvent('HD_Jail:SendToSol')
@@ -74,25 +46,7 @@ AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
             JailStorage.Get(xPlayer.identifier, function(newData)
                 newData.soli = timaz
     
-                local cellies = {}
-                local lowest = {val = 0, amtie = 30}
-                for i = 1, #solJail, 1 do
-                    if solJail[i].Players ~= nil then
-                        local total = 0
-                        for p = 1, #solJail[i].Players, 1 do
-                            total = total + 1
-                        end
-                        table.insert(cellies, {value = i, amt = total})
-                    else
-                        table.insert(cellies, {value = i, amt = 0})
-                    end
-                end
-                for i = 1, #cellies, 1 do
-                    if cellies[i].amt < lowest.amtie then
-                        lowest.val = cellies[i].value
-                        lowest.amtie = cellies[i].amt
-                    end
-                end
+                local lowest = {val = GetRandomCell(solJail, 1)}
                 table.insert(solJail[lowest.val].Players, {Player = ident})
                 inJail[found].Players[found2].Sol = timaz
     
@@ -195,25 +149,7 @@ AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
                 JailStorage.Get(xPlayer.identifier, function(newData)
                     newData.soli = timaz
         
-                    local cellies = {}
-                    local lowest = {val = 0, amtie = 30}
-                    for i = 1, #solJail, 1 do
-                        if solJail[i].Players ~= nil then
-                            local total = 0
-                            for p = 1, #solJail[i].Players, 1 do
-                                total = total + 1
-                            end
-                            table.insert(cellies, {value = i, amt = total})
-                        else
-                            table.insert(cellies, {value = i, amt = 0})
-                        end
-                    end
-                    for i = 1, #cellies, 1 do
-                        if cellies[i].amt < lowest.amtie then
-                            lowest.val = cellies[i].value
-                            lowest.amtie = cellies[i].amt
-                        end
-                    end
+                    local lowest = {val = GetRandomCell(solJail, 1)}
                     table.insert(solJail[lowest.val].Players, {Player = ident})
                     inJail[found].Players[found2].Sol = timaz
         

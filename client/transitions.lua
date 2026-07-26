@@ -67,10 +67,8 @@ Citizen.CreateThread(function()
 	
 					if dist <= Config.SeeTaskMark then
 						Citizen.Wait(5)
-						DrawMarker(Config.JobOptions[job].Tasks[doneTasks].MarkNum, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.JobOptions[job].Tasks[doneTasks].MarkSize.x, Config.JobOptions[job].Tasks[doneTasks].MarkSize.y, Config.JobOptions[job].Tasks[doneTasks].MarkSize.z, Config.JobOptions[job].Tasks[doneTasks].MarkColor.r, Config.JobOptions[job].Tasks[doneTasks].MarkColor.g, Config.JobOptions[job].Tasks[doneTasks].MarkColor.b, 100, false, false, 2, true, nil, nil, false)
 						if dist <= Config.SeeTaskText then
-							DrawText3D(Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z + Config.TextLift, Config.Sayings[22]..Config.JobOptions[job].Tasks[doneTasks].TaskName)
-							if IsControlJustReleased(0, 38) then
+							if false then
 								TaskComplete()
 							end
 						end
@@ -158,8 +156,7 @@ Citizen.CreateThread(function()
 
 					if dist <= Config.SeePoliceDist then
 						Citizen.Wait(5)
-						DrawMarker(Config.PMarkNum, Config.Cells[closestPoliceInv].InvLoc.Loc.x, Config.Cells[closestPoliceInv].InvLoc.Loc.y, Config.Cells[closestPoliceInv].InvLoc.Loc.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Config.PMarkSize.x, Config.PMarkSize.y, Config.PMarkSize.z, Config.PMarkColor.r, Config.PMarkColor.g, Config.PMarkColor.b, 100, false, false, 2, true, nil, nil, false)
-						if dist <= Config.UsePoliceDist then
+						if false and dist <= Config.UsePoliceDist then
 							DrawText3D(Config.Cells[closestPoliceInv].InvLoc.Loc.x, Config.Cells[closestPoliceInv].InvLoc.Loc.y, Config.Cells[closestPoliceInv].InvLoc.Loc.z + Config.TextLift, Config.Sayings[158])
 							if IsControlJustReleased(0, 38) then
 								OpenPoliceShitMenu()
@@ -263,6 +260,7 @@ AddEventHandler('HD_Jail:UnnJail', function(itemie, clothesi)
 			FreezeEntityPosition(ped, false)
 			Citizen.Wait(500)
 			jailLocs = {}
+			RemovePrisonInteractionPoints()
 			DoScreenFadeIn(500)
 		else
 			ResetLeave(itemie, clothesi)
@@ -288,10 +286,10 @@ AddEventHandler('HD_Jail:SendSol', function(soltimez, cell)
 		DoScreenFadeOut(1000)
 		Citizen.Wait(1500)
 		soltime = soltimez
+		exports['Fixlife_hud']:setHudTimer(soltimez / 60, 'Celda de castigo')
 		solcell = cell
 		SetEntityCoords(ped, Config.SolCells[cell].Loc.x, Config.SolCells[cell].Loc.y, Config.SolCells[cell].Loc.z - 1, false, false, false, false)
 		SetEntityHeading(ped, Config.SolCells[cell].Heading)
-		FreezeEntityPosition(ped, true)
 		Citizen.Wait(500)
 		DoScreenFadeIn(1000)
 	end)
@@ -305,10 +303,10 @@ AddEventHandler('HD_Jail:UnnSol', function()
 		DoScreenFadeOut(1000)
 		Citizen.Wait(1500)
 		soltime = 0
+		exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
 		solcell = 0
 		SetEntityCoords(ped, Config.Cells[jailCell].SpawnLoc.Loc.x, Config.Cells[jailCell].SpawnLoc.Loc.y, Config.Cells[jailCell].SpawnLoc.Loc.z - 1, false, false, false, false)
 		SetEntityHeading(ped, Config.Cells[jailCell].SpawnLoc.Heading)
-		FreezeEntityPosition(ped, false)
 		Citizen.Wait(500)
 		using = false
 		DoScreenFadeIn(1000)

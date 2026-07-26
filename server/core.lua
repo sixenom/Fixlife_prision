@@ -70,8 +70,23 @@ function Qbox.RegisterUsableItem(item, handler)
     qbx:CreateUseableItem(item, function(source) handler(source) end)
 end
 
-function Qbox.RegisterCommand(_, _, handler)
-    lib.addCommand('jailmenu', { help = 'Abrir menu de prision', restricted = 'group.admin' }, function(source)
-        handler(Qbox.GetPlayer(source), {}, function() end)
-    end)
+function GetRandomCell(cells, maxPlayers)
+    local available = {}
+    for i, cell in ipairs(cells) do
+        if #cell.Players < maxPlayers then available[#available + 1] = i end
+    end
+    if #available == 0 then
+        for i = 1, #cells do available[i] = i end
+    end
+    return available[math.random(#available)]
+end
+
+function RemovePlayerFromCells(cells, identifier)
+    for i = #cells, 1, -1 do
+        for j = #cells[i].Players, 1, -1 do
+            if cells[i].Players[j].Player == identifier then
+                table.remove(cells[i].Players, j)
+            end
+        end
+    end
 end

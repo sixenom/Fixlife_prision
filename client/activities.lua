@@ -1,126 +1,3 @@
-function StartWorkout(Loc)
-	Citizen.CreateThread(function()
-		local ped = PlayerPedId()
-
-		using = true
-		workoutLoc = Loc
-		SetEntityCoords(ped, Config.WorkoutLocs[Loc].StartLoc.Loc.x, Config.WorkoutLocs[Loc].StartLoc.Loc.y, Config.WorkoutLocs[Loc].StartLoc.Loc.z - 1, false, false, false, false)
-		SetEntityHeading(ped, Config.WorkoutLocs[Loc].StartLoc.Heading)
-		
-		RequestAnimDict('clothingtie')
-		
-		if not HasAnimDictLoaded('clothingtie') then
-			Citizen.Wait(0)
-		end
-	
-		TaskPlayAnim(ped, "clothingtie", "try_tie_positive_a", 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-		inAnim.Dict = 'clothingtie'
-		inAnim.Anim = 'try_tie_positive_a'
-		inAnim.Atr = 1
-		inAnim.Freeze = true
-		FreezeEntityPosition(ped, true)
-		lib.progressBar({ --cambiar ropa en gimnasio
-			duration =  Config.WorkReadyTime *1000,
-			label =  Config.Sayings[114],
-			icon = 'fixlife.svg',
-			position = 'bottom',
-			useWhileDead = false,
-			canCancel = false,
-			disable = {
-				car = true,
-				move = true,
-				combat = true,
-				mouse = false,
-			},
-		}, RemoveAnimDict("clothingtie"))		
-		-- Citizen.Wait(Config.WorkReadyTime *1000)
-		-- RemoveAnimDict("clothingtie")
-		FreezeEntityPosition(ped, false)
-		inAnim.Dict = nil
-		inAnim.Anim = nil
-		inAnim.Atr = 0
-		inAnim.Freeze = false
-		for i = 1, #jailLocs, 1 do
-			if jailLocs[i].Id == 'workout'..workoutLoc then
-				jailLocs[i].Text = Config.Sayings[126]
-			end
-		end
-		ClearPedTasksImmediately(ped)
-		TriggerEvent('skinchanger:getSkin', function(skin)
-			if skin.sex == 0 then
-				TriggerEvent('skinchanger:loadClothes', skin, Config.WorkoutFit.male)
-			else
-				TriggerEvent('skinchanger:loadClothes', skin, Config.WorkoutFit.female)
-			end
-		end)
-		Notification(Config.Sayings[121])
-		using = false
-		workoutNow = true
-	end)
-end
-
-function EndWorkout()
-	Citizen.CreateThread(function()
-		local ped = PlayerPedId()
-
-		using = true
-		workoutNow = false
-		SetEntityCoords(ped, Config.WorkoutLocs[workoutLoc].StartLoc.Loc.x, Config.WorkoutLocs[workoutLoc].StartLoc.Loc.y, Config.WorkoutLocs[workoutLoc].StartLoc.Loc.z - 1, false, false, false, false)
-		SetEntityHeading(ped, Config.WorkoutLocs[workoutLoc].StartLoc.Heading)
-	
-		RequestAnimDict('clothingtie')
-		
-		if not HasAnimDictLoaded('clothingtie') then
-			Citizen.Wait(0)
-		end
-	
-		TaskPlayAnim(ped, "clothingtie", "try_tie_positive_a", 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-		inAnim.Dict = 'clothingtie'
-		inAnim.Anim = 'try_tie_positive_a'
-		inAnim.Atr = 1
-		inAnim.Freeze = true
-		FreezeEntityPosition(ped, true)
-		lib.progressBar({ --cambiar ropa en gimnasio
-		duration =  Config.WorkReadyTime *1000,
-		label =  Config.Sayings[114],
-		icon = 'fixlife.svg',
-		position = 'bottom',
-		useWhileDead = false,
-		canCancel = false,
-		disable = {
-			car = true,
-			move = true,
-			combat = true,
-			mouse = false,
-		},
-	}, RemoveAnimDict("clothingtie"))		
-		-- Citizen.Wait(Config.WorkReadyTime *1000)
-		-- RemoveAnimDict("clothingtie")
-		FreezeEntityPosition(ped, false)
-		inAnim.Dict = nil
-		inAnim.Anim = nil
-		inAnim.Atr = 0
-		inAnim.Freeze = false
-		ClearPedTasksImmediately(ped)
-
-		for i = 1, #jailLocs, 1 do
-			if jailLocs[i].Id == 'workout'..workoutLoc then
-				jailLocs[i].Text = Config.Sayings[120]
-			end
-		end
-		workoutLoc = 0		
-		TriggerEvent('skinchanger:getSkin', function(skin)
-			if skin.sex == 0 then
-				TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms.male)
-			else
-				TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms.female)
-			end
-		end)
-		Notification(Config.Sayings[125])
-		using = false
-	end)
-end
-
 function StartShower()
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
@@ -145,7 +22,7 @@ function StartShower()
 		-- Citizen.Wait(Config.GetReadyTime *1000)
 		-- RemoveAnimDict("clothingtie")
 		lib.progressBar({ --cambiar ropa en duchas
-			duration =  Config.WorkReadyTime *1000,
+			duration =  Config.GetReadyTime *1000,
 			label =  Config.Sayings[114],
 			icon = 'fixlife.svg',
 			position = 'bottom',
@@ -159,6 +36,7 @@ function StartShower()
 			},
 		}, RemoveAnimDict("clothingtie"))			
 		FreezeEntityPosition(ped, false)
+		using = false
 		inAnim.Dict = nil
 		inAnim.Anim = nil
 		inAnim.Atr = 0
@@ -173,6 +51,10 @@ function StartShower()
 		end)
 		Notification(Config.Sayings[115])
 		showerNow = true
+		TriggerEvent('Fix_3dTextUi:actualizar', 'fixlife_prision_shower_ready', 'cambiarse a uniforme')
+		for i, coords in ipairs(Config.ShowerLocs) do
+			TriggerEvent('Fix_3dTextUi:crear', 'fixlife_prision_shower_' .. i, coords, 3.0, 0.5, 0.5, '#fbfdfd', 'G', 'Ducharse', 'image', 'shower.svg', 'Fixlife_prision:client:take_shower:' .. i)
+		end
 	end)
 end
 

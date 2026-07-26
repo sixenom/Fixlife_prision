@@ -74,18 +74,15 @@ AddEventHandler('onResourceStart', function(resource)
 
         Citizen.CreateThread(function()
             Citizen.Wait(3000)
-            local xPlayers = Qbox.GetPlayers()
-            if xPlayers[1] ~= nil then
-                good = true
-                for name, item in pairs(exports.ox_inventory:Items()) do
-                    table.insert(Items, {name = name, label = item.label or name})
-                end
-                for i=1, #xPlayers, 1 do
-                    local xPlayer = Qbox.GetPlayer(xPlayers[i])
+            good = true
+            for name, item in pairs(exports.ox_inventory:Items()) do
+                table.insert(Items, {name = name, label = item.label or name})
+            end
+            for _, playerId in ipairs(Qbox.GetPlayers()) do
+                local xPlayer = Qbox.GetPlayer(playerId)
+                if xPlayer then
                     JailStorage.Get(xPlayer.identifier, function(newData)
-                        if newData.jailtime > 0 then
-                            TriggerEvent('HD_Jail:ReJail', xPlayer.source, newData)
-                        elseif xPlayer.job.name == 'prisoner' then
+                        if (tonumber(newData.jailtime) or 0) <= 0 and xPlayer.job.name == 'prisoner' then
                             xPlayer.setJob(Config.DefaultSetJob.Name, Config.DefaultSetJob.Grade)
                         end
                     end)

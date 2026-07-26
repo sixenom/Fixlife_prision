@@ -50,12 +50,9 @@ closestShower = 1
 showerNow = false
 
 closestOut = 1
-workoutNow = false
-workoutLoc = 0
 
 switchie = false
 lockieDown = false
-inJailMenu = false
 
 closestPoliceInv = 1 
 
@@ -105,6 +102,8 @@ function Spawned()
 			if QBX and QBX.PlayerData and FirstSpawn then
 				if QBX.PlayerData.job ~= nil and not restarted then
 					FirstSpawn = false
+					RemovePoliceInteractionPoints()
+					CreatePoliceInteractionPoints()
 					Citizen.Wait(3000)
 					TriggerServerEvent('HD_Jail:LoadedIn')
 					break

@@ -28,10 +28,12 @@ end)
 
 Qbox.RegisterCallback('HD_Jail:GetPlayerInCell', function(source, cb, cell)
     local goodShit = {}
+    local seen = {}
     if not inJail[cell] then cb(goodShit); return end
     for j = 1, #inJail[cell].Players, 1 do
         local xPlayer = Qbox.GetPlayer(inJail[cell].Players[j].ID)
-        if xPlayer then
+        if xPlayer and not seen[xPlayer.source] then
+            seen[xPlayer.source] = true
             local fullname = nil
             if Config.ESXVersion ~= '1.1' then
                 fullname = xPlayer.get("firstName") .. " " .. xPlayer.get("lastName")

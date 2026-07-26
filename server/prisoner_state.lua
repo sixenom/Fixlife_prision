@@ -54,7 +54,7 @@ AddEventHandler('HD_Jail:RetrieveItems', function(itoms)
 
         local remaining = {}
         for _, item in ipairs(newData.items or {}) do
-            local amount = math.floor(tonumber(item.Amt or item.amount or item.amt) or 0)
+            local amount = math.floor(tonumber(item.Amt or item.amount or item.amt or item.count) or 0)
             if type(item.item) == 'string' and amount > 0 then
                 local success, response = exports.ox_inventory:AddItem(src, item.item, amount, item.metadata)
                 if not success then

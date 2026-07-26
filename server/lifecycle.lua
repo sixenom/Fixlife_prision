@@ -2,39 +2,15 @@ RegisterServerEvent('HD_Jail:ReJail')
 AddEventHandler('HD_Jail:ReJail', function(id, values)
     local xPlayer = Qbox.GetPlayer(id)
     local ident = xPlayer.identifier
-    local theS = {}
-    local cellies = {}
-    local lowest = {val = 0, amtie = 30}
-    theS = values
+    RemovePlayerFromCells(inJail, ident)
+    local theS = values
     local tots = 0
-    if theS.cell == 0 then
-        theS.cell = 1
-    end
+    if theS.cell == 0 then theS.cell = 1 end
     local targetCell = inJail[theS.cell]
     if not targetCell or not targetCell.Players then return end
-    for i = 1, #targetCell.Players, 1 do
-        tots = tots + 1
-    end
-
+    for i = 1, #targetCell.Players do tots = tots + 1 end
     if tots >= Config.MaxPerCell then
-        for i = 1, #inJail, 1 do
-            if inJail[i] and inJail[i].Players ~= nil then
-                local total = 0
-                for p = 1, #inJail[i].Players, 1 do
-                    total = total + 1
-                end
-                table.insert(cellies, {value = i, amt = total})
-            else
-                table.insert(cellies, {value = i, amt = 0})
-            end
-        end
-        for i = 1, #cellies, 1 do
-            if cellies[i].amt < lowest.amtie then
-                lowest.val = cellies[i].value
-                lowest.amtie = cellies[i].amt
-            end
-        end
-        
+        local lowest = {val = GetRandomCell(inJail, Config.MaxPerCell)}
         table.insert(inJail[lowest.val].Players, {Player = ident, Timie = theS.jailtime, ID = id, Sol = theS.soli, Dead = false, Breako = 0})
         if Log.ReJail then
             if Config.SimpleTime then
@@ -366,20 +342,5 @@ Citizen.CreateThread(function()
     end
 end)
 
-Citizen.CreateThread(function()
-    if Config.ESXVersion == '1.1' then
-        TriggerEvent('es:addGroupCommand', 'jailmenu', 'admin', function(source, args, user)
-            local id = source
-            TriggerClientEvent('HD_Jail:JailMenu', id)
-        end, function(source, args, user)
-            TriggerClientEvent('chat:addMessage', source, { args = { '^1SYSTEM', 'Insufficient Permissions.' } })
-        end, {help = 'Jail Menu For Admins & Police', params = {{}}})
-    else
-        Qbox.RegisterCommand('jailmenu', 'admin', function(xPlayer, args, showError)
-            TriggerClientEvent('HD_Jail:JailMenu',xPlayer.source)
-        end, true, {help = 'Jail Menu For Admins & Police', validate = true, arguments = {
-        }})
-    end
-end)
 
 
