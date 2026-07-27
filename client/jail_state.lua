@@ -615,6 +615,16 @@ function LoadJailCell(timu, firstTime)
 		EndTextCommandSetBlipName(blip3b)
 		table.insert(blips, {id = 'jobman2', data = blip3b})
 	end
+	if Config.LaundryVehicleBlip.Spawn then
+		local blipLaundryVehicle = AddBlipForCoord(Config.LaundryVehicleNpcLoc.Loc.x, Config.LaundryVehicleNpcLoc.Loc.y, Config.LaundryVehicleNpcLoc.Loc.z)
+		SetBlipSprite(blipLaundryVehicle, Config.LaundryVehicleBlip.Sprite)
+		SetBlipScale(blipLaundryVehicle, Config.LaundryVehicleBlip.Size)
+		SetBlipColour(blipLaundryVehicle, Config.LaundryVehicleBlip.Color)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString('Vehículo de lavandería')
+		EndTextCommandSetBlipName(blipLaundryVehicle)
+		table.insert(blips, {id = 'laundry_vehicle', data = blipLaundryVehicle})
+	end
 	if Config.FoodBlip.Spawn then
 		local blip4 = AddBlipForCoord(Config.GetFoodLoc.Loc.x, Config.GetFoodLoc.Loc.y, Config.GetFoodLoc.Loc.z)
 		SetBlipSprite(blip4, Config.FoodBlip.Sprite)
@@ -639,9 +649,11 @@ function LoadJailCell(timu, firstTime)
 
 	RequestModel(Config.InfoPed)
 	RequestModel(Config.JobManPed)
+	RequestModel(Config.LaundryVehicleNpc)
 
 	LoadPropDict(Config.InfoPed)
 	LoadPropDict(Config.JobManPed)
+	LoadPropDict(Config.LaundryVehicleNpc)
 
 	local byped = CreatePed(5, Config.InfoPed, Config.InfoPedLoc[infoLoc].Loc.x, Config.InfoPedLoc[infoLoc].Loc.y, Config.InfoPedLoc[infoLoc].Loc.z - 1, Config.InfoPedLoc[infoLoc].Heading, false, true)
 	PlaceObjectOnGroundProperly(byped)
@@ -672,6 +684,15 @@ function LoadJailCell(timu, firstTime)
 	SetEntityInvincible(byped3, true)
 	SetPedCanBeTargetted(byped3, false)
 	table.insert(peds, {id = 'jobman2', data = byped3})
+	local byped4 = CreatePed(5, Config.LaundryVehicleNpc, Config.LaundryVehicleNpcLoc.Loc.x, Config.LaundryVehicleNpcLoc.Loc.y, Config.LaundryVehicleNpcLoc.Loc.z - 1, Config.LaundryVehicleNpcLoc.Heading, false, true)
+	PlaceObjectOnGroundProperly(byped4)
+	SetEntityAsMissionEntity(byped4)
+	SetPedDropsWeaponsWhenDead(byped4, false)
+	FreezeEntityPosition(byped4, true)
+	SetPedAsEnemy(byped4, false)
+	SetEntityInvincible(byped4, true)
+	SetPedCanBeTargetted(byped4, false)
+	table.insert(peds, {id = 'laundry_vehicle', data = byped4})
 
 
 	table.insert(jailLocs, {Text = Config.Sayings[27], Id = 'info', Loc = Config.InfoPedLoc[infoLoc].Loc, Sub = true, Mark = {Num = Config.IMarkNum, Color = Config.IMarkColor, Size = Config.IMarkSize}})

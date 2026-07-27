@@ -117,6 +117,7 @@ end
 
 AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then
+		if RemoveLaundryVehicle then RemoveLaundryVehicle() end
 		local removes = {}
 		for i = 1, #blips, 1 do
 			table.insert(removes, i)

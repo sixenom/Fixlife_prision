@@ -421,6 +421,175 @@ function LoadPropDict(model)
 	end
 end
 
+local laundryWasherProps = {}
+local laundryWasherBusy
+local laundryWasherDict = 'anim@scripted@cbr1@ig1_washmach_grab_cash@male@'
+local laundryWasherModel = 'm23_2_prop_m32_prtmachine_dryer_op'
+
+function RemoveLaundryWasherProps()
+    laundryWasherBusy = false
+    for i, prop in pairs(laundryWasherProps) do
+        if DoesEntityExist(prop) then DeleteObject(prop) end
+        laundryWasherProps[i] = nil
+    end
+end
+
+function EnsureLaundryWasherProps()
+    for index, location in ipairs(Config.LaundryWasherLocs) do
+        if not laundryWasherProps[index] or not DoesEntityExist(laundryWasherProps[index]) then
+            LoadPropDict(laundryWasherModel)
+            local prop = CreateObject(joaat(laundryWasherModel), location.Loc.x, location.Loc.y, location.Loc.z, true, true, true)
+            SetEntityHeading(prop, location.Heading)
+            SetEntityAsMissionEntity(prop, true, true)
+            laundryWasherProps[index] = prop
+            SetModelAsNoLongerNeeded(laundryWasherModel)
+        end
+    end
+end
+
+function GetLaundryWasherInteractionCoords(index)
+    local prop = laundryWasherProps[index]
+    local offset = Config.LaundryWasherInteractionOffsets[index]
+    if prop and DoesEntityExist(prop) and offset then
+        return GetOffsetFromEntityInWorldCoords(prop, table.unpack(offset))
+    end
+    return Config.LaundryWasherLocs[index].Loc
+end
+
+CreateThread(function()
+    Wait(1000)
+    EnsureLaundryWasherProps()
+end)
+
+function StartLaundryWasherAction(index, finished)
+    if laundryWasherBusy then return end
+    local location = Config.LaundryWasherLocs[index]
+    if not location then return end
+    laundryWasherBusy = true
+    using = true
+    EnsureLaundryWasherProps()
+    local prop = laundryWasherProps[index]
+
+    CreateThread(function()
+        local ped = PlayerPedId()
+        SetEntityCoords(ped, location.Loc.x, location.Loc.y, location.Loc.z - 1.0, false, false, false, false)
+        SetEntityHeading(ped, location.Heading)
+        LoadAnim(laundryWasherDict)
+        local scene = NetworkCreateSynchronisedScene(location.Loc.x, location.Loc.y, location.Loc.z, 0.0, 0.0, location.Heading, 2, true, false, 1.0, 0.0, 1.0)
+        NetworkAddPedToSynchronisedScene(ped, scene, laundryWasherDict, 'enter', 8.0, -8.0, 0, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(prop, scene, laundryWasherDict, 'enter_dryer', 1.0, 1.0, 1)
+        NetworkStartSynchronisedScene(scene)
+        Wait(GetAnimDuration(laundryWasherDict, 'enter') * 1000)
+        TaskStartScenarioInPlace(ped, 'PROP_HUMAN_BUM_BIN', 0, true)
+        Wait(30000)
+        local closeScene = CreateSynchronizedScene(location.Loc.x, location.Loc.y, location.Loc.z, 0.0, 0.0, location.Heading, 2)
+        TaskSynchronizedScene(ped, closeScene, laundryWasherDict, 'enter', 8.0, -8.0, 0, 0, 1000.0, 0)
+        SetSynchronizedScenePhase(closeScene, 0.99)
+        SetSynchronizedSceneRate(closeScene, -1.0)
+        PlayEntityAnim(prop, 'enter_dryer', laundryWasherDict, 1.0, false, true, 0, 1.0, 0)
+        local duration = GetAnimDuration(laundryWasherDict, 'enter_dryer')
+        local time = 1.0
+        while time >= 0.0 and DoesEntityExist(prop) do
+            SetEntityAnimCurrentTime(prop, laundryWasherDict, 'enter_dryer', time)
+            time = time - (GetFrameTime() / duration)
+            Wait(0)
+        end
+        if DoesEntityExist(prop) then
+            SetEntityAnimCurrentTime(prop, laundryWasherDict, 'enter_dryer', 0.0)
+            SetEntityAnimSpeed(prop, laundryWasherDict, 'enter_dryer', 0.0)
+        end
+        ClearPedTasksImmediately(ped)
+        laundryWasherBusy = false
+        if finished then finished() end
+    end)
+end
+
+local dryerTestProp
+local dryerTestScene
+local dryerTestLocalScene
+local dryerTestClosing
+local dryerTestCoords = vector3(3915.29468, 28.22179, 22.8701782)
+local dryerTestDict = 'anim@scripted@cbr1@ig1_washmach_grab_cash@male@'
+local dryerTestAnims = {
+	enter = true, enter_bag = true, enter_dryer = true, enter_dryermoney = true,
+	enter_facial = true, exit = true, exit_bag = true, exit_dryer = true,
+	exit_dryermoney = true, exit_facial = true, grab = true, grab_bag = true,
+	grab_dryer = true, grab_dryermoney = true, grab_facial = true, idle = true,
+	idle_bag = true, idle_dryer = true, idle_dryermoney = true, idle_facial = true
+}
+
+RegisterCommand('probarsecadora', function(_, args)
+	dryerTestClosing = false
+	local closing = args[1] == 'cerrar' or args[1] == 'reverse'
+	local anim = closing and 'exit' or (args[1] or 'enter')
+	local propAnim = dryerTestAnims[anim .. '_dryer'] and anim .. '_dryer' or anim
+	if not dryerTestAnims[anim] then
+		print('Animaciones: enter, enter_bag, enter_dryer, enter_dryermoney, enter_facial, exit, exit_bag, exit_dryer, exit_dryermoney, exit_facial, grab, grab_bag, grab_dryer, grab_dryermoney, grab_facial, idle, idle_bag, idle_dryer, idle_dryermoney, idle_facial')
+		return
+	end
+
+	if dryerTestScene then NetworkStopSynchronisedScene(dryerTestScene) end
+	if not closing or not dryerTestProp or not DoesEntityExist(dryerTestProp) then
+		if dryerTestProp and DoesEntityExist(dryerTestProp) then DeleteObject(dryerTestProp) end
+		LoadPropDict('m23_2_prop_m32_prtmachine_dryer_op')
+		dryerTestProp = CreateObject(joaat('m23_2_prop_m32_prtmachine_dryer_op'), dryerTestCoords.x, dryerTestCoords.y, dryerTestCoords.z, true, true, true)
+		SetEntityHeading(dryerTestProp, 0.0)
+		SetModelAsNoLongerNeeded('m23_2_prop_m32_prtmachine_dryer_op')
+	end
+
+	local ped = PlayerPedId()
+	SetEntityCoords(ped, dryerTestCoords.x, dryerTestCoords.y, dryerTestCoords.z - 1.0, false, false, false, false)
+	SetEntityHeading(ped, 0.0)
+	LoadAnim(dryerTestDict)
+	if closing then
+		dryerTestClosing = true
+		dryerTestLocalScene = CreateSynchronizedScene(dryerTestCoords.x, dryerTestCoords.y, dryerTestCoords.z, 0.0, 0.0, 0.0, 2)
+		TaskSynchronizedScene(ped, dryerTestLocalScene, dryerTestDict, 'enter', 8.0, -8.0, 0, 0, 1000.0, 0)
+		SetSynchronizedScenePhase(dryerTestLocalScene, 0.99)
+		SetSynchronizedSceneRate(dryerTestLocalScene, -1.0)
+            CreateThread(function()
+                local duration = GetAnimDuration(dryerTestDict, 'enter_dryer')
+                if duration <= 0.0 then return end
+                PlayEntityAnim(dryerTestProp, 'enter_dryer', dryerTestDict, 1.0, false, true, 0, 1.0, 0)
+                local time = 1.0
+                while dryerTestClosing and DoesEntityExist(dryerTestProp) and time >= 0.0 do
+                    SetEntityAnimCurrentTime(dryerTestProp, dryerTestDict, 'enter_dryer', time)
+                    time = time - (GetFrameTime() / duration)
+                    Wait(0)
+                end
+                if DoesEntityExist(dryerTestProp) then
+                    SetEntityAnimCurrentTime(dryerTestProp, dryerTestDict, 'enter_dryer', 0.0)
+                    SetEntityAnimSpeed(dryerTestProp, dryerTestDict, 'enter_dryer', 0.0)
+                end
+                dryerTestClosing = false
+            end)
+		print('Secadora y jugador cerrando con enter invertida.')
+		return
+	end
+	dryerTestScene = NetworkCreateSynchronisedScene(dryerTestCoords.x, dryerTestCoords.y, dryerTestCoords.z, 0.0, 0.0, 0.0, 2, true, false, 1.0, 0.0, 1.0)
+	NetworkAddPedToSynchronisedScene(ped, dryerTestScene, dryerTestDict, anim, 8.0, -8.0, 0, 0, 1000.0, 0)
+	NetworkAddEntityToSynchronisedScene(dryerTestProp, dryerTestScene, dryerTestDict, propAnim, 1.0, 1.0, 1)
+	NetworkStartSynchronisedScene(dryerTestScene)
+	print(('Secadora creada. Ped: %s | Prop: %s | Dirección: %s'):format(anim, propAnim, closing and 'cerrando' or 'abriendo'))
+end)
+
+RegisterCommand('pararsecadora', function()
+	dryerTestClosing = false
+	if dryerTestScene then NetworkStopSynchronisedScene(dryerTestScene) end
+	ClearPedTasks(PlayerPedId())
+	if dryerTestProp and DoesEntityExist(dryerTestProp) then DeleteObject(dryerTestProp) end
+	dryerTestProp = nil
+end)
+
+AddEventHandler('onResourceStop', function(resource)
+	if resource ~= GetCurrentResourceName() then return end
+	RemoveLaundryWasherProps()
+	dryerTestClosing = false
+	if dryerTestScene then NetworkStopSynchronisedScene(dryerTestScene) end
+	ClearPedTasks(PlayerPedId())
+	if dryerTestProp and DoesEntityExist(dryerTestProp) then DeleteObject(dryerTestProp) end
+end)
+
 function ChangeSecurityCamera(x, y, z, r)
     if createdCamera ~= 0 then
         DestroyCam(createdCamera, 0)

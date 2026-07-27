@@ -6,12 +6,164 @@ function UpdateJobHud()
 	exports['Fixlife_hud']:setHudTimer(time / 60, label)
 end
 
-function TaskComplete()
+local laundryVehicle
+local laundryVehicleProp
+local laundryVehiclePointCoords
+local laundryVehiclePointText
+
+local function RemoveLaundryVehiclePoint()
+	TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_laundry_vehicle_action')
+	laundryVehiclePointCoords = nil
+	laundryVehiclePointText = nil
+end
+
+local function GetCarriedLaundryTrolley()
+	for i = #PlayerHasProp, 1, -1 do
+		if PlayerHasProp[i].id == 'task' and DoesEntityExist(PlayerHasProp[i].object) then
+			return i, PlayerHasProp[i].object
+		end
+	end
+end
+
+function RemoveLaundryVehicle()
+	RemoveLaundryVehiclePoint()
+	if laundryVehicleProp and DoesEntityExist(laundryVehicleProp) then DeleteObject(laundryVehicleProp) end
+	laundryVehicleProp = nil
+	if laundryVehicle and DoesEntityExist(laundryVehicle) then
+		local plate = GetVehicleNumberPlateText(laundryVehicle)
+		if plate and plate ~= '' then TriggerEvent('cd_garage:RemoveKeys', plate) end
+		DeleteVehicle(laundryVehicle)
+	end
+	laundryVehicle = nil
+end
+
+local function ToggleLaundryVehicleTrolley()
+	local index, trolley = GetCarriedLaundryTrolley()
+	if laundryVehicleProp and DoesEntityExist(laundryVehicleProp) then
+		DetachEntity(laundryVehicleProp, true, true)
+		AttachEntityToEntity(laundryVehicleProp, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 28422), 0.0, -0.8, -1.340, 0.0, 0.0, 90.0, true, true, false, true, 1, true)
+		table.insert(PlayerHasProp, {id = 'task', object = laundryVehicleProp})
+		laundryVehicleProp = nil
+		inAnim.Dict = 'anim@heists@box_carry@'
+		inAnim.Anim = 'idle'
+		inAnim.Atr = 51
+		inAnim.Freeze = false
+		UpdatePrisonTaskPoint()
+		return
+	end
+	if not index or not trolley then
+		Notification('Debes llevar el carrito para cargarlo.')
+		return
+	end
+	table.remove(PlayerHasProp, index)
+	DetachEntity(trolley, true, true)
+	AttachEntityToEntity(trolley, laundryVehicle, 0, 0.0, -0.65, 0.25, 0.0, 0.0, 90.0, true, true, false, false, 2, true)
+	laundryVehicleProp = trolley
+	inAnim.Dict = nil
+	inAnim.Anim = nil
+	inAnim.Atr = 0
+	inAnim.Freeze = false
+	ClearPedTasksImmediately(PlayerPedId())
+	UpdatePrisonTaskPoint()
+end
+
+CreateThread(function()
+	while true do
+		Wait(250)
+		local player = PlayerPedId()
+		local canUse = job == 3 and laundryVehicle and DoesEntityExist(laundryVehicle) and not using and not isDead and not IsPedInAnyVehicle(player, false)
+		if canUse then
+			local vehicleCoords = GetOffsetFromEntityInWorldCoords(laundryVehicle, 0.0, -2.0, 0.0)
+			local close = #(GetEntityCoords(player) - vehicleCoords) <= 2.5
+			if close then
+				local coords = GetOffsetFromEntityInWorldCoords(laundryVehicle, 0.0, -2.15, 0.65)
+				local text = laundryVehicleProp and 'Descargar carrito' or 'Cargar carrito'
+				if not laundryVehiclePointCoords or #(coords - laundryVehiclePointCoords) > 0.2 or laundryVehiclePointText ~= text then
+					TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_laundry_vehicle_action')
+					TriggerEvent('Fix_3dTextUi:crear', 'fixlife_prision_laundry_vehicle_action', coords, 3.0, 0.5, 0.5, '#fbfdfd', 'G', text, 'image', 'truck-ramp-box.svg', 'Fixlife_prision:client:laundry_vehicle_toggle')
+					laundryVehiclePointCoords = coords
+					laundryVehiclePointText = text
+				end
+			elseif laundryVehiclePointCoords then
+				RemoveLaundryVehiclePoint()
+			end
+		elseif laundryVehiclePointCoords then
+			RemoveLaundryVehiclePoint()
+		end
+	end
+end)
+
+RegisterNetEvent('Fixlife_prision:client:laundry_vehicle_toggle', function()
+	if not injail or using or isDead or job ~= 3 or not laundryVehicle or not DoesEntityExist(laundryVehicle) or IsPedInAnyVehicle(PlayerPedId(), false) then return end
+	local rear = GetOffsetFromEntityInWorldCoords(laundryVehicle, 0.0, -2.0, 0.0)
+	if #(GetEntityCoords(PlayerPedId()) - rear) <= 2.5 then ToggleLaundryVehicleTrolley() end
+end)
+
+function OpenLaundryVehicleMenu()
+	if job ~= 3 and not (laundryVehicle and DoesEntityExist(laundryVehicle)) then
+		Notification('Este vehículo solo está disponible para el corredor de lavandería.')
+		return
+	end
+	local elements = {
+		{label = 'Sacar Keitora', value = 'spawn'},
+		{label = 'Devolver vehículo', value = 'return'}
+	}
+	NativeMenu.CloseAll()
+	NativeMenu.Open('default', GetCurrentResourceName(), 'laundry_vehicle_menu', {
+		title = 'Vehículo de lavandería',
+		align = Config.MenuLoc,
+		elements = elements
+	}, function(data, menu)
+		menu.close()
+		if data.current.value == 'return' then
+			if laundryVehicle and DoesEntityExist(laundryVehicle) then
+				RemoveLaundryVehicle()
+				Notification('Vehículo devuelto.')
+			else
+				Notification('No tienes un vehículo para devolver.')
+			end
+			return
+		end
+		if laundryVehicle and DoesEntityExist(laundryVehicle) then
+			Notification('Ya tienes un vehículo activo.')
+			return
+		end
+		local spawn
+		for _, location in ipairs(Config.LaundryVehicleSpawns) do
+			if not IsAnyVehicleNearPoint(location.Loc.x, location.Loc.y, location.Loc.z, 2.5) then
+				spawn = location
+				break
+			end
+		end
+		if not spawn then
+			Notification('No hay espacio para sacar el vehículo.')
+			return
+		end
+		LoadPropDict(Config.LaundryVehicleModel)
+		laundryVehicle = CreateVehicle(joaat(Config.LaundryVehicleModel), spawn.Loc.x, spawn.Loc.y, spawn.Loc.z, spawn.Heading, true, true)
+		SetEntityAsMissionEntity(laundryVehicle, true, true)
+		SetVehicleOnGroundProperly(laundryVehicle)
+		SetVehicleColours(laundryVehicle, 111, 111)
+		SetVehicleCustomPrimaryColour(laundryVehicle, 255, 255, 255)
+		SetVehicleCustomSecondaryColour(laundryVehicle, 255, 255, 255)
+		SetVehicleDirtLevel(laundryVehicle, 0.0)
+		TriggerEvent('cd_garage:AddKeys', GetVehicleNumberPlateText(laundryVehicle))
+		SetModelAsNoLongerNeeded(Config.LaundryVehicleModel)
+		Notification('Keitora disponible.')
+	end, function(data, menu)
+		menu.close()
+	end)
+end
+
+function TaskComplete(skipAnimation)
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
+		local completedTask = doneTasks
+		local animationLocation = GetTaskAnimationLocation()
 		RemovePrisonTaskProp()
-		local skipTaskAnimation = job == 3
-		if not skipTaskAnimation then
+		local skipTaskAnimation = skipAnimation or job == 3
+		local useLaundryScenario = job == 2 and doneTasks % 2 == 1 and doneTasks <= 7
+		if not skipTaskAnimation and not useLaundryScenario then
 			RequestAnimDict(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
 								
 			if not HasAnimDictLoaded(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict) then
@@ -32,25 +184,32 @@ function TaskComplete()
 		rem = {}
 		using = true
 		if not skipTaskAnimation then
-			SetEntityCoords(ped, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z - 1, false, false, false, false)
-			SetEntityHeading(ped, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Heading)
-			if Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
+			local taskLoc = animationLocation or Config.JobOptions[job].Tasks[doneTasks].TaskLoc
+			SetEntityCoords(ped, taskLoc.Loc.x, taskLoc.Loc.y + (taskLoc.World and 0 or 0.5), taskLoc.Loc.z - (taskLoc.World and 0 or 1), false, false, false, false)
+			SetEntityHeading(ped, taskLoc.Heading)
+			if useLaundryScenario then
+				TaskStartScenarioInPlace(ped, 'PROP_HUMAN_BUM_BIN', 0, true)
+			elseif Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
 				AddPropToPlayer(Config.JobOptions[job].Tasks[doneTasks].AttachItem.Prop, 28422, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.First, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Second, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Third, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Four, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Five, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Six , 'task', nil, true)
 				end
-			TaskPlayAnim(ped, Config.JobOptions[job].Tasks[doneTasks].Anim.Dict, Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName, 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-			inAnim.Dict = Config.JobOptions[job].Tasks[doneTasks].Anim.Dict
-			inAnim.Anim = Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName
-			inAnim.Atr = 1
-			inAnim.Freeze = true
+			if not useLaundryScenario then
+				TaskPlayAnim(ped, Config.JobOptions[job].Tasks[doneTasks].Anim.Dict, Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName, 8.0, 8.0, -1, 1, 1, 0, 0, 0)
+				inAnim.Dict = Config.JobOptions[job].Tasks[doneTasks].Anim.Dict
+				inAnim.Anim = Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName
+				inAnim.Atr = 1
+				inAnim.Freeze = true
+			end
 			FreezeEntityPosition(ped, true)
 			Citizen.Wait(Config.JobOptions[job].Tasks[doneTasks].Time * 1000)
 			FreezeEntityPosition(ped, false)
-			inAnim.Dict = nil
-			inAnim.Anim = nil
-			inAnim.Atr = 0
-			inAnim.Freeze = false
-			RemoveAnimDict(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
-			if Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
+			if not useLaundryScenario then
+				inAnim.Dict = nil
+				inAnim.Anim = nil
+				inAnim.Atr = 0
+				inAnim.Freeze = false
+				RemoveAnimDict(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
+			end
+			if not useLaundryScenario and Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
 				for i = 1, #PlayerHasProp, 1 do
 					if PlayerHasProp[i].id == 'task' then
 						DeleteObject(PlayerHasProp[i].object)
@@ -64,13 +223,14 @@ function TaskComplete()
 			end
 			ClearPedTasksImmediately(ped)
 		end
+		RemoveLaundryAnimationProp()
 		using = false
 		
 		local carryItem = Config.JobOptions[job].Tasks[doneTasks].CarryItem
 		if job == 3 and doneTasks % 2 == 1 then
 			carryItem = {Attach = true, Prop = 'ch_prop_ch_laundry_trolley_01b', Offsets = {First = 0.0, Second = -0.8, Third = -1.340, Four = 0.0, Five = 0.0, Six = 90.0}}
 		end
-		if carryItem.Attach then
+		if carryItem.Attach and not (job == 2 and completedTask % 2 == 0 and completedTask <= 8) then
 			AddPropToPlayer(carryItem.Prop, 28422, carryItem.Offsets.First, carryItem.Offsets.Second, carryItem.Offsets.Third, carryItem.Offsets.Four, carryItem.Offsets.Five, carryItem.Offsets.Six, 'task', nil, true)
 		end
 		if job == 3 and doneTasks % 2 == 1 then
@@ -94,6 +254,8 @@ function TaskComplete()
 			doneTasks = doneTasks + 1
 			Notification(Config.Sayings[24])
 		end
+		if job == 2 and completedTask % 2 == 0 and completedTask <= 8 then ClearLaundryStageLocation() end
+		if job == 3 and completedTask % 2 == 0 then SpawnLaundryDropProp(GetLaundryDropIndex()) end
 		UpdateJobHud()
 		UpdatePrisonTaskPoint()
 	
@@ -112,14 +274,16 @@ function TaskComplete()
 			table.remove(blips[removes[i]])
 		end
 	
-		local blip4 = AddBlipForCoord(Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z)
-		SetBlipSprite(blip4, Config.JobOptions[job].Tasks[doneTasks].TBlip.Sprite)
-		SetBlipScale(blip4, Config.JobOptions[job].Tasks[doneTasks].TBlip.Size)
-		SetBlipColour(blip4, Config.JobOptions[job].Tasks[doneTasks].TBlip.Color)
-		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString(Config.JobOptions[job].Tasks[doneTasks].TaskName..' | '..Config.Sayings[26]..doneTasks..'/'..taskMax)
+	local nextTask = Config.JobOptions[job].Tasks[GetLaundryTaskIndex()]
+	local blip4 = AddBlipForCoord(nextTask.TaskLoc.Loc.x, nextTask.TaskLoc.Loc.y, nextTask.TaskLoc.Loc.z)
+	SetBlipSprite(blip4, nextTask.TBlip.Sprite)
+	SetBlipScale(blip4, nextTask.TBlip.Size)
+	SetBlipColour(blip4, nextTask.TBlip.Color)
+	BeginTextCommandSetBlipName("STRING")
+	AddTextComponentString(nextTask.TaskName..' | '..Config.Sayings[26]..doneTasks..'/'..taskMax)
 		EndTextCommandSetBlipName(blip4)
 		table.insert(blips, {id = 'task', data = blip4})
+		ClearTaskAnimationLocation()
 	end)
 end
 
@@ -494,6 +658,8 @@ function StartJob(jobie, trip)
 	inAnim.Anim = nil
 	inAnim.Atr = 0
 	inAnim.Freeze = false
+	ResetLaundryRoute()
+	if job ~= 3 or jobie ~= 3 then RemoveLaundryDropProps() end
 
 	if jobie ~= 0 then
 		job = jobie
@@ -504,7 +670,7 @@ function StartJob(jobie, trip)
 			taskMax = taskMax + 1
 		end
 		UpdateJobHud()
-		Notification(Config.Sayings[20])
+		Notification(jobie == 3 and 'Puedes solicitar un vehiculo para ayudarte en este trabajo' or Config.Sayings[20])
 	
 		local blip2 = AddBlipForCoord(Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z)
 		SetBlipSprite(blip2, Config.JobOptions[job].Tasks[doneTasks].TBlip.Sprite)

@@ -454,6 +454,40 @@ Config.JobManLoc = {Loc = vector3(3915.36, 20.52, 23.85), Heading = 357.52} -- U
 Config.JobManLoc2 = {Loc = vector3(4082.6423, 42.1875, 18.7893), Heading = 15.4042}
 Config.JobManBlip = {Spawn = true, Sprite = 267, Color = 0, Size = 0.9} -- Blip del administrador de trabajo
 Config.JobManPed = 's_m_m_prisguard_01' -- Peatón del administrador de trabajo
+Config.LaundryVehicleNpcLoc = {Loc = vector3(4075.7576, 41.4845, 18.7589), Heading = 109.3173}
+Config.LaundryVehicleNpc = 's_m_m_prisguard_01'
+Config.LaundryVehicleBlip = {Spawn = true, Sprite = 225, Color = 0, Size = 0.8}
+Config.LaundryVehicleModel = 'keitora'
+Config.LaundryVehicleSpawns = {
+    {Loc = vector3(4072.3806, 46.9707, 18.1827), Heading = 195.6083},
+    {Loc = vector3(4070.1611, 46.2174, 18.1829), Heading = 196.8776},
+    {Loc = vector3(4068.0347, 45.4887, 18.1828), Heading = 197.1007},
+    {Loc = vector3(4065.8792, 44.6971, 18.1822), Heading = 198.6931}
+}
+Config.LaundryDropLocs = {
+    {Loc = vector3(4071.87036, 54.51883, 18.784965), Heading = 12.0},
+    {Loc = vector3(4073.456, 54.827877, 18.7849655), Heading = 12.0},
+    {Loc = vector3(4075.02368, 55.1541328, 18.7849655), Heading = 12.0},
+    {Loc = vector3(4076.43115, 52.6909447, 18.7849655), Heading = 102.0}
+}
+Config.LaundryDirtyLocs = {
+    {Loc = vector3(4071.87036, 54.51883, 18.784965), Heading = 192.0},
+    {Loc = vector3(4073.456, 54.827877, 18.7849655), Heading = 192.0},
+    {Loc = vector3(4075.02368, 55.1541328, 18.7849655), Heading = 192.0},
+    {Loc = vector3(4076.43115, 52.6909447, 18.7849655), Heading = 102.0}
+}
+Config.LaundryWasherLocs = {
+    {Loc = vector3(4062.3667, 55.6071548, 18.5177574), Heading = 12.0},
+    {Loc = vector3(4063.69653, 55.8898277, 18.5177574), Heading = 12.0},
+    {Loc = vector3(4065.01758, 56.1706619, 18.5177574), Heading = 12.0},
+    {Loc = vector3(4066.35449, 56.4548035, 18.5177574), Heading = 12.0}
+}
+Config.LaundryWasherInteractionOffsets = {
+    {0.0, -0.8, 0.8},
+    {0.0, -0.8, 0.8},
+    {0.0, -0.8, 0.8},
+    {0.0, -0.8, 0.8}
+}
 
 Config.JMMarkNum = 27 -- Número del marcador 3D del administrador de trabajo
 Config.JMMarkColor = {r = 255, g = 0, b = 255} -- Color del marcador 3D del administrador de trabajo
@@ -461,7 +495,6 @@ Config.JMMarkSize = {x = 1.0, y = 1.0, z = 0.5} -- Tamaño del marcador 3D del a
 
 Config.SeeTaskMark = 5 -- Qué tan cerca debes estar para ver el marcador 3D
 Config.SeeTaskText = 0.8 -- Qué tan cerca debes estar para realizar la tarea
-
 Config.JobOptions = {
     [1] = {
         Name = "Limpiador de Duchas",
@@ -1658,7 +1691,7 @@ Config.JobOptions = {
             [2] = {
                 TaskName = "Dejar la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(4075.4346, 54.5007, 18.7847),
+                    Loc = vector3(4071.87036, 54.51883, 18.784965),
                     Heading = 11.8771
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
@@ -1732,7 +1765,7 @@ Config.JobOptions = {
             [4] = {
                 TaskName = "Dejar la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(4075.4346, 54.5007, 18.7847),
+                    Loc = vector3(4073.456, 54.827877, 18.7849655),
                     Heading = 11.8771
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
@@ -1806,7 +1839,7 @@ Config.JobOptions = {
             [6] = {
                 TaskName = "Dejar la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(4075.4346, 54.5007, 18.7847),
+                    Loc = vector3(4075.02368, 55.1541328, 18.7849655),
                     Heading = 11.8771
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
@@ -1880,7 +1913,7 @@ Config.JobOptions = {
             [8] = {
                 TaskName = "Dejar la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(4075.4346, 54.5007, 18.7847),
+                    Loc = vector3(4076.43115, 52.6909447, 18.784965),
                     Heading = 11.8771
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
@@ -3764,3 +3797,12 @@ Config.SolCells = {
     [9] = {Loc = vector3(4089.4080, 30.43169, 18.67141), Heading = 313.2032},
     [10] = {Loc = vector3(4091.7240, 32.89766, 18.67141), Heading = 313.2032}
 }
+
+do
+    local oldTasks = Config.JobOptions[2].Tasks
+    Config.JobOptions[2].Tasks = {
+        oldTasks[1], oldTasks[2], oldTasks[1], oldTasks[3], oldTasks[1], oldTasks[4], oldTasks[1], oldTasks[5],
+        oldTasks[6], oldTasks[7], oldTasks[8], oldTasks[9], oldTasks[10], oldTasks[11], oldTasks[12], oldTasks[13],
+        oldTasks[14], oldTasks[15], oldTasks[16], oldTasks[17], oldTasks[18]
+    }
+end
