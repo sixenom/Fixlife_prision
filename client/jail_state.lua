@@ -606,6 +606,14 @@ function LoadJailCell(timu, firstTime)
 		AddTextComponentString(Config.Sayings[9])
 		EndTextCommandSetBlipName(blip3)
 		table.insert(blips, {id = 'jobman', data = blip3})
+		local blip3b = AddBlipForCoord(Config.JobManLoc2.Loc.x, Config.JobManLoc2.Loc.y, Config.JobManLoc2.Loc.z)
+		SetBlipSprite(blip3b, Config.JobManBlip.Sprite)
+		SetBlipScale(blip3b, Config.JobManBlip.Size)
+		SetBlipColour(blip3b, Config.JobManBlip.Color)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(Config.Sayings[9])
+		EndTextCommandSetBlipName(blip3b)
+		table.insert(blips, {id = 'jobman2', data = blip3b})
 	end
 	if Config.FoodBlip.Spawn then
 		local blip4 = AddBlipForCoord(Config.GetFoodLoc.Loc.x, Config.GetFoodLoc.Loc.y, Config.GetFoodLoc.Loc.z)
@@ -655,10 +663,20 @@ function LoadJailCell(timu, firstTime)
 	SetModelAsNoLongerNeeded(Config.JobManPed)
 	SetPedCanBeTargetted(byped2, false)
 	table.insert(peds, {id = 'jobman', data = byped2})
+	local byped3 = CreatePed(5, Config.JobManPed, Config.JobManLoc2.Loc.x, Config.JobManLoc2.Loc.y, Config.JobManLoc2.Loc.z - 1, Config.JobManLoc2.Heading, false, true)
+	PlaceObjectOnGroundProperly(byped3)
+	SetEntityAsMissionEntity(byped3)
+	SetPedDropsWeaponsWhenDead(byped3, false)
+	FreezeEntityPosition(byped3, true)
+	SetPedAsEnemy(byped3, false)
+	SetEntityInvincible(byped3, true)
+	SetPedCanBeTargetted(byped3, false)
+	table.insert(peds, {id = 'jobman2', data = byped3})
 
 
 	table.insert(jailLocs, {Text = Config.Sayings[27], Id = 'info', Loc = Config.InfoPedLoc[infoLoc].Loc, Sub = true, Mark = {Num = Config.IMarkNum, Color = Config.IMarkColor, Size = Config.IMarkSize}})
 	table.insert(jailLocs, {Text = Config.Sayings[14], Id = 'jobman', Loc = Config.JobManLoc.Loc, Sub = true, Mark = {Num = Config.JMMarkNum, Color = Config.JMMarkColor, Size = Config.JMMarkSize}})
+	table.insert(jailLocs, {Text = Config.Sayings[14], Id = 'jobman2', Loc = Config.JobManLoc2.Loc, Sub = true, Mark = {Num = Config.JMMarkNum, Color = Config.JMMarkColor, Size = Config.JMMarkSize}})
 	table.insert(jailLocs, {Text = Config.Sayings[30], Id = 'food', Loc = Config.GetFoodLoc.Loc, Sub = false, Mark = {Num = Config.FoMarkNum, Color = Config.FoMarkColor, Size = Config.FoMarkSize}})
 	if Config.Showers then
 		table.insert(jailLocs, {Text = Config.Sayings[113], Id = 'shower', Loc = Config.ShowerLoc.Loc, Sub = false, Mark = {Num = Config.ShowMarkNum, Color = Config.ShowMarkColor, Size = Config.ShowMarkSize}})
@@ -789,6 +807,7 @@ function LoadJailCell(timu, firstTime)
 				SetEntityCoords(ped, Config.Cells[cell].SpawnLoc.Loc.x, Config.Cells[cell].SpawnLoc.Loc.y, Config.Cells[cell].SpawnLoc.Loc.z - 1, false, false, false, false)
 				SetEntityHeading(ped, Config.Cells[cell].SpawnLoc.Heading)
 				jailCell = cell
+				CreatePrisonTargets(cell)
 				CreatePrisonInteractionPoints()
 				if not Config.SimpleTime then
 					local duration = timu

@@ -260,6 +260,7 @@ AddEventHandler('HD_Jail:UnnJail', function(itemie, clothesi)
 			FreezeEntityPosition(ped, false)
 			Citizen.Wait(500)
 			jailLocs = {}
+			RemovePrisonTargets()
 			RemovePrisonInteractionPoints()
 			DoScreenFadeIn(500)
 		else

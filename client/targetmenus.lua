@@ -1,25 +1,10 @@
-for i, breakLoc in ipairs(Config.BreakLocs) do
-    exports.ox_target:addSphereZone({
-        coords = breakLoc.StartLoc.Loc,
-        radius = 0.5,
-        options = {{
-            name = 'fixlife_prision_cavar_' .. i,
-            label = Config.Sayings[93],
-            icon = 'fa-solid fa-person-digging',
-            distance = 3.0,
-            canInteract = function()
-                return injail and not using and not isDead and closestBreak == i and breakout2 and breakout > 0
-            end,
-            onSelect = function()
-                inMenu.coords, inMenu.is = breakLoc.StartLoc.Loc, true
-                OpenBreakingMenu()
-            end
-        }}
-    })
-end
+local targetZones = {}
 
-for cell, data in ipairs(Config.Cells) do
-    exports.ox_target:addSphereZone({
+function CreatePrisonTargets(cell)
+    local data = Config.Cells[cell]
+    if not data then return end
+
+    targetZones[#targetZones + 1] = exports.ox_target:addSphereZone({
         coords = data.BreakLoc.Loc,
         radius = 0.5,
         options = {{
@@ -40,4 +25,11 @@ for cell, data in ipairs(Config.Cells) do
             end
         }}
     })
+end
+
+function RemovePrisonTargets()
+    for i = #targetZones, 1, -1 do
+        exports.ox_target:removeZone(targetZones[i])
+        targetZones[i] = nil
+    end
 end

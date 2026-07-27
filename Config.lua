@@ -451,6 +451,7 @@ Config.IMarkSize = {x = 1.0, y = 1.0, z = 0.5} -- Tamaño del marcador 3D del An
 
 -- Configuraciones del Administrador de Trabajo
 Config.JobManLoc = {Loc = vector3(3915.36, 20.52, 23.85), Heading = 357.52} -- Ubicación del peatón del administrador de trabajo
+Config.JobManLoc2 = {Loc = vector3(4082.6423, 42.1875, 18.7893), Heading = 15.4042}
 Config.JobManBlip = {Spawn = true, Sprite = 267, Color = 0, Size = 0.9} -- Blip del administrador de trabajo
 Config.JobManPed = 's_m_m_prisguard_01' -- Peatón del administrador de trabajo
 
@@ -937,9 +938,8 @@ Config.JobOptions = {
             [1] = {
                 TaskName = "Agarra la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1766.3508300781, 2612.4096679688,
-                                  50.549800872803),
-                    Heading = 173.91
+                    Loc = vector3(4073.8359, 54.1713, 18.7869),
+                    Heading = 355.8455
                 },
                 Anim = {
                     Dict = 'anim@amb@business@coc@coc_unpack_cut_left@',
@@ -978,9 +978,8 @@ Config.JobOptions = {
             [2] = {
                 TaskName = "Poner la ropa en la lavadora",
                 TaskLoc = {
-                    Loc = vector3(1766.3508300781, 2612.4096679688,
-                                  50.549800872803),
-                    Heading = 173.91
+                    Loc = vector3(4062.6074, 54.7222, 19.5069),
+                    Heading = 6.2117
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1016,9 +1015,8 @@ Config.JobOptions = {
             [3] = {
                 TaskName = "Poner la ropa en la lavadora",
                 TaskLoc = {
-                    Loc = vector3(1772.158203125, 2616.2888183594,
-                                  50.549766540527),
-                    Heading = 178.31
+                    Loc = vector3(4063.9927, 54.9810, 19.5065),
+                    Heading = 12.1525
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1054,9 +1052,8 @@ Config.JobOptions = {
             [4] = {
                 TaskName = "Poner la ropa en la lavadora",
                 TaskLoc = {
-                    Loc = vector3(1770.8294677734, 2616.2634277344,
-                                  50.549770355225),
-                    Heading = 178.59
+                    Loc = vector3(4065.2759, 55.3276, 19.4947),
+                    Heading = 8.5764
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1092,9 +1089,8 @@ Config.JobOptions = {
             [5] = {
                 TaskName = "Poner la ropa en la lavadora",
                 TaskLoc = {
-                    Loc = vector3(1769.4437255859, 2616.3513183594,
-                                  50.549770355225),
-                    Heading = 179.15
+                    Loc = vector3(4066.6167, 55.5936, 19.5065),
+                    Heading = 10.1248
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1130,9 +1126,8 @@ Config.JobOptions = {
             [6] = {
                 TaskName = "Agarra la ropa mojada",
                 TaskLoc = {
-                    Loc = vector3(1766.3508300781, 2612.4096679688,
-                                  50.549800872803),
-                    Heading = 173.91
+                    Loc = vector3(4062.6074, 54.7222, 19.5069),
+                    Heading = 6.2117
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1168,9 +1163,8 @@ Config.JobOptions = {
             [7] = {
                 TaskName = "Poner la ropa mojada en la secadora.",
                 TaskLoc = {
-                    Loc = vector3(1773.6488037109, 2612.642578125,
-                                  50.549781799316),
-                    Heading = 358.21
+                    Loc = vector3(4063.2229, 51.7392, 18.7869),
+                    Heading = 186.2997
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1206,9 +1200,8 @@ Config.JobOptions = {
             [8] = {
                 TaskName = "Agarra la ropa mojada",
                 TaskLoc = {
-                    Loc = vector3(1772.158203125, 2616.2888183594,
-                                  50.549766540527),
-                    Heading = 178.31
+                    Loc = vector3(4063.9927, 54.9810, 19.5065),
+                    Heading = 12.1525
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1244,8 +1237,8 @@ Config.JobOptions = {
             [9] = {
                 TaskName = "Poner la ropa mojada en la secadora.",
                 TaskLoc = {
-                    Loc = vector3(1772.3046875, 2612.6450195312, 50.549781799316),
-                    Heading = 358.47
+                    Loc = vector3(4064.4587, 51.9464, 18.7869),
+                    Heading = 197.6560
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1281,9 +1274,8 @@ Config.JobOptions = {
             [10] = {
                 TaskName = "Agarra la ropa mojada",
                 TaskLoc = {
-                    Loc = vector3(1770.8294677734, 2616.2634277344,
-                                  50.549770355225),
-                    Heading = 178.59
+                    Loc = vector3(4065.2759, 55.3276, 19.4947),
+                    Heading = 8.5764
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1319,9 +1311,8 @@ Config.JobOptions = {
             [11] = {
                 TaskName = "Poner la ropa mojada en la secadora.",
                 TaskLoc = {
-                    Loc = vector3(1770.9346923828, 2612.7666015625,
-                                  50.549781799316),
-                    Heading = 357.91
+                    Loc = vector3(4065.8152, 52.1920, 18.7869),
+                    Heading = 200.1310
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1357,9 +1348,8 @@ Config.JobOptions = {
             [12] = {
                 TaskName = "Agarra la ropa mojada",
                 TaskLoc = {
-                    Loc = vector3(1769.4437255859, 2616.3513183594,
-                                  50.549770355225),
-                    Heading = 179.15
+                    Loc = vector3(4066.6167, 55.5936, 19.5065),
+                    Heading = 10.1248
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1395,9 +1385,8 @@ Config.JobOptions = {
             [13] = {
                 TaskName = "Poner la ropa mojada en la secadora.",
                 TaskLoc = {
-                    Loc = vector3(1769.5684814453, 2612.8989257812,
-                                  50.549781799316),
-                    Heading = 355.68
+                    Loc = vector3(4067.0718, 52.4933, 18.7869),
+                    Heading = 195.8088
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1433,9 +1422,8 @@ Config.JobOptions = {
             [14] = {
                 TaskName = "Coge ropa seca",
                 TaskLoc = {
-                    Loc = vector3(1773.6488037109, 2612.642578125,
-                                  50.549781799316),
-                    Heading = 358.21
+                    Loc = vector3(4063.2229, 51.7392, 18.7869),
+                    Heading = 186.2997
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1471,8 +1459,8 @@ Config.JobOptions = {
             [15] = {
                 TaskName = "Coge ropa seca",
                 TaskLoc = {
-                    Loc = vector3(1772.3046875, 2612.6450195312, 50.549781799316),
-                    Heading = 358.47
+                    Loc = vector3(4064.4587, 51.9464, 18.7869),
+                    Heading = 197.6560
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1508,9 +1496,8 @@ Config.JobOptions = {
             [16] = {
                 TaskName = "Coge ropa seca",
                 TaskLoc = {
-                    Loc = vector3(1770.9346923828, 2612.7666015625,
-                                  50.549781799316),
-                    Heading = 357.91
+                    Loc = vector3(4065.8152, 52.1920, 18.7869),
+                    Heading = 200.1310
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1546,9 +1533,8 @@ Config.JobOptions = {
             [17] = {
                 TaskName = "Coge ropa seca",
                 TaskLoc = {
-                    Loc = vector3(1769.5684814453, 2612.8989257812,
-                                  50.549781799316),
-                    Heading = 355.68
+                    Loc = vector3(4067.0718, 52.4933, 18.7869),
+                    Heading = 195.8088
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 5,
@@ -1584,9 +1570,8 @@ Config.JobOptions = {
             [18] = {
                 TaskName = "Guarda la ropa",
                 TaskLoc = {
-                    Loc = vector3(1776.8321533203, 2619.0104980469,
-                                  50.549781799316),
-                    Heading = 358.91
+                    Loc = vector3(4072.5005, 55.9471, 19.5065),
+                    Heading = 22.3862
                 },
                 Anim = {
                     Dict = 'anim@amb@business@coc@coc_unpack_cut_left@',
@@ -1636,11 +1621,10 @@ Config.JobOptions = {
             [1] = {
                 TaskName = "Agarra la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1765.7221679688, 2589.353515625,
-                                  45.797821044922),
-                    Heading = 225.55
+                    Loc = vector3(4022.66577, -5.482034, 18.7874),
+                    Heading = 0.0
                 },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+                Anim = {Dict = 'anim@heists@box_carry@', AnimName = 'idle'},
                 Time = 10,
                 TBlip = {Spawn = true, Sprite = 162, Color = 2, Size = 0.7},
                 MarkNum = 20,
@@ -1674,9 +1658,8 @@ Config.JobOptions = {
             [2] = {
                 TaskName = "Dejar la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1766.3508300781, 2612.4096679688,
-                                  50.549800872803),
-                    Heading = 173.91
+                    Loc = vector3(4075.4346, 54.5007, 18.7847),
+                    Heading = 11.8771
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 10,
@@ -1712,11 +1695,10 @@ Config.JobOptions = {
             [3] = {
                 TaskName = "Agarra la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1762.8428955078, 2591.8645019531,
-                                  45.797821044922),
-                    Heading = 86.71
+                    Loc = vector3(3911.752, 35.4029579, 23.8882),
+                    Heading = 90.0
                 },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+                Anim = {Dict = 'anim@heists@box_carry@', AnimName = 'idle'},
                 Time = 10,
                 TBlip = {Spawn = true, Sprite = 162, Color = 2, Size = 0.7},
                 MarkNum = 20,
@@ -1750,9 +1732,8 @@ Config.JobOptions = {
             [4] = {
                 TaskName = "Dejar la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1766.3508300781, 2612.4096679688,
-                                  50.549800872803),
-                    Heading = 173.91
+                    Loc = vector3(4075.4346, 54.5007, 18.7847),
+                    Heading = 11.8771
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 10,
@@ -1788,11 +1769,10 @@ Config.JobOptions = {
             [5] = {
                 TaskName = "Agarra la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1780.9899902344, 2616.197265625,
-                                  50.549968719482),
-                    Heading = 14.72
+                    Loc = vector3(3911.2876, 19.5162563, 27.5669651),
+                    Heading = 90.0
                 },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+                Anim = {Dict = 'anim@heists@box_carry@', AnimName = 'idle'},
                 Time = 10,
                 TBlip = {Spawn = true, Sprite = 162, Color = 2, Size = 0.7},
                 MarkNum = 20,
@@ -1826,9 +1806,8 @@ Config.JobOptions = {
             [6] = {
                 TaskName = "Dejar la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1766.3508300781, 2612.4096679688,
-                                  50.549800872803),
-                    Heading = 173.91
+                    Loc = vector3(4075.4346, 54.5007, 18.7847),
+                    Heading = 11.8771
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 10,
@@ -1864,11 +1843,10 @@ Config.JobOptions = {
             [7] = {
                 TaskName = "Agarra la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1783.6166992188, 2610.7373046875,
-                                  50.550022125244),
-                    Heading = 264.04
+                    Loc = vector3(3936.91553, -16.82305, 10.901464),
+                    Heading = 90.0
                 },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+                Anim = {Dict = 'anim@heists@box_carry@', AnimName = 'idle'},
                 Time = 10,
                 TBlip = {Spawn = true, Sprite = 162, Color = 2, Size = 0.7},
                 MarkNum = 20,
@@ -1902,9 +1880,8 @@ Config.JobOptions = {
             [8] = {
                 TaskName = "Dejar la ropa sucia",
                 TaskLoc = {
-                    Loc = vector3(1766.3508300781, 2612.4096679688,
-                                  50.549800872803),
-                    Heading = 173.91
+                    Loc = vector3(4075.4346, 54.5007, 18.7847),
+                    Heading = 11.8771
                 },
                 Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
                 Time = 10,

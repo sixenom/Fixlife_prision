@@ -1,10 +1,22 @@
+function UpdateJobHud()
+	local label = 'Tiempo restante'
+	if job ~= 0 and Config.JobOptions[job] and taskMax > 0 then
+		label = ('%s - %d/%d'):format(Config.JobOptions[job].Name, doneTasks, taskMax)
+	end
+	exports['Fixlife_hud']:setHudTimer(time / 60, label)
+end
+
 function TaskComplete()
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
-		RequestAnimDict(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
+		RemovePrisonTaskProp()
+		local skipTaskAnimation = job == 3
+		if not skipTaskAnimation then
+			RequestAnimDict(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
 								
-		if not HasAnimDictLoaded(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict) then
-			LoadAnim(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
+			if not HasAnimDictLoaded(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict) then
+				LoadAnim(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
+			end
 		end
 	
 		local rem = {}
@@ -19,67 +31,70 @@ function TaskComplete()
 		end
 		rem = {}
 		using = true
-		SetEntityCoords(ped, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z - 1, false, false, false, false)
-		SetEntityHeading(ped, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Heading)
-		if Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
-			AddPropToPlayer(Config.JobOptions[job].Tasks[doneTasks].AttachItem.Prop, 28422, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.First, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Second, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Third, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Four, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Five, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Six , 'task', nil, true)
-		end
-		TaskPlayAnim(ped, Config.JobOptions[job].Tasks[doneTasks].Anim.Dict, Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName, 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-		inAnim.Dict = Config.JobOptions[job].Tasks[doneTasks].Anim.Dict
-		inAnim.Anim = Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName
-		inAnim.Atr = 1
-		inAnim.Freeze = true
-		FreezeEntityPosition(ped, true)
-		-- exports.rprogress:Start(Config.Sayings[23] ,Config.JobOptions[job].Tasks[doneTasks].Time *1000)
-		-- Citizen.Wait(Config.JobOptions[job].Tasks[doneTasks].Time *1000)
-		lib.progressBar({ --Creando
-			duration =  Config.JobOptions[job].Tasks[doneTasks].Time *1000,
-			label =  Config.Sayings[23],
-			icon = 'fixlife.svg',
-			position = 'bottom',
-			useWhileDead = false,
-			canCancel = false,
-			disable = {
-				car = true,
-				move = true,
-				combat = true,
-				mouse = false,
-			},
-		})
-		FreezeEntityPosition(ped, false)
-		inAnim.Dict = nil
-		inAnim.Anim = nil
-		inAnim.Atr = 0
-		inAnim.Freeze = false
-		RemoveAnimDict(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
-		if Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
-			for i = 1, #PlayerHasProp, 1 do
-				if PlayerHasProp[i].id == 'task' then
-					DeleteObject(PlayerHasProp[i].object)
-					table.insert(rem, i)
+		if not skipTaskAnimation then
+			SetEntityCoords(ped, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z - 1, false, false, false, false)
+			SetEntityHeading(ped, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Heading)
+			if Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
+				AddPropToPlayer(Config.JobOptions[job].Tasks[doneTasks].AttachItem.Prop, 28422, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.First, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Second, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Third, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Four, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Five, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Six , 'task', nil, true)
 				end
+			TaskPlayAnim(ped, Config.JobOptions[job].Tasks[doneTasks].Anim.Dict, Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName, 8.0, 8.0, -1, 1, 1, 0, 0, 0)
+			inAnim.Dict = Config.JobOptions[job].Tasks[doneTasks].Anim.Dict
+			inAnim.Anim = Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName
+			inAnim.Atr = 1
+			inAnim.Freeze = true
+			FreezeEntityPosition(ped, true)
+			Citizen.Wait(Config.JobOptions[job].Tasks[doneTasks].Time * 1000)
+			FreezeEntityPosition(ped, false)
+			inAnim.Dict = nil
+			inAnim.Anim = nil
+			inAnim.Atr = 0
+			inAnim.Freeze = false
+			RemoveAnimDict(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict)
+			if Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
+				for i = 1, #PlayerHasProp, 1 do
+					if PlayerHasProp[i].id == 'task' then
+						DeleteObject(PlayerHasProp[i].object)
+						table.insert(rem, i)
+					end
+				end
+				for i = 1, #rem, 1 do
+					table.remove(PlayerHasProp, rem[i])
+				end
+				rem = {}
 			end
-			for i = 1, #rem, 1 do
-				table.remove(PlayerHasProp, rem[i])
-			end
-			rem = {}
+			ClearPedTasksImmediately(ped)
 		end
-		ClearPedTasksImmediately(ped)
 		using = false
 		
-		if Config.JobOptions[job].Tasks[doneTasks].CarryItem.Attach then
-			AddPropToPlayer(Config.JobOptions[job].Tasks[doneTasks].CarryItem.Prop, 28422, Config.JobOptions[job].Tasks[doneTasks].CarryItem.Offsets.First, Config.JobOptions[job].Tasks[doneTasks].CarryItem.Offsets.Second, Config.JobOptions[job].Tasks[doneTasks].CarryItem.Offsets.Third, Config.JobOptions[job].Tasks[doneTasks].CarryItem.Offsets.Four, Config.JobOptions[job].Tasks[doneTasks].CarryItem.Offsets.Five, Config.JobOptions[job].Tasks[doneTasks].CarryItem.Offsets.Six , 'task', nil, true)
+		local carryItem = Config.JobOptions[job].Tasks[doneTasks].CarryItem
+		if job == 3 and doneTasks % 2 == 1 then
+			carryItem = {Attach = true, Prop = 'ch_prop_ch_laundry_trolley_01b', Offsets = {First = 0.0, Second = -0.8, Third = -1.340, Four = 0.0, Five = 0.0, Six = 90.0}}
+		end
+		if carryItem.Attach then
+			AddPropToPlayer(carryItem.Prop, 28422, carryItem.Offsets.First, carryItem.Offsets.Second, carryItem.Offsets.Third, carryItem.Offsets.Four, carryItem.Offsets.Five, carryItem.Offsets.Six, 'task', nil, true)
+		end
+		if job == 3 and doneTasks % 2 == 1 then
+			inAnim.Dict = 'anim@heists@box_carry@'
+			inAnim.Anim = 'idle'
+			inAnim.Atr = 51
+			inAnim.Freeze = false
+		elseif job == 3 then
+			inAnim.Dict = nil
+			inAnim.Anim = nil
+			inAnim.Atr = 0
+			inAnim.Freeze = false
+			ClearPedTasksImmediately(ped)
 		end
 		if doneTasks >= taskMax then
 			doneTasks = 1
-			Notification(Config.Sayings[25])
+			Notification('Tareas completadas. Ya puedes finalizar el trabajo.')
 			time = time - Config.JobOptions[job].TimeRemove
-			exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
 			TriggerServerEvent('HD_Jail:TaskComplete', job)
 		else
 			doneTasks = doneTasks + 1
 			Notification(Config.Sayings[24])
 		end
+		UpdateJobHud()
 		UpdatePrisonTaskPoint()
 	
 		TriggerServerEvent('HD_Jail:TaskComplete1', job)
@@ -203,7 +218,7 @@ Citizen.CreateThread(function()
 						difftime.Seconds = time
 					end
 				end
-				exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
+				UpdateJobHud()
 
 				if Config.TpBack then
 					local ped = PlayerPedId()
@@ -475,6 +490,10 @@ function StartJob(jobie, trip)
 		table.remove(PlayerHasProp[removes[i]])
 	end
 	removes = {}
+	inAnim.Dict = nil
+	inAnim.Anim = nil
+	inAnim.Atr = 0
+	inAnim.Freeze = false
 
 	if jobie ~= 0 then
 		job = jobie
@@ -484,6 +503,7 @@ function StartJob(jobie, trip)
 		for i = 1, #Config.JobOptions[jobie].Tasks, 1 do
 			taskMax = taskMax + 1
 		end
+		UpdateJobHud()
 		Notification(Config.Sayings[20])
 	
 		local blip2 = AddBlipForCoord(Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z)
@@ -498,6 +518,8 @@ function StartJob(jobie, trip)
 		job = jobie
 		doneTasks = 1
 		taskMax = 0
+		UpdatePrisonTaskPoint()
+		UpdateJobHud()
 	end
 end
 

@@ -1,9 +1,56 @@
 local ids = {}
 local policeIds = {}
+local taskProp
+local taskProps = {}
+local laundryIcons = {
+    [1] = 'shirt-long-sleeve.svg',
+    [2] = 'dryer.svg', [3] = 'dryer.svg', [4] = 'dryer.svg', [5] = 'dryer.svg',
+    [6] = 'raindrops.svg',
+    [7] = 'dryer-heat.svg',
+    [8] = 'raindrops.svg',
+    [9] = 'dryer-heat.svg',
+    [10] = 'raindrops.svg',
+    [11] = 'dryer-heat.svg',
+    [12] = 'raindrops.svg',
+    [13] = 'dryer-heat.svg',
+    [14] = 'sparkles.svg', [15] = 'sparkles.svg', [16] = 'sparkles.svg', [17] = 'sparkles.svg',
+    [18] = 'grid-2.svg'
+}
 
 local function point(id, coords, text, event, icon, key)
     ids[#ids + 1] = id
     TriggerEvent('Fix_3dTextUi:crear', id, coords, 3.0, 0.5, 0.5, '#fbfdfd', key or 'E', text, 'image', icon or 'images/mi_icono.png', event)
+end
+
+function RemovePrisonTaskProp()
+    for _, prop in ipairs(taskProps) do
+        if DoesEntityExist(prop) then
+            SetEntityDrawOutline(prop, false)
+            DeleteObject(prop)
+        end
+    end
+    taskProps = {}
+    taskProp = nil
+end
+
+local function CreatePrisonTaskProp(task)
+    local model = 'ch_prop_ch_laundry_trolley_01b'
+    LoadPropDict(model)
+    local prop = CreateObject(joaat(model), task.TaskLoc.Loc.x, task.TaskLoc.Loc.y, task.TaskLoc.Loc.z - 1.0, false, false, false)
+    SetEntityHeading(prop, task.TaskLoc.Heading)
+    SetEntityAsMissionEntity(prop, true, true)
+    SetEntityDrawOutlineColor(255, 200, 0, 255)
+    SetEntityDrawOutlineShader(1)
+    SetEntityDrawOutline(prop, true)
+    table.insert(taskProps, prop)
+    SetModelAsNoLongerNeeded(model)
+    return prop
+end
+
+local function SpawnPrisonTaskProp(task)
+    RemovePrisonTaskProp()
+    if job ~= 3 or doneTasks % 2 ~= 1 then return end
+    taskProp = CreatePrisonTaskProp(task)
 end
 
 local function setShowerPoints(prepared)
@@ -23,6 +70,7 @@ function CreatePrisonInteractionPoints()
     RemovePoliceInteractionPoints()
     point('fixlife_prision_info', Config.InfoPedLoc[infoLoc].Loc, Config.Sayings[27], 'Fixlife_prision:client:info')
     point('fixlife_prision_jobman', Config.JobManLoc.Loc, Config.Sayings[14], 'Fixlife_prision:client:jobman', 'hammer.svg')
+    point('fixlife_prision_jobman2', Config.JobManLoc2.Loc, Config.Sayings[14], 'Fixlife_prision:client:jobman2', 'hammer.svg')
     point('fixlife_prision_food', Config.GetFoodLoc.Loc, Config.Sayings[30], 'Fixlife_prision:client:food')
     point('fixlife_prision_item', Config.ItemLoc.Loc, Config.Sayings[12], 'Fixlife_prision:client:item')
     if Config.Showers then
@@ -34,6 +82,7 @@ end
 function RemovePrisonInteractionPoints()
     for i = 1, #ids do TriggerEvent('Fix_3dTextUi:eliminar', ids[i]) end
     ids = {}
+    RemovePrisonTaskProp()
     TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_task')
     ResetShowerInteraction()
 end
@@ -74,15 +123,44 @@ end
 
 function UpdatePrisonTaskPoint()
     TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_task')
+    for i = 1, 7, 2 do TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_task_' .. i) end
     if job ~= 0 and doneTasks ~= 0 and Config.JobOptions[job] then
+        if job == 3 and doneTasks % 2 == 1 then
+            RemovePrisonTaskProp()
+            for i = 1, 7, 2 do
+                local task = Config.JobOptions[job].Tasks[i]
+                local prop = CreatePrisonTaskProp(task)
+                local interactionCoords = GetOffsetFromEntityInWorldCoords(prop, 0.5, 0.0, 1.0)
+                point('fixlife_prision_task_' .. i, interactionCoords, Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:laundry_task:' .. i)
+            end
+            return
+        end
         local task = Config.JobOptions[job].Tasks[doneTasks]
-        if task then point('fixlife_prision_task', task.TaskLoc.Loc, Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:task') end
+        if task then
+            SpawnPrisonTaskProp(task)
+            local interactionCoords = task.TaskLoc.Loc
+            if taskProp then interactionCoords = GetOffsetFromEntityInWorldCoords(taskProp, 0.5, 0.0, 1.0) end
+            point('fixlife_prision_task', interactionCoords, Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:task', job == 2 and laundryIcons[doneTasks] or nil)
+        end
     end
+end
+
+for i = 1, 7, 2 do
+    RegisterNetEvent('Fixlife_prision:client:laundry_task:' .. i, function()
+        if not injail or using or isDead or job ~= 3 or doneTasks % 2 ~= 1 then return end
+        doneTasks = i
+        TaskComplete()
+    end)
 end
 
 RegisterNetEvent('Fixlife_prision:client:jobman', function()
     if not injail or using or isDead then return end
     inMenu.coords, inMenu.is = Config.JobManLoc.Loc, true
+    OpenJobManMenu()
+end)
+RegisterNetEvent('Fixlife_prision:client:jobman2', function()
+    if not injail or using or isDead then return end
+    inMenu.coords, inMenu.is = Config.JobManLoc2.Loc, true
     OpenJobManMenu()
 end)
 RegisterNetEvent('Fixlife_prision:client:info', function()
