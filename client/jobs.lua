@@ -159,6 +159,10 @@ function TaskComplete(skipAnimation)
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
 		local completedTask = doneTasks
+		if job == 2 and completedTask == 8 then
+			lib.progressBar({duration = 20000, label = 'Lavadoras en funcionamiento', icon = 'fixlife.svg', position = 'bottom', useWhileDead = false, canCancel = false})
+			HighlightAvailableLaundryWashers()
+		end
 		local animationLocation = GetTaskAnimationLocation()
 		RemovePrisonTaskProp()
 		local skipTaskAnimation = skipAnimation or job == 3
@@ -227,7 +231,17 @@ function TaskComplete(skipAnimation)
 		using = false
 		
 		local carryItem = Config.JobOptions[job].Tasks[doneTasks].CarryItem
-		if job == 3 and doneTasks % 2 == 1 then
+		if job == 2 and completedTask % 2 == 1 then
+			if completedTask >= 9 and completedTask <= 15 then
+				carryItem = {Attach = true, Prop = 'prop_washing_basket_fix_01', Offsets = {First = 0.0, Second = -0.1, Third = 0.0, Four = 0.0, Five = 0.0, Six = 0.0}}
+			elseif completedTask >= 17 and completedTask <= 20 then
+				carryItem = {Attach = true, Prop = 'prop_washing_basket_fix_02', Offsets = {First = 0.0, Second = -0.1, Third = 0.0, Four = 0.0, Five = 0.0, Six = 0.0}}
+			end
+			inAnim.Dict = 'anim@heists@box_carry@'
+			inAnim.Anim = 'idle'
+			inAnim.Atr = 51
+			inAnim.Freeze = false
+		elseif job == 3 and doneTasks % 2 == 1 then
 			carryItem = {Attach = true, Prop = 'ch_prop_ch_laundry_trolley_01b', Offsets = {First = 0.0, Second = -0.8, Third = -1.340, Four = 0.0, Five = 0.0, Six = 90.0}}
 		end
 		if carryItem.Attach and not (job == 2 and completedTask % 2 == 0 and completedTask <= 8) then
@@ -254,7 +268,22 @@ function TaskComplete(skipAnimation)
 			doneTasks = doneTasks + 1
 			Notification(Config.Sayings[24])
 		end
-		if job == 2 and completedTask % 2 == 0 and completedTask <= 8 then ClearLaundryStageLocation() end
+		if job == 2 and completedTask >= 9 and completedTask <= 15 and completedTask % 2 == 1 then
+			local dryerIndex = GetLaundryMachineIndex() or ((completedTask - 7) / 2)
+			SetLaundryMachineOutline('washer', dryerIndex, false)
+			SetLaundryMachineStage('dryer', dryerIndex)
+		end
+		if job == 2 and completedTask >= 10 and completedTask <= 14 and completedTask % 2 == 0 then
+			HighlightAvailableLaundryWashers()
+		end
+		if job == 2 and completedTask == 16 then
+			SetLaundryMachineOutlines('washer', false)
+			HighlightAvailableLaundryDryers()
+		end
+		if job == 2 and completedTask >= 17 and completedTask <= 20 then
+			HighlightAvailableLaundryDryers()
+		end
+		if job == 2 and completedTask % 2 == 0 and completedTask <= 16 then ClearLaundryStageLocation() end
 		if job == 3 and completedTask % 2 == 0 then SpawnLaundryDropProp(GetLaundryDropIndex()) end
 		UpdateJobHud()
 		UpdatePrisonTaskPoint()

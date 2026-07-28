@@ -488,6 +488,18 @@ Config.LaundryWasherInteractionOffsets = {
     {0.0, -0.8, 0.8},
     {0.0, -0.8, 0.8}
 }
+Config.LaundryDryerLocs = {
+    {Loc = vector3(4067.19775, 51.53718, 17.7854881), Heading = 192.0},
+    {Loc = vector3(4065.863, 51.2738762, 17.7854881), Heading = 192.0},
+    {Loc = vector3(4064.53784, 51.0125542, 17.7854881), Heading = 192.0},
+    {Loc = vector3(4063.19678, 50.74868, 17.7854881), Heading = 192.0}
+}
+Config.LaundryDryerInteractionOffsets = {
+    {0.0, -0.8, 0.8},
+    {0.0, -0.8, 0.8},
+    {0.0, -0.8, 0.8},
+    {0.0, -0.8, 0.8}
+}
 
 Config.JMMarkNum = 27 -- Número del marcador 3D del administrador de trabajo
 Config.JMMarkColor = {r = 255, g = 0, b = 255} -- Color del marcador 3D del administrador de trabajo
@@ -997,12 +1009,12 @@ Config.JobOptions = {
                 },
                 CarryItem = {
                     Attach = true,
-                    Prop = 'prop_ld_tshirt_01',
+                    Prop = 'bkr_prop_fakeid_binbag_01',
                     Offsets = {
                         First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
+                        Second = -0.12,
+                        Third = -0.10,
+                        Four = 0.0,
                         Five = 0.0,
                         Six = 0.0
                     }

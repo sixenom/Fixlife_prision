@@ -20,6 +20,9 @@ local laundryRunnerInteractionOffset = {0.5, 0.0, 1.0}
 local laundryPicked = {}
 local laundryDeliveryIndex
 local laundryWasherIndex
+local laundryMachineType
+local laundryWetPicked = {}
+local laundryDryPicked = {}
 local laundryIcons = {
     [1] = 'shirt-long-sleeve.svg', [2] = 'dryer.svg',
     [3] = 'shirt-long-sleeve.svg', [4] = 'dryer.svg',
@@ -100,11 +103,15 @@ local function CreatePrisonTaskProp(task, location, heading)
 end
 
 function ResetLaundryRoute()
+    ClearLaundryMachineOutlines()
     laundryPicked = {}
     laundryDeliveryIndex = nil
     taskAnimationLocation = nil
     laundryStageLocation = nil
     laundryWasherIndex = nil
+    laundryMachineType = nil
+    laundryWetPicked = {}
+    laundryDryPicked = {}
 end
 
 function SetTaskAnimationLocation(location)
@@ -125,6 +132,27 @@ end
 
 function ClearLaundryStageLocation()
     laundryStageLocation = nil
+end
+
+function SetLaundryMachineStage(machine, index, showOutline, outlineColor)
+    laundryStageLocation = machine == 'dryer' and Config.LaundryDryerLocs[index] or Config.LaundryWasherLocs[index]
+    laundryWasherIndex = index
+    laundryMachineType = machine
+    if showOutline ~= false then
+        SetLaundryMachineOutline(machine, index, true, outlineColor or (machine == 'washer' and 'yellow' or nil))
+    end
+end
+
+function GetLaundryMachineIndex()
+    return laundryWasherIndex
+end
+
+function HighlightAvailableLaundryWashers()
+    for i = 1, 4 do SetLaundryMachineOutline('washer', i, not laundryWetPicked[i], 'yellow') end
+end
+
+function HighlightAvailableLaundryDryers()
+    for i = 1, 4 do SetLaundryMachineOutline('dryer', i, not laundryDryPicked[i], 'yellow') end
 end
 
 function SetLaundryAnimationProp(prop)
@@ -265,11 +293,30 @@ function UpdatePrisonTaskPoint()
             end
             return
         end
+        if job == 2 and doneTasks % 2 == 1 and doneTasks >= 9 and doneTasks <= 15 then
+            RemovePrisonTaskProp()
+            for i = 1, 4 do
+                if not laundryWetPicked[i] then
+                    local interactionCoords = GetLaundryWasherInteractionCoords(i)
+                    point('fixlife_prision_laundry_wet_' .. i, interactionCoords, 'Recoger la ropa mojada', 'Fixlife_prision:client:laundry_wet:' .. i, 'raindrops.svg')
+                end
+            end
+            return
+        end
+        if job == 2 and doneTasks >= 17 and doneTasks <= 20 then
+            RemovePrisonTaskProp()
+            for i = 1, 4 do
+                if not laundryDryPicked[i] then
+                    point('fixlife_prision_laundry_dry_' .. i, GetLaundryDryerInteractionCoords(i), 'Recoger la ropa seca', 'Fixlife_prision:client:laundry_dry:' .. i, 'sparkles.svg')
+                end
+            end
+            return
+        end
         local task = Config.JobOptions[job].Tasks[GetLaundryTaskIndex()]
         if task then
             SpawnPrisonTaskProp(task)
             local stageLocation = job == 2 and laundryStageLocation or nil
-            local interactionCoords = job == 2 and laundryWasherIndex and GetLaundryWasherInteractionCoords(laundryWasherIndex) or (stageLocation or task.TaskLoc).Loc
+            local interactionCoords = job == 2 and laundryStageLocation and laundryWasherIndex and (laundryMachineType == 'dryer' and GetLaundryDryerInteractionCoords(laundryWasherIndex) or GetLaundryWasherInteractionCoords(laundryWasherIndex)) or (stageLocation or task.TaskLoc).Loc
             if taskProp then interactionCoords = GetOffsetFromEntityInWorldCoords(taskProp, 0.5, 0.0, 1.0) end
             local icon = job == 3 and doneTasks % 2 == 0 and 'down-right.svg' or job == 2 and laundryIcons[doneTasks] or nil
             point('fixlife_prision_task', interactionCoords, Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:task', icon)
@@ -278,13 +325,38 @@ function UpdatePrisonTaskPoint()
 end
 
 for i = 1, 4 do
+    RegisterNetEvent('Fixlife_prision:client:laundry_wet:' .. i, function()
+        if not injail or using or isDead or job ~= 2 or doneTasks % 2 ~= 1 or doneTasks < 9 or doneTasks > 15 then return end
+        if laundryWetPicked[i] then return end
+        TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_laundry_wet_' .. i)
+        laundryWetPicked[i] = true
+        SetLaundryMachineOutlines('washer', false)
+        SetLaundryMachineStage('dryer', i)
+        StartLaundryWasherAction(i, function() TaskComplete(true) end)
+    end)
+end
+
+for i = 1, 4 do
+    RegisterNetEvent('Fixlife_prision:client:laundry_dry:' .. i, function()
+        if not injail or using or isDead or job ~= 2 or doneTasks < 17 or doneTasks > 20 then return end
+        if laundryDryPicked[i] then return end
+        TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_laundry_dry_' .. i)
+        laundryDryPicked[i] = true
+        SetLaundryMachineOutlines('dryer', false)
+        StartLaundryDryerAction(i, function() TaskComplete(true) end)
+    end)
+end
+
+for i = 1, 4 do
     RegisterNetEvent('Fixlife_prision:client:laundry_dirty:' .. i, function()
         if not injail or using or isDead or job ~= 2 or doneTasks % 2 ~= 1 or doneTasks > 7 then return end
         local selected = laundryDirtyPropByIndex[i]
         if laundryPicked[i] or not selected then return end
+        TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_laundry_dirty_' .. i)
         local animationOffset = laundryDirtyInteractionOffsets[i] or laundryDirtyInteractionOffset
         local animationCoords = selected and GetOffsetFromEntityInWorldCoords(selected, table.unpack(animationOffset))
         SetLaundryAnimationProp(selected)
+        SetEntityDrawOutline(selected, false)
         for j = #taskProps, 1, -1 do
             local prop = taskProps[j]
             if prop ~= selected then SetEntityDrawOutline(prop, false) end
@@ -294,8 +366,7 @@ for i = 1, 4 do
         local animationLocation = animationCoords and vector3(animationCoords.x+0.4, animationCoords.y, animationCoords.z - 1.0)
         local animationHeading = (GetEntityHeading(selected) + (laundryDirtyAnimationHeadingOffsets[i] or 0.0)) % 360.0
         SetTaskAnimationLocation(animationLocation and {Loc = animationLocation, Heading = animationHeading, World = true} or Config.LaundryDirtyLocs[i])
-        SetLaundryStageLocation(Config.LaundryWasherLocs[i])
-        laundryWasherIndex = i
+        SetLaundryMachineStage('washer', i, true, 'white')
         laundryPicked[i] = true
         TaskComplete()
     end)
@@ -374,9 +445,12 @@ RegisterNetEvent('Fixlife_prision:client:chest', function()
 end)
 RegisterNetEvent('Fixlife_prision:client:task', function()
     if not injail or using or isDead or job == 0 then return end
-    if job == 2 and doneTasks % 2 == 0 and doneTasks <= 8 then
+    TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_task')
+    if job == 2 and doneTasks % 2 == 0 and doneTasks <= 16 then
         if not laundryWasherIndex then return end
-        StartLaundryWasherAction(laundryWasherIndex, function() TaskComplete(true) end)
+        SetLaundryMachineOutline(laundryMachineType, laundryWasherIndex, false)
+        local action = laundryMachineType == 'dryer' and StartLaundryDryerAction or StartLaundryWasherAction
+        action(laundryWasherIndex, function() TaskComplete(true) end)
         return
     end
     if job == 3 and doneTasks % 2 == 0 then

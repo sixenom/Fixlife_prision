@@ -47,3 +47,5 @@ dependencies {
 }
 
 shared_scripts {'@ox_lib/init.lua'}
+
+data_file 'DLC_ITYP_REQUEST' 'stream/props_lavanderia.ytyp'

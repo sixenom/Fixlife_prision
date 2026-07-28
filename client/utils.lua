@@ -422,6 +422,7 @@ function LoadPropDict(model)
 end
 
 local laundryWasherProps = {}
+local laundryDryerProps = {}
 local laundryWasherBusy
 local laundryWasherDict = 'anim@scripted@cbr1@ig1_washmach_grab_cash@male@'
 local laundryWasherModel = 'm23_2_prop_m32_prtmachine_dryer_op'
@@ -431,6 +432,10 @@ function RemoveLaundryWasherProps()
     for i, prop in pairs(laundryWasherProps) do
         if DoesEntityExist(prop) then DeleteObject(prop) end
         laundryWasherProps[i] = nil
+    end
+    for i, prop in pairs(laundryDryerProps) do
+        if DoesEntityExist(prop) then DeleteObject(prop) end
+        laundryDryerProps[i] = nil
     end
 end
 
@@ -447,6 +452,19 @@ function EnsureLaundryWasherProps()
     end
 end
 
+function EnsureLaundryDryerProps()
+    for index, location in ipairs(Config.LaundryDryerLocs) do
+        if not laundryDryerProps[index] or not DoesEntityExist(laundryDryerProps[index]) then
+            LoadPropDict(laundryWasherModel)
+            local prop = CreateObject(joaat(laundryWasherModel), location.Loc.x, location.Loc.y, location.Loc.z, true, true, true)
+            SetEntityHeading(prop, location.Heading)
+            SetEntityAsMissionEntity(prop, true, true)
+            laundryDryerProps[index] = prop
+            SetModelAsNoLongerNeeded(laundryWasherModel)
+        end
+    end
+end
+
 function GetLaundryWasherInteractionCoords(index)
     local prop = laundryWasherProps[index]
     local offset = Config.LaundryWasherInteractionOffsets[index]
@@ -456,19 +474,66 @@ function GetLaundryWasherInteractionCoords(index)
     return Config.LaundryWasherLocs[index].Loc
 end
 
+function GetLaundryDryerInteractionCoords(index)
+    local prop = laundryDryerProps[index]
+    local offset = Config.LaundryDryerInteractionOffsets[index]
+    if prop and DoesEntityExist(prop) and offset then
+        return GetOffsetFromEntityInWorldCoords(prop, table.unpack(offset))
+    end
+    return Config.LaundryDryerLocs[index].Loc
+end
+
+function SetLaundryMachineOutline(machine, index, enabled, color)
+    local props = machine == 'dryer' and laundryDryerProps or laundryWasherProps
+    local prop = props[index]
+    if prop and DoesEntityExist(prop) then
+        local rgb = color == 'yellow' and {255, 200, 0} or {255, 255, 255}
+        SetEntityDrawOutlineColor(rgb[1], rgb[2], rgb[3], 255)
+        SetEntityDrawOutlineShader(1)
+        SetEntityDrawOutline(prop, enabled)
+    end
+end
+
+function SetLaundryMachineOutlines(machine, enabled, color)
+    local props = machine == 'dryer' and laundryDryerProps or laundryWasherProps
+    for index in pairs(props) do SetLaundryMachineOutline(machine, index, enabled, color) end
+end
+
+function ClearLaundryMachineOutlines()
+    for _, props in ipairs({laundryWasherProps, laundryDryerProps}) do
+        for _, prop in pairs(props) do
+            if DoesEntityExist(prop) then SetEntityDrawOutline(prop, false) end
+        end
+    end
+end
+
 CreateThread(function()
-    Wait(1000)
-    EnsureLaundryWasherProps()
+    while true do
+        Wait(2000)
+        if injail and NetworkIsSessionStarted() then
+            EnsureLaundryWasherProps()
+            EnsureLaundryDryerProps()
+        elseif not injail and next(laundryWasherProps) then
+            RemoveLaundryWasherProps()
+        end
+    end
 end)
 
-function StartLaundryWasherAction(index, finished)
+local function StartLaundryMachineAction(machine, index, finished)
     if laundryWasherBusy then return end
-    local location = Config.LaundryWasherLocs[index]
+    local locations = machine == 'dryer' and Config.LaundryDryerLocs or Config.LaundryWasherLocs
+    local props = machine == 'dryer' and laundryDryerProps or laundryWasherProps
+    local location = locations[index]
     if not location then return end
     laundryWasherBusy = true
     using = true
-    EnsureLaundryWasherProps()
-    local prop = laundryWasherProps[index]
+    inAnim.Dict = nil
+    inAnim.Anim = nil
+    inAnim.Atr = 0
+    inAnim.Freeze = false
+    ClearPedTasksImmediately(PlayerPedId())
+    if machine == 'dryer' then EnsureLaundryDryerProps() else EnsureLaundryWasherProps() end
+    local prop = props[index]
 
     CreateThread(function()
         local ped = PlayerPedId()
@@ -481,7 +546,13 @@ function StartLaundryWasherAction(index, finished)
         NetworkStartSynchronisedScene(scene)
         Wait(GetAnimDuration(laundryWasherDict, 'enter') * 1000)
         TaskStartScenarioInPlace(ped, 'PROP_HUMAN_BUM_BIN', 0, true)
-        Wait(30000)
+        Wait(10000)
+        for i = #PlayerHasProp, 1, -1 do
+            if PlayerHasProp[i].id == 'task' then
+                if DoesEntityExist(PlayerHasProp[i].object) then DeleteObject(PlayerHasProp[i].object) end
+                table.remove(PlayerHasProp, i)
+            end
+        end
         local closeScene = CreateSynchronizedScene(location.Loc.x, location.Loc.y, location.Loc.z, 0.0, 0.0, location.Heading, 2)
         TaskSynchronizedScene(ped, closeScene, laundryWasherDict, 'enter', 8.0, -8.0, 0, 0, 1000.0, 0)
         SetSynchronizedScenePhase(closeScene, 0.99)
@@ -502,6 +573,14 @@ function StartLaundryWasherAction(index, finished)
         laundryWasherBusy = false
         if finished then finished() end
     end)
+end
+
+function StartLaundryWasherAction(index, finished)
+    StartLaundryMachineAction('washer', index, finished)
+end
+
+function StartLaundryDryerAction(index, finished)
+    StartLaundryMachineAction('dryer', index, finished)
 end
 
 local dryerTestProp

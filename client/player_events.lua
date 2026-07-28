@@ -3,6 +3,26 @@ AddEventHandler('HD_Jail:onPlayerDeath', function()
 	local PedKiller = GetPedSourceOfDeath(GetPlayerPed(PlayerId()))
 	local Killer = nil
 	isDead = true
+	if job ~= 0 then
+		TriggerServerEvent('HD_Jail:SetJob', 0, false)
+		RemovePrisonInteractionPoints()
+		ResetLaundryRoute()
+		RemoveLaundryVehicle()
+		for i = #PlayerHasProp, 1, -1 do
+			if PlayerHasProp[i].id == 'task' then
+				if DoesEntityExist(PlayerHasProp[i].object) then DeleteObject(PlayerHasProp[i].object) end
+				table.remove(PlayerHasProp, i)
+			end
+		end
+		inAnim.Dict = nil
+		inAnim.Anim = nil
+		inAnim.Atr = 0
+		inAnim.Freeze = false
+		doneTasks = 0
+		taskMax = 0
+		job = 0
+		exports['Fixlife_hud']:clearHudTimer()
+	end
 	TriggerServerEvent('HD_Jail:PlayerDie', true)
 	if IsEntityAPed(PedKiller) and IsPedAPlayer(PedKiller) then
 		if GetPlayerServerId(PedKiller) ~= GetPlayerServerId(PlayerId()) then
