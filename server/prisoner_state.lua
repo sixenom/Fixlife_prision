@@ -1,6 +1,7 @@
+RegisterServerEvent('HD_Jail:UpdateClothes')
 AddEventHandler('HD_Jail:UpdateClothes', function(numie)
     local xPlayer = Qbox.GetPlayer(source)
-    if not xPlayer or type(numie) ~= 'table' then return end
+    if not xPlayer or not IsPrisoner(source, xPlayer) or type(numie) ~= 'table' or #json.encode(numie) > 10000 then return end
 
     JailStorage.Get(xPlayer.identifier, function(newData)
         newData.clothes = numie
@@ -10,6 +11,8 @@ end)
 
 RegisterServerEvent('HD_Jail:Ate')
 AddEventHandler('HD_Jail:Ate', function()
+    local xPlayer = Qbox.GetPlayer(source)
+    if not xPlayer or not IsPrisoner(source, xPlayer) or not IsNearPoint(source, Config.GetFoodLoc.Loc, 2.0) or not CheckCooldown(source, 'eat', 3000) then return end
     local currentHunger = exports.qbx_core:GetMetadata(source, 'hunger') or 0
     local currentThirst = exports.qbx_core:GetMetadata(source, 'thirst') or 0
     exports.qbx_core:SetMetadata(source, 'hunger', math.min(100, currentHunger + math.floor(Config.FoodAmt / 10000)))
@@ -71,7 +74,7 @@ end)
 RegisterServerEvent('HD_Jail:SetJob')
 AddEventHandler('HD_Jail:SetJob', function(jobii, flip)
     local xPlayer = Qbox.GetPlayer(source)
-    if not xPlayer or (jobii ~= 0 and not Config.JobOptions[jobii]) then return end
+    if not xPlayer or not IsPrisoner(source, xPlayer) or (jobii ~= 0 and not Config.JobOptions[jobii]) then return end
     local ident = xPlayer.identifier
     local found1 = 0
     local found2 = 0
@@ -138,9 +141,17 @@ AddEventHandler('HD_Jail:SetJob', function(jobii, flip)
 end)
 
 RegisterServerEvent('HD_Jail:TaskComplete')
-AddEventHandler('HD_Jail:TaskComplete', function(taskJob)
+AddEventHandler('HD_Jail:TaskComplete', function(taskJob, taskIndex)
     local xPlayer = Qbox.GetPlayer(source)
-    if not xPlayer or not Config.JobOptions[taskJob] then return end
+    taskJob = tonumber(taskJob)
+    taskIndex = tonumber(taskIndex)
+    local jobData = Config.JobOptions[taskJob]
+    local taskData = jobData and jobData.Tasks[taskIndex]
+    local ped = GetPlayerPed(source)
+    if not xPlayer or not IsPrisoner(source, xPlayer) or xPlayer.job.name ~= 'prisoner' or not HasPrisonJob(source, taskJob, xPlayer) or not CheckCooldown(source, 'task', 1500) or not taskData or ped <= 0 then return end
+
+    local taskCoords = taskData.TaskLoc and taskData.TaskLoc.Loc
+    if not taskCoords or #(GetEntityCoords(ped) - taskCoords) > 6.0 then return end
     local ident = xPlayer.identifier
     local found1 = 0
     local found2 = 0

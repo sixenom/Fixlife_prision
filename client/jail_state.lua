@@ -934,64 +934,7 @@ Citizen.CreateThread(function()
 			local dist = Vdist(Config.ItemLoc.Loc.x, Config.ItemLoc.Loc.y, Config.ItemLoc.Loc.z, coords)
 			if not using then
 				if dist <= Config.ShowItemDist then
-					Citizen.Wait(5)
-					if dist <= Config.ItemTextDist then
-						if false then
-							canGrab = false
-							SetEntityCoords(ped, Config.ItemLoc.Loc.x, Config.ItemLoc.Loc.y, Config.ItemLoc.Loc.z - 1, false, false, false, false)
-							SetEntityHeading(ped, Config.ItemLoc.Heading)
-							
-
-							RequestAnimDict('anim@amb@clubhouse@bar@drink@idle_a')
-							
-							LoadAnim('anim@amb@clubhouse@bar@drink@idle_a')
-
-							lib.progressBar({ --pertenencias
-								duration = Config.RetreiveTime *1000,
-								label = Config.Sayings[13],
-								icon = 'fixlife.svg',
-								position = 'bottom',
-								useWhileDead = false,
-								canCancel = false,
-								disable = {
-									car = true,
-									move = true,
-									combat = true,
-									mouse = false,
-								},
-							},
-							TaskPlayAnim(ped, "anim@amb@clubhouse@bar@drink@idle_a", "idle_a_bartender", 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-						)
-							
-							inAnim.Dict = 'anim@amb@clubhouse@bar@drink@idle_a'
-							inAnim.Anim = 'idle_a_bartender'
-							inAnim.Atr = 1
-							inAnim.Freeze = true
-							FreezeEntityPosition(ped, true)
-							-- Citizen.Wait(Config.RetreiveTime *1000)
-							TriggerServerEvent('HD_Jail:RetrieveItems', itemzie)
-							local removes = {}
-							for i = 1, #blips, 1 do
-								if blips[i].id == 'items' then
-									table.insert(removes, i)
-								end
-							end
-							for i = 1, #removes, 1 do
-								if DoesBlipExist(blips[removes[i]].data) then
-									RemoveBlip(blips[removes[i]].data)
-								end
-								table.remove(blips[removes[i]])
-							end
-							RemoveAnimDict("anim@amb@clubhouse@bar@drink@idle_a")
-							FreezeEntityPosition(ped, false)
-							inAnim.Dict = nil
-							inAnim.Anim = nil
-							inAnim.Atr = 0
-							inAnim.Freeze = false
-							ClearPedTasksImmediately(ped)
-							itemzie = {} 
-						end
-					end
+					Citizen.Wait(250)
 				else
 					Citizen.Wait(1000)
 				end
@@ -1003,7 +946,7 @@ Citizen.CreateThread(function()
 
 			if not using and not isDead then
 				if dist <= Config.SeeWatchDist then
-					Citizen.Wait(5)
+					Citizen.Wait(100)
 					if dist <= Config.WatchDist then
 						breakout2 = false
 						breakout4 = true
@@ -1025,42 +968,7 @@ Citizen.CreateThread(function()
 			
 			if not using and not isDead then
 				if dist <= Config.SeeDist then
-					Citizen.Wait(5)
-					if jailLocs[closestLoc] ~= nil then
-						if jailLocs[closestLoc].Sub then
-						else
-						end
-					end
-					
-					if dist <= Config.TextDist then
-						if false then
-							if jailLocs[closestLoc].Id == 'jobman' then
-								inMenu.coords = Config.JobManLoc.Loc 
-								inMenu.is = true
-								OpenJobManMenu()
-							elseif jailLocs[closestLoc].Id == 'chest' then
-								OpenChest(true)
-							elseif jailLocs[closestLoc].Id == 'food' then
-								OpenFood()
-							elseif jailLocs[closestLoc].Id == 'info' then
-								inMenu.coords = Config.InfoPedLoc[infoLoc].Loc 
-								inMenu.is = true
-								OpenInfoMenu()
-							elseif jailLocs[closestLoc].Id == 'shower' then
-								StartShower()
-							elseif jailLocs[closestLoc].Id == 'break' then
-								if breakout3 then
-									inMenu.coords = nil
-									inMenu.is = false
-									BreakOutStart()
-								else
-									inMenu.coords = Config.Cells[jailCell].BreakLoc.Loc
-									inMenu.is = true
-									OpenWallMenu()
-								end
-							end
-						end
-					end
+					Citizen.Wait(250)
 				else 
 					Citizen.Wait(1000)
 				end
@@ -1081,15 +989,8 @@ Citizen.CreateThread(function()
 			local dist = Vdist(Config.BreakLocs[closestBreak].StartLoc.Loc.x, Config.BreakLocs[closestBreak].StartLoc.Loc.y, Config.BreakLocs[closestBreak].StartLoc.Loc.z, coords)
 
 			if dist <= Config.SeeBreakDist and not isDead then
-				Citizen.Wait(5)
+				Citizen.Wait(250)
 
-				if dist <= Config.BreakTextDist then
-					if false then
-						OpenBreakingMenu()
-						inMenu.coords = Config.BreakLocs[closestBreak].StartLoc.Loc
-						inMenu.is = true
-					end
-				end
 			else
 				Citizen.Wait(1000)
 			end
@@ -1099,39 +1000,7 @@ Citizen.CreateThread(function()
 			local dist = Vdist(Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z, coords)
 
 			if dist <= Config.ShowerFullDist then
-				Citizen.Wait(5)
-				for i = 1, #Config.ShowerLocs, 1 do
-					local dist2 = Vdist(Config.ShowerLocs[i].x, Config.ShowerLocs[i].y, Config.ShowerLocs[i].z, coords)
-					if dist2 <= Config.ShowerMarkerDist then
-					end
-				end
-
-				if dist <= Config.ShowerDist and not isDead then
-					if false then
-						showerNow = false
-						SetEntityCoords(ped, Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z - 1, false, false, false, false)
-
-						if not HasNamedPtfxAssetLoaded("core") then
-							RequestNamedPtfxAsset("core")
-							while not HasNamedPtfxAssetLoaded("core") do
-								Wait(1)
-							end
-						end
-						TaskStartScenarioInPlace((PlayerPedId()), "PROP_HUMAN_STAND_IMPATIENT", 0, true)
-						-- exports.rprogress:Start( Config.Sayings[118], 18 *1000)
-						UseParticleFxAssetNextCall("core") particles  = StartParticleFxLoopedAtCoord("ent_sht_water", Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z +1.8, 0.0, 0.0, 0.0, 1.0, false, false, false, false) UseParticleFxAssetNextCall("core") Citizen.Wait(3000) particles2  = StartParticleFxLoopedAtCoord("ent_sht_water", Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z +1.8, 0.0, 0.0, 0.0, 1.0, false, false, false, false) UseParticleFxAssetNextCall("core") Citizen.Wait(3000) particles3  = StartParticleFxLoopedAtCoord("ent_sht_water", Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z +1.8, 0.0, 0.0, 0.0, 1.0, false, false, false, false) UseParticleFxAssetNextCall("core") Citizen.Wait(3000) particles4  = StartParticleFxLoopedAtCoord("ent_sht_water", Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z +1.8, 0.0, 0.0, 0.0, 1.0, false, false, false, false) UseParticleFxAssetNextCall("core") Citizen.Wait(3000) particles5  = StartParticleFxLoopedAtCoord("ent_sht_water", Config.ShowerLocs[closestShower].x, Config.ShowerLocs[closestShower].y, Config.ShowerLocs[closestShower].z +1.8, 0.0, 0.0, 0.0, 1.0, false, false, false, false)
-						Citizen.Wait(6000)
-						ClearPedTasksImmediately(ped)
-						using = false
-						TriggerEvent('skinchanger:getSkin', function(skin)
-							if skin.sex == 0 then
-								TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms.male)
-							else
-								TriggerEvent('skinchanger:loadClothes', skin, Config.Uniforms.female)
-							end
-						end)
-					end
-				end
+				Citizen.Wait(250)
 			else
 				local ped = PlayerPedId()
 				local coords = GetEntityCoords(ped)

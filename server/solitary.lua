@@ -1,5 +1,6 @@
 RegisterServerEvent('HD_Jail:CheckSol')
 AddEventHandler('HD_Jail:CheckSol', function(id)
+    if tonumber(id) ~= source then return end
     local xPlayer = Qbox.GetPlayer(id)
     if not xPlayer then return end
     local ident = xPlayer.identifier
@@ -20,12 +21,11 @@ end)
 
 RegisterServerEvent('HD_Jail:SendToSol')
 AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
+    if tonumber(source) ~= 65535 then return end
     tima = math.floor(tonumber(tima) or 0)
     if tima <= 0 then return end
-    local xTarget = Qbox.GetPlayer(source)
-    if xTarget == nil then
-        local xPlayer = Qbox.GetPlayer(id)
-        if not xPlayer then return end
+    local xPlayer = Qbox.GetPlayer(tonumber(id))
+    if xPlayer then
         local ident = xPlayer.identifier
         local timaz = tima *60
         local found = 0

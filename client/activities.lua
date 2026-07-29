@@ -394,7 +394,6 @@ function OpenWallMenu()
 					hnum = rannum
 					menu.close()
 					if hnum <= Config.RoomTools[data.current.value].Percent then
-						TriggerServerEvent('HD_Jail:SuccessFul', GetPlayerServerId(PlayerId()), Config.RoomTools[data.current.value].Time *1000)
 						using = true
 						RequestAnimDict('mini@repair')
 									
@@ -427,6 +426,7 @@ function OpenWallMenu()
 								mouse = false,
 							},
 						}, RemoveAnimDict("mini@repair"))	
+						TriggerServerEvent('HD_Jail:SuccessFul', data.current.value)
 						FreezeEntityPosition(ped, false)
 						inAnim.Dict = nil
 						inAnim.Anim = nil

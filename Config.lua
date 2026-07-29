@@ -1,12 +1,13 @@
 Config = {}
+
+-- ============================================================================
+-- 1. CONFIGURACION BASE, PERMISOS Y DISTANCIAS
+-- ============================================================================
 -- No modificar
 Config.CurrentV = "1.0 HD" -- No modificar
 
 -- Configuraciones Importantes
-Config.OLDESX = false -- Si estás usando un Sistema de Peso = false, Sistema de Límites = true
-Config.ESXVersion = '1.2' -- Ejemplos (1.0, 1.1, 1.2)
-Config.MenuLoc = 'right' -- Dónde se mostrarán todos los menús de ESX en este scrip
-Config.Notifications = 'esx' -- Puede ser {esx, mythic, tnotify}
+Config.MenuLoc = 'right' -- Alineación de los menús
 Config.UsingHDBlips = true -- Esto es si estás usando mi script de manejo gratuito de indicadores (blips). Si es así, solo funcionará para el indicador de prisión.
 Config.SyncInterval = 2 -- Con qué frecuencia el servidor actualiza la base de datos para los tiempos restantes de los jugadores
 Config.MaxPerCell = 2 -- Cuántos están permitidos por celda. Se recomienda dejarlo alto.
@@ -59,7 +60,7 @@ Config.JailLoc = vector3(3908.3909, 25.6009, 48.8995) -- Ubicación de la prisi�
 Config.TpBack = true -- Si los jugadores son teleportados de regreso cuando salen de la prisión sin usar el script de escape (se recomienda mantenerlo en true)
 Config.MaxTpDist = 250 -- A qué distancia se te teleportará de regreso
 Config.MaxSolTpDist = 5 -- A qué distancia te teleportará de regreso desde la celda de castigo
-Config.MaxMenuDist = 2 -- A qué distancia puedes alejarte antes de que el menú de ESX se cierre automáticamente
+Config.MaxMenuDist = 2 -- Distancia máxima antes de cerrar el menú
 
 Config.RanMessage = true -- Si da notificaciones aleatorias para los prisioneros
 Config.RanMessageTime = 5 -- Cada cuánto tiempo envía un mensaje (en minutos)
@@ -97,6 +98,9 @@ Config.PunchProp = nil -- Prop a generar mientras se usa el objeto (dejar nil si
 Config.HaveGuide = true -- Si hay una guía de la prisión cuando son enviados por primera vez
 Config.TimePer = 5 -- Cuánto tiempo por cámara para la guía (en segundos)
 
+-- ============================================================================
+-- 2. ENTRADA A PRISION Y CAMARAS DE INTRODUCCION
+-- ============================================================================
 Config.PrisonCam = vector3(3911.7275, -132.4698, 89.8866) -- Posición de la vista de la cámara
 Config.PrisonCamRot = {x = -35.0, y = 0.0, z = -10.0} -- Rotación de la vista de la cámara
 Config.PrisonIntroDuration = 20
@@ -257,6 +261,9 @@ Config.DontGiveBackItems =
 Config.AlertServerUponJail = true -- Si se envía un mensaje en el chat cuando alguien es encarcelado
 
 -- Configuraciones de Salida
+-- ============================================================================
+-- 3. SALIDA Y RECUPERACION DE OBJETOS
+-- ============================================================================
 Config.LeaveLoc = {
     Loc = vector3(1829.1700, 2599.7073, 45.5638),
     Heading = 4.0136
@@ -275,13 +282,16 @@ Config.ItemTextDist = 1 -- Distancia para mostrar el texto 3D sobre el marcador
 Config.RetreiveTime = 5 -- Cuánto tiempo se necesita para recoger los objetos de nuevo (en segundos)
 
 -- Configuraciones de Comida
+-- ============================================================================
+-- 4. COMIDA, INVENTARIO Y ACTIVIDADES DIARIAS
+-- ============================================================================
 Config.GetFoodLoc = {Loc = vector3(3922.36, 32.64, 23.89), Heading = 87.82} -- Dónde agarrar comida en la prisión
 Config.FoodBlip = {Spawn = true, Sprite = 269, Color = 0, Size = 0.9} -- Indicador (blip) en el mapa para agarrar comida en la prisión
 Config.GrabFoodTime = 5 -- Cuánto tiempo se necesita para agarrar la comida (en segundos)
 Config.EatTime = 7 -- Cuánto tiempo se necesita para comer la comida (en segundos)
 
-Config.FoodAmt = 100000 -- Cuánto Hambre se agrega a esx_status (de 1,000,000)
-Config.DrinkAmt = 100000 -- Cuánta Sed se agrega a esx_status (de 1,000,000)
+Config.FoodAmt = 100000 -- Hambre añadida mediante metadata de Qbox
+Config.DrinkAmt = 100000 -- Sed añadida mediante metadata de Qbox
 
 Config.FoMarkNum = 29 -- Número del marcador para la comida
 Config.FoMarkColor = {r = 46, g = 166, b = 25} -- Color del marcador para la comida
@@ -301,6 +311,9 @@ Config.ChMarkColor = {r = 16, g = 83, b = 227} -- Color del marcador para el inv
 Config.ChMarkSize = {x = 0.5, y = 0.5, z = 0.3} -- Tamaño del marcador para el inventario de la cama
 
 -- Configuración de Creación
+-- ============================================================================
+-- 5. CREACION, INFORMACION Y ADMINISTRACION DE TRABAJOS
+-- ============================================================================
 Config.Crafts = { -- Todas las cosas que se pueden crear con el Viejo
     [1] = {
         Name = "Cuchillo improvisado",
@@ -434,6 +447,9 @@ Config.Crafts = { -- Todas las cosas que se pueden crear con el Viejo
 }
 
 -- Configuraciones de Información (Configuraciones del Anciano)
+-- ============================================================================
+-- 5A. NPCS, BLIPS Y UBICACIONES DE TRABAJO
+-- ============================================================================
 Config.InfoPed = 'csb_rashcosvki' -- Modelo del peatón del Anciano
 Config.InfoPedChangeTime = 3 -- Cuánto tiempo hasta que el anciano cambie de ubicación (en minutos)
 Config.InfoPedLoc =
@@ -454,6 +470,9 @@ Config.JobManLoc = {Loc = vector3(3915.36, 20.52, 23.85), Heading = 357.52} -- U
 Config.JobManLoc2 = {Loc = vector3(4082.6423, 42.1875, 18.7893), Heading = 15.4042}
 Config.JobManBlip = {Spawn = true, Sprite = 267, Color = 0, Size = 0.9} -- Blip del administrador de trabajo
 Config.JobManPed = 's_m_m_prisguard_01' -- Peatón del administrador de trabajo
+-- ---------------------------------------------------------------------------
+-- Lavanderia: vehiculo y puntos de trabajo
+-- ---------------------------------------------------------------------------
 Config.LaundryVehicleNpcLoc = {Loc = vector3(4075.7576, 41.4845, 18.7589), Heading = 109.3173}
 Config.LaundryVehicleNpc = 's_m_m_prisguard_01'
 Config.LaundryVehicleBlip = {Spawn = true, Sprite = 225, Color = 0, Size = 0.8}
@@ -500,6 +519,24 @@ Config.LaundryDryerInteractionOffsets = {
     {0.0, -0.8, 0.8},
     {0.0, -0.8, 0.8}
 }
+Config.LaundryStorageAction = {
+    Loc = vector3(4072.8677, 55.6293, 19.5065),
+    Heading = 15.9948,
+    Dict = 'mp_am_hold_up',
+    Anim = 'purchase_beerbox_shopkeeper',
+    Duration = 2500
+}
+
+-- Limpieza de basura: primer grupo de bolsas y contenedor.
+Config.GarbageBagLocs = {
+    vector3(3994.39526, 49.75657, 18.4567528),
+    vector3(4046.04565, 23.92728, 19.9110374),
+    vector3(4037.053, 25.443264, 20.1352043),
+    vector3(4019.80322, 21.315403, 19.9355831)
+}
+Config.GarbageDumpsterLoc = {Loc = vector3(4019.88086, -9.086115, 17.75792), Heading = 0.0}
+Config.GarbageDumpsterModel = 'prop_dumpster_01a'
+Config.GarbageDumpsterAnim = {Dict = '17mov_garbage', AnimName = 'ped_dumpster_01a_1', Time = 10}
 
 Config.JMMarkNum = 27 -- Número del marcador 3D del administrador de trabajo
 Config.JMMarkColor = {r = 255, g = 0, b = 255} -- Color del marcador 3D del administrador de trabajo
@@ -507,6 +544,9 @@ Config.JMMarkSize = {x = 1.0, y = 1.0, z = 0.5} -- Tamaño del marcador 3D del a
 
 Config.SeeTaskMark = 5 -- Qué tan cerca debes estar para ver el marcador 3D
 Config.SeeTaskText = 0.8 -- Qué tan cerca debes estar para realizar la tarea
+-- ============================================================================
+-- 5B. TRABAJOS Y TAREAS
+-- ============================================================================
 Config.JobOptions = {
     [1] = {
         Name = "Limpiador de Duchas",
@@ -1012,8 +1052,8 @@ Config.JobOptions = {
                     Prop = 'bkr_prop_fakeid_binbag_01',
                     Offsets = {
                         First = 0.0,
-                        Second = -0.12,
-                        Third = -0.10,
+                        Second = -0.13,
+                        Third = 0.0,
                         Four = 0.0,
                         Five = 0.0,
                         Six = 0.0
@@ -1961,442 +2001,442 @@ Config.JobOptions = {
             }
         }
     },
+    -- [4] = {
+    --     Name = "Cocinero",
+    --     TimeRemove = 25,
+    --     StealChance = 4,
+    --     StealItems = {
+    --         [1] = {Name = "Botella", Item = 'hd_bottle', Chance = 2},
+    --         [2] = {Name = "Grasa", Item = 'hd_grease', Chance = 5},
+    --         [3] = {Name = "Líquido sucio", Item = 'hd_dliquid', Chance = 5},
+    --         [4] = {Name = "Cuchara", Item = 'hd_spoon', Chance = 8},
+    --         [5] = {Name = "Cucharón", Item = 'hd_ladle', Chance = 7},
+    --         [6] = {Name = "Sobre de sabor", Item = 'hd_fpacket', Chance = 10}
+    --     },
+    --     Tasks = {
+    --         [1] = {
+    --             TaskName = "Agarrar sartén",
+    --             TaskLoc = {
+    --                 Loc = vector3(1778.3149414062, 2593.6015625, 45.797836303711),
+    --                 Heading = 202.38
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 5,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = true,
+    --                 Prop = 'prop_copper_pan',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [2] = {
+    --             TaskName = "Iniciar cocina",
+    --             TaskLoc = {
+    --                 Loc = vector3(1777.9334716797, 2597.5095214844,
+    --                               45.797836303711),
+    --                 Heading = 273.88
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 10,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [3] = {
+    --             TaskName = "Agarra comida",
+    --             TaskLoc = {
+    --                 Loc = vector3(1776.4860839844, 2599.3669433594,
+    --                               45.797836303711),
+    --                 Heading = 355.15
+    --             },
+    --             Anim = {Dict = 'mp_arresting', AnimName = 'a_uncuff'},
+    --             Time = 10,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = true,
+    --                 Prop = 'ng_proc_food_ornge1a',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [4] = {
+    --             TaskName = "Cocinar los alimentos",
+    --             TaskLoc = {
+    --                 Loc = vector3(1777.9334716797, 2597.5095214844,
+    --                               45.797836303711),
+    --                 Heading = 273.88
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 20,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [5] = {
+    --             TaskName = "Cajas de agarre",
+    --             TaskLoc = {
+    --                 Loc = vector3(1782.3448486328, 2594.396484375,
+    --                               45.797836303711),
+    --                 Heading = 273.6
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 5,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = true,
+    --                 Prop = 'ng_proc_food_burg02a',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [6] = {
+    --             TaskName = "Establecer cuadros hacia abajo",
+    --             TaskLoc = {
+    --                 Loc = vector3(1779.2886962891, 2593.552734375,
+    --                               45.797836303711),
+    --                 Heading = 180.42
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 5,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [7] = {
+    --             TaskName = "Coge comida cocinada",
+    --             TaskLoc = {
+    --                 Loc = vector3(1777.8962402344, 2597.3732910156,
+    --                               45.797821044922),
+    --                 Heading = 267.45
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 5,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = true,
+    --                 Prop = 'prop_copper_pan',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [8] = {
+    --             TaskName = "Coloque los alimentos cocinados",
+    --             TaskLoc = {
+    --                 Loc = vector3(1778.5102539062, 2592.2087402344,
+    --                               45.797821044922),
+    --                 Heading = 359.12
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 5,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [9] = {
+    --             TaskName = "Caja de comida",
+    --             TaskLoc = {
+    --                 Loc = vector3(1779.1472167969, 2593.5998535156,
+    --                               45.797821044922),
+    --                 Heading = 184.67
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 10,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = true,
+    --                 Prop = 'ng_proc_food_burg02a',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [10] = {
+    --             TaskName = "Plato De Comida",
+    --             TaskLoc = {
+    --                 Loc = vector3(1779.4445800781, 2592.0959472656,
+    --                               45.797821044922),
+    --                 Heading = 355.66
+    --             },
+    --             Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+    --             Time = 10,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = true,
+    --                 Prop = 'prop_food_bs_tray_02',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         },
+    --         [11] = {
+    --             TaskName = "Repartir comida",
+    --             TaskLoc = {
+    --                 Loc = vector3(1779.4532470703, 2591.4274902344,
+    --                               45.797821044922),
+    --                 Heading = 176.83
+    --             },
+    --             Anim = {
+    --                 Dict = 'anim@amb@clubhouse@bar@drink@idle_a',
+    --                 AnimName = 'idle_a_bartender'
+    --             },
+    --             Time = 10,
+    --             TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
+    --             MarkNum = 20,
+    --             MarkColor = {r = 229, g = 235, b = 52},
+    --             MarkSize = {x = 0.5, y = 0.5, z = 0.3},
+    --             AttachItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             },
+    --             CarryItem = {
+    --                 Attach = false,
+    --                 Prop = 'nil',
+    --                 Offsets = {
+    --                     First = 0.0,
+    --                     Second = 0.0,
+    --                     Third = -0.01,
+    --                     Four = 90.0,
+    --                     Five = 0.0,
+    --                     Six = 0.0
+    --                 }
+    --             }
+    --         }
+    --     }
+    -- },
     [4] = {
-        Name = "Cocinero",
-        TimeRemove = 25,
-        StealChance = 4,
-        StealItems = {
-            [1] = {Name = "Botella", Item = 'hd_bottle', Chance = 2},
-            [2] = {Name = "Grasa", Item = 'hd_grease', Chance = 5},
-            [3] = {Name = "Líquido sucio", Item = 'hd_dliquid', Chance = 5},
-            [4] = {Name = "Cuchara", Item = 'hd_spoon', Chance = 8},
-            [5] = {Name = "Cucharón", Item = 'hd_ladle', Chance = 7},
-            [6] = {Name = "Sobre de sabor", Item = 'hd_fpacket', Chance = 10}
-        },
-        Tasks = {
-            [1] = {
-                TaskName = "Agarrar sartén",
-                TaskLoc = {
-                    Loc = vector3(1778.3149414062, 2593.6015625, 45.797836303711),
-                    Heading = 202.38
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 5,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = true,
-                    Prop = 'prop_copper_pan',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [2] = {
-                TaskName = "Iniciar cocina",
-                TaskLoc = {
-                    Loc = vector3(1777.9334716797, 2597.5095214844,
-                                  45.797836303711),
-                    Heading = 273.88
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 10,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [3] = {
-                TaskName = "Agarra comida",
-                TaskLoc = {
-                    Loc = vector3(1776.4860839844, 2599.3669433594,
-                                  45.797836303711),
-                    Heading = 355.15
-                },
-                Anim = {Dict = 'mp_arresting', AnimName = 'a_uncuff'},
-                Time = 10,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = true,
-                    Prop = 'ng_proc_food_ornge1a',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [4] = {
-                TaskName = "Cocinar los alimentos",
-                TaskLoc = {
-                    Loc = vector3(1777.9334716797, 2597.5095214844,
-                                  45.797836303711),
-                    Heading = 273.88
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 20,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [5] = {
-                TaskName = "Cajas de agarre",
-                TaskLoc = {
-                    Loc = vector3(1782.3448486328, 2594.396484375,
-                                  45.797836303711),
-                    Heading = 273.6
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 5,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = true,
-                    Prop = 'ng_proc_food_burg02a',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [6] = {
-                TaskName = "Establecer cuadros hacia abajo",
-                TaskLoc = {
-                    Loc = vector3(1779.2886962891, 2593.552734375,
-                                  45.797836303711),
-                    Heading = 180.42
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 5,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [7] = {
-                TaskName = "Coge comida cocinada",
-                TaskLoc = {
-                    Loc = vector3(1777.8962402344, 2597.3732910156,
-                                  45.797821044922),
-                    Heading = 267.45
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 5,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = true,
-                    Prop = 'prop_copper_pan',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [8] = {
-                TaskName = "Coloque los alimentos cocinados",
-                TaskLoc = {
-                    Loc = vector3(1778.5102539062, 2592.2087402344,
-                                  45.797821044922),
-                    Heading = 359.12
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 5,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [9] = {
-                TaskName = "Caja de comida",
-                TaskLoc = {
-                    Loc = vector3(1779.1472167969, 2593.5998535156,
-                                  45.797821044922),
-                    Heading = 184.67
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 10,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = true,
-                    Prop = 'ng_proc_food_burg02a',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [10] = {
-                TaskName = "Plato De Comida",
-                TaskLoc = {
-                    Loc = vector3(1779.4445800781, 2592.0959472656,
-                                  45.797821044922),
-                    Heading = 355.66
-                },
-                Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
-                Time = 10,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = true,
-                    Prop = 'prop_food_bs_tray_02',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            },
-            [11] = {
-                TaskName = "Repartir comida",
-                TaskLoc = {
-                    Loc = vector3(1779.4532470703, 2591.4274902344,
-                                  45.797821044922),
-                    Heading = 176.83
-                },
-                Anim = {
-                    Dict = 'anim@amb@clubhouse@bar@drink@idle_a',
-                    AnimName = 'idle_a_bartender'
-                },
-                Time = 10,
-                TBlip = {Spawn = true, Sprite = 162, Color = 46, Size = 0.7},
-                MarkNum = 20,
-                MarkColor = {r = 229, g = 235, b = 52},
-                MarkSize = {x = 0.5, y = 0.5, z = 0.3},
-                AttachItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                },
-                CarryItem = {
-                    Attach = false,
-                    Prop = 'nil',
-                    Offsets = {
-                        First = 0.0,
-                        Second = 0.0,
-                        Third = -0.01,
-                        Four = 90.0,
-                        Five = 0.0,
-                        Six = 0.0
-                    }
-                }
-            }
-        }
-    },
-    [5] = {
         Name = "Limpiador de basura",
         TimeRemove = 25,
         StealChance = 3,
@@ -2908,7 +2948,68 @@ Config.JobOptions = {
     }
 }
 
+-- Ajustes activos del trabajo 2: limpieza de ropa.
+do
+    local startTask = {
+        TaskName = 'Agarra la ropa sucia',
+        TaskLoc = {Loc = vector3(4073.8359, 54.1713, 18.7869), Heading = 355.8455},
+        TBlip = {Spawn = true, Sprite = 162, Color = 3, Size = 0.7},
+        Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+        Time = 10,
+        AttachItem = {Attach = false},
+        CarryItem = {
+            Attach = true,
+            Prop = 'bkr_prop_fakeid_binbag_01',
+            Offsets = {First = 0.0, Second = -0.13, Third = -0.2, Four = 0.0, Five = 0.0, Six = 0.0}
+        }
+    }
+    local step = {TaskName = 'Tarea de lavandería', AttachItem = {Attach = false}, CarryItem = {Attach = false}}
+    step.Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'}
+    step.Time = 10
+    step.TaskLoc = startTask.TaskLoc
+    step.TBlip = startTask.TBlip
+    Config.JobOptions[2].Tasks = {
+        startTask, step, startTask, step, startTask, step, startTask, step,
+        step, step, step, step, step, step, step, step, step, step, step, step, step
+    }
+end
+
+-- Trabajo 4: limpiar basura.
+do
+    local tasks = {}
+    for i = 1, 4 do
+        tasks[#tasks + 1] = {
+            TaskName = 'Recoger bolsa de basura',
+            TaskLoc = {Loc = Config.GarbageBagLocs[i], Heading = 0.0},
+            TBlip = {Spawn = true, Sprite = 162, Color = 2, Size = 0.7},
+            Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+            Time = 10,
+            AttachItem = {Attach = false},
+            CarryItem = {Attach = true, Prop = 'prop_rub_binbag_06', Offsets = {First = 0.0, Second = -0.1, Third = -0.2, Four = 0.0, Five = 0.0, Six = 0.0}}
+        }
+        tasks[#tasks + 1] = {
+            TaskName = 'Dejar la basura',
+            TaskLoc = Config.GarbageDumpsterLoc,
+            TBlip = {Spawn = true, Sprite = 162, Color = 2, Size = 0.7},
+            Anim = Config.GarbageDumpsterAnim,
+            Time = Config.GarbageDumpsterAnim.Time,
+            AttachItem = {Attach = false},
+            CarryItem = {Attach = false}
+        }
+    end
+    Config.JobOptions[4] = {
+        Name = 'Limpiar basura',
+        TimeRemove = 10,
+        StealChance = 2,
+        StealItems = {},
+        Tasks = tasks
+    }
+end
+
 -- Configuraciones de uniformes
+-- ============================================================================
+-- 6. UNIFORMES Y CAMBIOS DE ROPA
+-- ============================================================================
 Config.Uniforms = { -- Ropa de los uniformes
     male = {
         ['tshirt_1'] = 15,
@@ -2969,6 +3070,9 @@ Config.Uniforms = { -- Ropa de los uniformes
 -- }
 
 -- Configuraciones de aislamiento
+-- ============================================================================
+-- 7. AISLAMIENTO Y BLOQUEO
+-- ============================================================================
 Config.Solitary = true -- Si quieres que haya aislamiento
 
 Config.Sol4Run = true -- Si quieres enviar a aislamiento a quienes escapen sin usar el recurso de prisión (por ejemplo, usando emotes para atravesar vallas y otros obstáculos)
@@ -2995,6 +3099,9 @@ Config.SolKillTime = 1 -- Tiempo en minutos para la opción anterior
 -- }
 
 -- Configuraciones de reanimación
+-- ============================================================================
+-- 8. HOSPITAL Y REANIMACION
+-- ============================================================================
 Config.Hospital = true -- Si quieres que haya hospital
 Config.DoctorPed = 's_m_m_doctor_01' -- Personaje médico del hospital
 Config.CheckUpTime = 10 -- Tiempo necesario para revisar a un prisionero (en segundos)
@@ -3053,6 +3160,9 @@ Config.BedLocs = {
 }
 
 -- Configuraciones de escape
+-- ============================================================================
+-- 9. ESCAPE Y TORRES DE VIGILANCIA
+-- ============================================================================
 Config.Breakout = true -- Si los prisioneros pueden escapar de la prisión
 Config.BreakHole = 2 -- Cantidad de excavaciones exitosas necesarias
 
@@ -3196,6 +3306,9 @@ Config.WatchTowers = { -- Todas las ubicaciones de las torres de vigilancia
 }
 
 -- Configuraciones de duchas
+-- ============================================================================
+-- 10. DUCHAS
+-- ============================================================================
 Config.Showers = true -- Si quieres que haya duchas en la prisión
 Config.ShowerLoc = {
     Loc = vector3(3909.3359, 41.9588, 23.8882),
@@ -3278,185 +3391,6 @@ Config.ShowerFit =
         }
     }
 
--- Todos los mensajes
-Config.RanMessages = {
-    [1] = "¡Huelo mal! ¡Ve a tomar una ducha!",
-    [3] = "¡Estás siendo perezoso! ¡Ve a hacer tu trabajo!"
-}
-
-Config.Sayings = { -- Todos los mensajes del recurso
-    [1] = "Prisión Federal de Alcatraz",
-    [2] = "Realizando Tarea",
-    [3] = " ~y~Prisión Federal de Alcatraz~w~ | Tiempo Restante:~r~ ",
-    [4] = "(s) ~w~| Trabajo =~o~ ",
-    [5] = "Te Están Enviando a la Cárcel",
-    [6] = "Ninguno",
-    [7] = "Juez",
-    [8] = " ha sido setenciado(a) a ",
-    [9] = "Gestor de Trabajo en la Cárcel",
-    [10] = "Anciano",
-    [11] = "Recuperación de Objetos en la Cárcel",
-    [12] = "[~p~E~w~] Recuperar Objetos",
-    [13] = "Recogiendo Pertinencias",
-    [14] = "[~p~E~w~] Gestor de Trabajo",
-    [15] = "Trabajos Disponibles",
-    [16] = "Sin Trabajo",
-    [17] = "Tareas: ",
-    [18] = "Deducción de Tiempo: ",
-    [19] = "Comenzar Trabajo",
-    [20] = "¡Elegiste un trabajo! ¡Ve a hacer las tareas!",
-    [21] = "(mins) en la Prisión Federal de Alcatraz | Razón: ",
-    [22] = "[~y~E~w~] ",
-    [23] = "Realizando Tarea",
-    [24] = "¡Completaste una tarea! ¡Ve a la siguiente tarea!",
-    [25] = "¡Completaste todas las tareas! ¡Se redujo tu tiempo y las tareas se reiniciaron!",
-    [26] = "Tarea: ",
-    [27] = "[~y~E~w~] Anciano",
-    [28] = "[~o~E~w~] Comenzar a Cavar",
-    [29] = "[~b~E~w~] Levantar Cama",
-    [30] = "[~g~E~w~] Obtener Comida",
-    [31] = "Inventario",
-    [32] = "Cafetería",
-    [33] = "Sin Objetos",
-    [34] = "Debajo de la Cama",
-    [35] = "Levantando la Cama",
-    [36] = "Bajando la Cama",
-    [37] = "¿Cuántos quieres sacar?",
-    [38] = "Cantidad/Mensaje Inválido",
-    [39] = "La cantidad es demasiado alta",
-    [40] = "Eliminar Objetos",
-    [41] = "Agregar Objetos",
-    [42] = "¿Cuántos te gustaría agregar?",
-    [43] = "Tomando bandeja de comida",
-    [44] = "[~y~E~w~] Comer Comida [~g~G~w~] Tirar",
-    [45] = "¿Sobre qué te gustaría hablar?",
-    [46] = "Escapando de aquí",
-    [47] = "Creando Objetos",
-    [48] = "¿Qué estabas buscando hacer?",
-    [49] = "¿Y sobre escapar?",
-    [50] = "Lo que necesito",
-    [51] = "Créalo",
-    [52] = "Necesario",
-    [53] = " ~r~Celda de Castigo ~w~| Tiempo Restante: ~y~",
-    [54] = "~w~(~r~s~w~)",
-    [55] = "Información de Encarcelamiento",
-    [56] = "ID: ",
-    [57] = "Tiempo: ",
-    [58] = "Tiempo: Ninguno",
-    [59] = "Razón",
-    [60] = "Confirmar",
-    [61] = "Cambiar ID para Encarcelamiento",
-    [62] = "¡El tiempo de cárcel es demasiado largo, superior al tiempo máximo en la cárcel!",
-    [63] = "Cambiar Cantidad de Tiempo",
-    [64] = "Razón de Encarcelamiento",
-    [65] = "Editar Razón",
-    [66] = "Confirmar Razón",
-    [67] = "Ver Razón",
-    [68] = "Razón de Cárcel",
-    [69] = "Ninguna",
-    [70] = "El Doctor te está examinando",
-    [71] = "¿Sobre qué te gustaría saber?",
-    [72] = "Escapando de la Celda",
-    [73] = "Rompiendo la Valla 1",
-    [74] = "Rompiendo la Valla 2",
-    [75] = "Descripción",
-    [76] = "Herramientas que se pueden usar",
-    [77] = "¡Necesitas una herramienta para cavar a través de la pared! ¡Una vez que hagas un agujero, puedes trepar!",
-    [78] = "¡Necesitas una herramienta para cortar la valla! ¡Una vez que cortes, puedes trepar!",
-    [79] = "¡Necesitas una herramienta para cavar a través del suelo y la pared! ¡Una vez que hagas un agujero, puedes salir arrastrándote!",
-    [80] = "Tiempo: ",
-    [81] = "~w~(~y~s~w~)",
-    [82] = "Porcentaje de Éxito: ",
-    [83] = "Objetos Faltantes para Crear",
-    [84] = "Acción No Posible",
-    [85] = "Creando",
-    [86] = "Robaste un(a) ",
-    [87] = "¿Con qué te gustaría cavar?",
-    [88] = "¡No tienes este objeto!",
-    [89] = "[~o~E~w~] Escapar",
-    [90] = "Tu excavación fue exitosa",
-    [91] = "Tu herramienta se rompió",
-    [92] = "¡Estás ~b~Escapando~w~! | Tiempo Hasta que los Guardias se Den Cuenta:~o~ ",
-    [93] = "[~g~E~w~] Cortar Valla",
-    [94] = "¿Con qué te gustaría cortar?",
-    [95] = "¡No tienes este objeto!",
-    [96] = "Cavando",
-    [97] = "Cortando",
-    [98] = "Cavar / Cortar",
-    [99] = "Torre de Vigilancia",
-    [100] = "¡Tienes que cavar exitosamente ",
-    [101] = " veces para atravesar la pared!",
-    [102] = "¡Terminaste de cavar! ¡Arrástrate por el agujero para empezar tu escape!",
-    [103] = "¡Esa ID no está en la cárcel!",
-    [104] = "(s) fue añadido a tu condena!",
-    [105] = "Tu razón es inválida",
-    [106] = "Tu ID es inválida",
-    [107] = "Tu tiempo es inválido",
-    [108] = "No Lograste Escapar a Tiempo",
-    [109] = "Te Alejaste Demasiado de la Cárcel",
-    [110] = "Mataste a Alguien en la Cárcel",
-    [111] = "¡Te alejaste demasiado y el Menú se Cerró!",
-    [112] = "Duchas",
-    [113] = "[~b~E~w~] Prepararse para la Ducha",
-    [114] = "Cambiando de Ropa",
-    [115] = "Ve a una de las duchas",
-    [116] = "[~b~G~w~] Ducharse",
-    [117] = "¡Ducha Cancelada! ¡Te alejaste demasiado!",
-    [118] = "Duchándose",
-    [127] = "ID Inválida",
-    [128] = "Encarcelar a Alguien",
-    [129] = "Desencarcelar a Alguien",
-    [130] = "Agregar Tiempo a Alguien",
-    [131] = "Quitar Tiempo a Alguien",
-    [132] = "Enviar a Alguien a la Celda de Castigo",
-    [133] = "Opciones de Encarcelamiento",
-    [134] = "Ingresa la ID del Jugador",
-    [135] = "No Hay Jugadores Cerca",
-    [136] = "La Celda de Castigo no está Permitida",
-    [137] = " ~y~Prisión Federal de Alcatraz~w~ | Tiempo:~r~ ",
-    [138] = " | Trabajo =~o~ ",
-    [139] = "Comiendo",
-    [140] = " fue añadido a tu condena!",
-    [141] = "¡El tiempo es demasiado largo para quitarlo!",
-    [142] = " fue removido de tu condena!",
-    [143] = "(s) fue removido de tu condena!",
-    [144] = "Quitar a Alguien de la Celda de Castigo",
-    [145] = "Bloqueo: ",
-    [146] = "Activado",
-    [147] = "Desactivado",
-    [148] = "¡No se puede Activar/Desactivar el Bloqueo, actualmente está en cuenta regresiva!",
-    [149] = "(s) ¡Hasta el Bloqueo! ¡Ve a tu celda!",
-    [150] = "Saliste de la Celda Durante el Bloqueo",
-    [151] = "Ya no estás en Celda de Castigo",
-    [152] = "¡Ahora estás en Celda de Castigo!",
-    [153] = "Comenzó el Bloqueo, ¡Esto estará en efecto en ",
-    [154] = "(s)!",
-    [155] = "Todos los Jugadores en Esta Celda",
-    [156] = " | ID: ",
-    [157] = " Cama de ",
-    [158] = "[~o~E~w~] Abrir inventario",
-    [159] = "Acción no Permitida",
-    [160] = "Prisión",
-    [161] = "Arrastrándose a Través del Agujero",
-    [162] = "¡No se puede usar!",
-    [163] = "¡Bebiste un poco de licor!",
-    [164] = "¡Bebiste un poco de ponche!",
-    [165] = "Notificar a Todos los Prisioneros",
-    [166] = "¿Qué te gustaría decirles?",
-    [167] = "¡No se puede confirmar! ¡Razón inválida!",
-    [168] = "[Intercomunicador de la Prisión] : ",
-
-    [169] = "Bienvenido a la Prisión Federal de Alcatraz",
-    [170] = "~y~Si quieres reducir el tiempo tendras que trabajar",
-    [171] = "~g~Aqui tienes alimentacion pero no es gratis",
-    [172] = "~r~Si no te portas bien seras aislado del resto",
-    [174] = "~b~No olvides tomar Duchas para Mantenerte Limpio",
-    [175] = "~r~Si llegas a sufrir una lesion puedes Pedir Ayuda a un Doctor",
-    [176] = "~y~No olvides recoger tus Objetos al Salir",
-    [177] = "~g~Explora y conoce hay muchas cosas ocultas",
-    [178] = " ¡No Está en su Celda! ¡Escapó de la Cárcel!"
-
-}
 Config.JobIntroCam1 = vector3(3916.00928, 26.9864845, 25.4628868)
 Config.JobIntroCam2 = vector3(3915.631, 22.7850742, 23.87154)
 Config.JobIntroCamHeading = 173.9453
@@ -3494,6 +3428,9 @@ Config.FinalHeliDuration = 8
 Config.FinalHeliTouchdownZ = 18.5
 Config.FinalHeliDescentDuration = 4
 
+-- ============================================================================
+-- 12. UBICACIONES FINALES: CELDAS Y AISLAMIENTO
+-- ============================================================================
 Config.Cells = {
     [1] = {
         SpawnLoc = {
@@ -3810,11 +3747,3 @@ Config.SolCells = {
     [10] = {Loc = vector3(4091.7240, 32.89766, 18.67141), Heading = 313.2032}
 }
 
-do
-    local oldTasks = Config.JobOptions[2].Tasks
-    Config.JobOptions[2].Tasks = {
-        oldTasks[1], oldTasks[2], oldTasks[1], oldTasks[3], oldTasks[1], oldTasks[4], oldTasks[1], oldTasks[5],
-        oldTasks[6], oldTasks[7], oldTasks[8], oldTasks[9], oldTasks[10], oldTasks[11], oldTasks[12], oldTasks[13],
-        oldTasks[14], oldTasks[15], oldTasks[16], oldTasks[17], oldTasks[18]
-    }
-end

@@ -25,9 +25,9 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                     newData.jailtime = time
                     newData.jobo = xPlayer.job.name
                     newData.grade = xPlayer.job.grade
-                    if false then
+                    --[[
                         print(('[Fixlife_prision] No se encontrÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³ hdjail_data para citizenid %s (source %s)'):format(tostring(xPlayer.identifier), tostring(id)))
-                    end
+                    ]]
                     xPlayer.setJob('prisoner', 0)
                     local itemz = exports.ox_inventory:GetInventoryItems(id) or {}
                     local keep = {}
@@ -63,18 +63,12 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                     end
                     newData.items = keep
                     JailStorage.Save(xPlayer.identifier, newData, function(rowsChanged)
-                        TriggerClientEvent('esx_policejob:unrestrain', id)
                         TriggerClientEvent('HD_Jail:JailStart', id, time)
-                        local fullname = nil
-                        if Config.ESXVersion ~= '1.1' then
-                            fullname = xPlayer.get("firstName") .. " " .. xPlayer.get("lastName")
-                        else
-                            fullname = GetPlayerName(xPlayer.source)
-                        end
+                        local fullname = xPlayer.get("firstName") .. " " .. xPlayer.get("lastName")
                         if Config.SimpleTime then
                             -- TriggerClientEvent('chat:addMessage', -1, {args = {Config.ServerName..' '..Config.Sayings[7], fullname..Config.Sayings[8]..ESX.Math.Round(time / 60)..Config.Sayings[21]..reason}, color = {147, 196, 109}})
                             TriggerClientEvent('chat:addMessage', -1, {
-                                template = '<div class="chat-message pm"><i class="scale-balanced"></i> <b><span style="color: #916db0">['..Config.ServerName..' '..Config.Sayings[7], fullname..Config.Sayings[8]..ESX.Math.Round(time / 60)..Config.Sayings[21]..reason..'] {0}</span>&nbsp;<span class="time">{2}</span></b><div class="message">{1}</div></div>',
+                                template = '<div class="chat-message pm"><i class="scale-balanced"></i> <b><span style="color: #916db0">['..Config.ServerName..' '..Config.Sayings[7], fullname..Config.Sayings[8]..math.floor(time / 60)..Config.Sayings[21]..reason..'] {0}</span>&nbsp;<span class="time">{2}</span></b><div class="message">{1}</div></div>',
                                 args = { fullname, reason, os.date('%H:%M') }
                             })
                         else

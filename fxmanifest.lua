@@ -4,6 +4,7 @@ lua54 'yes'
 client_scripts {
     '@qbx_core/modules/playerdata.lua',
     'Config.lua',
+    'locale/es.lua',
     'client/appearance.lua',
     'client/ui.lua',
     'client/interactions.lua',
@@ -23,6 +24,7 @@ client_scripts {
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'Config.lua',
+    'locale/es.lua',
     'server/core.lua',
     'server/helpers.lua',
     'server/inventory.lua',

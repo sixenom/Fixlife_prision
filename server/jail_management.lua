@@ -1,9 +1,8 @@
 RegisterServerEvent('HD_Jail:UnJailPlayer')
 AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
-    local xTarget = Qbox.GetPlayer(source)
-    if xTarget == nil then
-        local xPlayer = Qbox.GetPlayer(id)
-        if not xPlayer then return end
+    if tonumber(source) ~= 65535 then return end
+    local xPlayer = Qbox.GetPlayer(tonumber(id))
+    if xPlayer then
         local ident = xPlayer.identifier
         local found = 0
         local found2 = 0
@@ -173,16 +172,12 @@ end)
 
 RegisterServerEvent('HD_Jail:UpdateCell')
 AddEventHandler('HD_Jail:UpdateCell', function(cnum, player)
-    local xPlayer = nil
+    local eventSource = tonumber(source) or 0
     cnum = math.floor(tonumber(cnum) or 0)
     if not inJail[cnum] then return end
-
-    if Qbox.GetPlayer(source) == nil then
-        xPlayer = Qbox.GetPlayer(player)
-    else
-        xPlayer = Qbox.GetPlayer(source)
-    end
-    if not xPlayer then return end
+    if eventSource ~= 65535 and tonumber(player) ~= eventSource then return end
+    local xPlayer = Qbox.GetPlayer(tonumber(player) or eventSource)
+    if not xPlayer or not IsPrisoner(tonumber(player) or eventSource, xPlayer) then return end
     JailStorage.Get(xPlayer.identifier, function(newData)
         newData.cell = cnum
         JailStorage.Save(xPlayer.identifier, newData)

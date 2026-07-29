@@ -106,7 +106,7 @@ end)
 RegisterServerEvent('HD_Jail:TaskComplete1')
 AddEventHandler('HD_Jail:TaskComplete1', function(taskJob)
     local xPlayer = Qbox.GetPlayer(source)
-    if not xPlayer or not Config.JobOptions[taskJob] then return end
+    if not xPlayer or not IsPrisoner(source, xPlayer) or not HasPrisonJob(source, taskJob, xPlayer) or not CheckCooldown(source, 'steal', 1500) or not Config.JobOptions[taskJob] then return end
     local ident = xPlayer.identifier
 
     local ran = math.random(1,10)

@@ -507,6 +507,81 @@ function ClearLaundryMachineOutlines()
     end
 end
 
+--[[
+    if not laundryStorageProp or not DoesEntityExist(laundryStorageProp) then
+        laundryStorageProp = GetClosestObjectOfType(Config.LaundryStorageProp.Loc.x, Config.LaundryStorageProp.Loc.y, Config.LaundryStorageProp.Loc.z, 20.0, joaat(Config.LaundryStorageProp.Model), false, false, false)
+        if not laundryStorageProp or not DoesEntityExist(laundryStorageProp) then
+            local action = Config.LaundryStorageAction.Loc
+            laundryStorageProp = GetClosestObjectOfType(action.x, action.y, action.z, 20.0, joaat(Config.LaundryStorageProp.Model), false, false, false)
+        end
+        if not laundryStorageProp or not DoesEntityExist(laundryStorageProp) then
+            local target = Config.LaundryStorageProp.Loc
+            laundryStorageProp = GetClosestObjectOfType(target.x, target.y, target.z, 5.0, 161765395, false, false, false)
+        end
+        if not laundryStorageProp or not DoesEntityExist(laundryStorageProp) then
+            local target = Config.LaundryStorageProp.Loc
+            laundryStorageProp = GetClosestObjectOfType(target.x, target.y, target.z, 5.0, 3340290, false, false, false)
+        end
+    end
+    if laundryStorageProp and DoesEntityExist(laundryStorageProp) then
+        SetEntityDrawOutlineColor(255, 255, 255, 255)
+        SetEntityDrawOutlineShader(1)
+        SetEntityDrawOutline(laundryStorageProp, enabled)
+        return true
+    end
+    return false
+end
+
+RegisterCommand('probar_estante', function()
+    if SetLaundryStorageOutline(true) then
+        local coords = GetEntityCoords(laundryStorageProp)
+        print(('[Fixlife_prision] Estante encontrado en %.4f, %.4f, %.4f'):format(coords.x, coords.y, coords.z))
+    else
+        print('[Fixlife_prision] No se encontró ch_prop_ch_laundry_shelving_01b.')
+        local target = Config.LaundryStorageProp.Loc
+        local nearby = 0
+        for _, entity in ipairs(GetGamePool('CObject')) do
+            local coords = GetEntityCoords(entity)
+            local distance = Vdist(target.x, target.y, target.z, coords.x, coords.y, coords.z)
+            if distance <= 20.0 then
+                nearby = nearby + 1
+                print(('[Fixlife_prision] Objeto cercano hash %s en %.4f, %.4f, %.4f (%.2fm)'):format(GetEntityModel(entity), coords.x, coords.y, coords.z, distance))
+            end
+        end
+        print(('[Fixlife_prision] Objetos cercanos: %d'):format(nearby))
+    end
+end)
+
+RegisterCommand('quitar_estante', function()
+    SetLaundryStorageOutline(false)
+end)
+
+]]
+function StartLaundryStorageAction(finished)
+    using = true
+    local ped = PlayerPedId()
+    local action = Config.LaundryStorageAction
+    inAnim.Dict = nil
+    inAnim.Anim = nil
+    inAnim.Atr = 0
+    inAnim.Freeze = false
+    for i = #PlayerHasProp, 1, -1 do
+        if PlayerHasProp[i].id == 'task' then
+            if DoesEntityExist(PlayerHasProp[i].object) then DeleteObject(PlayerHasProp[i].object) end
+            table.remove(PlayerHasProp, i)
+        end
+    end
+    ClearPedTasksImmediately(ped)
+    SetEntityCoords(ped, action.Loc.x, action.Loc.y, action.Loc.z - 1.0, false, false, false, false)
+    SetEntityHeading(ped, action.Heading)
+    LoadAnim(action.Dict)
+    TaskPlayAnim(ped, action.Dict, action.Anim, 8.0, 8.0, action.Duration, 1, 1.0, false, false, false)
+    Wait(action.Duration)
+    ClearPedTasksImmediately(ped)
+    using = false
+    if finished then finished() end
+end
+
 CreateThread(function()
     while true do
         Wait(2000)
@@ -519,7 +594,7 @@ CreateThread(function()
     end
 end)
 
-local function StartLaundryMachineAction(machine, index, finished)
+local function StartLaundryMachineAction(machine, index, finished, collecting)
     if laundryWasherBusy then return end
     local locations = machine == 'dryer' and Config.LaundryDryerLocs or Config.LaundryWasherLocs
     local props = machine == 'dryer' and laundryDryerProps or laundryWasherProps
@@ -532,6 +607,16 @@ local function StartLaundryMachineAction(machine, index, finished)
     inAnim.Atr = 0
     inAnim.Freeze = false
     ClearPedTasksImmediately(PlayerPedId())
+    if collecting and machine == 'dryer' then
+        local ped = PlayerPedId()
+        for _, item in ipairs(PlayerHasProp) do
+            if item.id == 'task' and DoesEntityExist(item.object) then
+                DetachEntity(item.object, true, true)
+                AttachEntityToEntity(item.object, ped, GetPedBoneIndex(ped, 60309), 0.0, -0.1, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
+                break
+            end
+        end
+    end
     if machine == 'dryer' then EnsureLaundryDryerProps() else EnsureLaundryWasherProps() end
     local prop = props[index]
 
@@ -540,12 +625,18 @@ local function StartLaundryMachineAction(machine, index, finished)
         SetEntityCoords(ped, location.Loc.x, location.Loc.y, location.Loc.z - 1.0, false, false, false, false)
         SetEntityHeading(ped, location.Heading)
         LoadAnim(laundryWasherDict)
+        StopEntityAnim(prop, 'enter_dryer', laundryWasherDict, true)
         local scene = NetworkCreateSynchronisedScene(location.Loc.x, location.Loc.y, location.Loc.z, 0.0, 0.0, location.Heading, 2, true, false, 1.0, 0.0, 1.0)
         NetworkAddPedToSynchronisedScene(ped, scene, laundryWasherDict, 'enter', 8.0, -8.0, 0, 0, 1000.0, 0)
         NetworkAddEntityToSynchronisedScene(prop, scene, laundryWasherDict, 'enter_dryer', 1.0, 1.0, 1)
         NetworkStartSynchronisedScene(scene)
         Wait(GetAnimDuration(laundryWasherDict, 'enter') * 1000)
-        TaskStartScenarioInPlace(ped, 'PROP_HUMAN_BUM_BIN', 0, true)
+        if collecting then
+            LoadAnim('custom@pluck_fruits')
+            TaskPlayAnim(ped, 'custom@pluck_fruits', 'pluck_fruits', 8.0, 8.0, -1, 51, 1.0, false, false, false)
+        else
+            TaskStartScenarioInPlace(ped, 'PROP_HUMAN_BUM_BIN', 0, true)
+        end
         Wait(10000)
         for i = #PlayerHasProp, 1, -1 do
             if PlayerHasProp[i].id == 'task' then
@@ -575,12 +666,12 @@ local function StartLaundryMachineAction(machine, index, finished)
     end)
 end
 
-function StartLaundryWasherAction(index, finished)
-    StartLaundryMachineAction('washer', index, finished)
+function StartLaundryWasherAction(index, finished, collecting)
+    StartLaundryMachineAction('washer', index, finished, collecting)
 end
 
-function StartLaundryDryerAction(index, finished)
-    StartLaundryMachineAction('dryer', index, finished)
+function StartLaundryDryerAction(index, finished, collecting)
+    StartLaundryMachineAction('dryer', index, finished, collecting)
 end
 
 local dryerTestProp

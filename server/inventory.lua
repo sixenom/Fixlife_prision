@@ -3,6 +3,8 @@ AddEventHandler('HD_Jail:OpenBedInventory', function()
     local src = source
     local xPlayer = Qbox.GetPlayer(src)
     if not xPlayer then return end
+    local _, cell = GetJailedPlayer(src, xPlayer)
+    if not cell or not IsNearPoint(src, Config.Cells[cell].InvLoc.Loc, 3.0) then return end
 
     JailStorage.Get(xPlayer.identifier, function(data)
         if (tonumber(data.jailtime) or 0) <= 0 then return end
@@ -19,6 +21,8 @@ AddEventHandler('HD_Jail:OpenPoliceBedInventory', function(targetId)
     if not CheckUser(src, 'jail') then return end
     local target = Qbox.GetPlayer(tonumber(targetId))
     if not target then return end
+    local _, cell = GetJailedPlayer(target.source, target)
+    if not cell or not IsNearPoint(src, Config.Cells[cell].InvLoc.Loc, 3.0) then return end
 
     JailStorage.Get(target.identifier, function(data)
         if (tonumber(data.jailtime) or 0) <= 0 then return end
@@ -50,6 +54,8 @@ Qbox.RegisterCallback('HD_Jail:GetChest2', function(source, cb, id)
     if not CheckUser(source, 'jail') then cb({}); return end
     local xPlayer = Qbox.GetPlayer(id)
     if not xPlayer then cb({}); return end
+    local _, cell = GetJailedPlayer(xPlayer.source, xPlayer)
+    if not cell or not IsNearPoint(source, Config.Cells[cell].InvLoc.Loc, 3.0) then cb({}); return end
 
     JailStorage.Get(xPlayer.identifier, function(newData)
         local tablie = {}
@@ -101,7 +107,8 @@ end)
 
 Qbox.RegisterCallback('HD_Jail:GetInventory', function(source, cb)
 	local xPlayer    = Qbox.GetPlayer(source)
-	local items      = xPlayer.inventory
+	if not xPlayer then cb({items = {}}); return end
+	local items      = exports.ox_inventory:GetInventoryItems(source) or {}
 
 	cb({items = items})
 end)
@@ -110,7 +117,8 @@ RegisterServerEvent('HD_Jail:RemoveItem')
 AddEventHandler('HD_Jail:RemoveItem', function(items, amti, namo, idie)
     local xPlayer = Qbox.GetPlayer(source)
     amti = math.floor(tonumber(amti) or 0)
-    if not xPlayer or type(items) ~= 'string' or amti <= 0 or not xPlayer.canCarryItem(items, amti) then return end
+    local _, cell = xPlayer and GetJailedPlayer(source, xPlayer)
+    if not xPlayer or not cell or not IsNearPoint(source, Config.Cells[cell].InvLoc.Loc, 3.0) or type(items) ~= 'string' or amti <= 0 or not xPlayer.canCarryItem(items, amti) then return end
 
     JailStorage.Get(xPlayer.identifier, function(newData)
         local removie = {}
@@ -178,7 +186,8 @@ AddEventHandler('HD_Jail:RemoveItem2', function(items, amti, namo, idie)
     local xPlayer = Qbox.GetPlayer(source)
     local xTarget = Qbox.GetPlayer(idie)
     amti = math.floor(tonumber(amti) or 0)
-    if not Config.PoliceCanSearchInv or not CheckUser(source, 'jail') or not xPlayer or not xTarget or type(items) ~= 'string' or amti <= 0 or not xPlayer.canCarryItem(items, amti) then return end
+    local _, cell = xTarget and GetJailedPlayer(xTarget.source, xTarget)
+    if not Config.PoliceCanSearchInv or not CheckUser(source, 'jail') or not xPlayer or not xTarget or not cell or not IsNearPoint(source, Config.Cells[cell].InvLoc.Loc, 3.0) or type(items) ~= 'string' or amti <= 0 or not xPlayer.canCarryItem(items, amti) then return end
 
     JailStorage.Get(xTarget.identifier, function(newData)
         local removie = {}
@@ -210,8 +219,9 @@ AddEventHandler('HD_Jail:AddItem', function(items, amti, namo, idie)
     local found = 0
 
     amti = math.floor(tonumber(amti) or 0)
+    local _, cell = xPlayer and GetJailedPlayer(source, xPlayer)
     local owned = xPlayer and xPlayer.getInventoryItem(items).count or 0
-    if type(items) ~= 'string' or amti <= 0 or amti > owned then return end
+    if not xPlayer or not cell or not IsNearPoint(source, Config.Cells[cell].InvLoc.Loc, 3.0) or type(items) ~= 'string' or amti <= 0 or amti > owned then return end
 
     JailStorage.Get(xPlayer.identifier, function(newData)
         for i=1, #newData.chest, 1 do

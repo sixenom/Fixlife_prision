@@ -51,6 +51,43 @@ function GetGoodTime(timo)
     return msg
 end
 
+function GetJailedPlayer(source, xPlayer)
+    xPlayer = xPlayer or Qbox.GetPlayer(source)
+    if not xPlayer then return end
+
+    for cell = 1, #inJail do
+        for index = 1, #inJail[cell].Players do
+            if inJail[cell].Players[index].Player == xPlayer.identifier then
+                return xPlayer, cell, index
+            end
+        end
+    end
+end
+
+function IsPrisoner(source, xPlayer)
+    return GetJailedPlayer(source, xPlayer) ~= nil
+end
+
+function IsNearPoint(source, coords, distance)
+    local ped = GetPlayerPed(source)
+    return ped > 0 and coords and #(GetEntityCoords(ped) - coords) <= distance
+end
+
+local cooldowns = {}
+function CheckCooldown(source, key, delay)
+    local id = ('%s:%s'):format(source, key)
+    local now = GetGameTimer()
+    if now - (cooldowns[id] or 0) < delay then return false end
+    cooldowns[id] = now
+    return true
+end
+
+function HasPrisonJob(source, job, xPlayer)
+    xPlayer = xPlayer or Qbox.GetPlayer(source)
+    local data = xPlayer and JailStorage.Cache[xPlayer.identifier]
+    return data and tonumber(data.job) == tonumber(job)
+end
+
 function CheckUser(yupiue, checkfor)
     local xPlayer = Qbox.GetPlayer(yupiue)
     local wegood = false

@@ -66,12 +66,7 @@ Citizen.CreateThread(function()
 					local dist = Vdist(Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.x, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.y, Config.JobOptions[job].Tasks[doneTasks].TaskLoc.Loc.z, coords)
 	
 					if dist <= Config.SeeTaskMark then
-						Citizen.Wait(5)
-						if dist <= Config.SeeTaskText then
-							if false then
-								TaskComplete()
-							end
-						end
+						Citizen.Wait(250)
 					else
 						Citizen.Wait(1000)
 					end
@@ -155,15 +150,7 @@ Citizen.CreateThread(function()
 					local dist = Vdist(Config.Cells[closestPoliceInv].InvLoc.Loc.x, Config.Cells[closestPoliceInv].InvLoc.Loc.y, Config.Cells[closestPoliceInv].InvLoc.Loc.z, coords)
 
 					if dist <= Config.SeePoliceDist then
-						Citizen.Wait(5)
-						if false and dist <= Config.UsePoliceDist then
-							DrawText3D(Config.Cells[closestPoliceInv].InvLoc.Loc.x, Config.Cells[closestPoliceInv].InvLoc.Loc.y, Config.Cells[closestPoliceInv].InvLoc.Loc.z + Config.TextLift, Config.Sayings[158])
-							if IsControlJustReleased(0, 38) then
-								OpenPoliceShitMenu()
-								inMenu.coords = Config.Cells[closestPoliceInv].InvLoc.Loc
-								inMenu.is = true
-							end
-						end
+						Citizen.Wait(250)
 					else
 						Citizen.Wait(1000)
 					end
@@ -284,6 +271,17 @@ RegisterNetEvent('HD_Jail:SendSol')
 AddEventHandler('HD_Jail:SendSol', function(soltimez, cell)
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
+		using = false
+		inAnim.Dict = nil
+		inAnim.Anim = nil
+		inAnim.Atr = 0
+		inAnim.Freeze = false
+		ClearPedTasksImmediately(ped)
+		ClearPedSecondaryTask(ped)
+		SetEnableHandcuffs(ped, false)
+		DisablePlayerFiring(ped, false)
+		SetPedCanPlayGestureAnims(ped, true)
+		FreezeEntityPosition(ped, false)
 		DoScreenFadeOut(1000)
 		Citizen.Wait(1500)
 		soltime = soltimez

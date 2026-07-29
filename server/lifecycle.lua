@@ -1,4 +1,3 @@
-RegisterServerEvent('HD_Jail:ReJail')
 AddEventHandler('HD_Jail:ReJail', function(id, values)
     local xPlayer = Qbox.GetPlayer(id)
     local ident = xPlayer.identifier

@@ -231,11 +231,14 @@ function TaskComplete(skipAnimation)
 		using = false
 		
 		local carryItem = Config.JobOptions[job].Tasks[doneTasks].CarryItem
-		if job == 2 and completedTask % 2 == 1 then
+		if job == 2 and completedTask == 21 then
+			carryItem = {Attach = false}
+		elseif job == 2 and ((completedTask % 2 == 1 and completedTask <= 15) or completedTask >= 17 and completedTask <= 20) then
 			if completedTask >= 9 and completedTask <= 15 then
 				carryItem = {Attach = true, Prop = 'prop_washing_basket_fix_01', Offsets = {First = 0.0, Second = -0.1, Third = 0.0, Four = 0.0, Five = 0.0, Six = 0.0}}
 			elseif completedTask >= 17 and completedTask <= 20 then
-				carryItem = {Attach = true, Prop = 'prop_washing_basket_fix_02', Offsets = {First = 0.0, Second = -0.1, Third = 0.0, Four = 0.0, Five = 0.0, Six = 0.0}}
+				local dryProp = completedTask == 20 and 'prop_washing_basket_fix_02' or 'prop_towel_01'
+				carryItem = {Attach = true, Prop = dryProp, Offsets = {First = 0.0, Second = -0.1, Third = 0.0, Four = 0.0, Five = 0.0, Six = 0.0}}
 			end
 			inAnim.Dict = 'anim@heists@box_carry@'
 			inAnim.Anim = 'idle'
@@ -261,9 +264,10 @@ function TaskComplete(skipAnimation)
 		end
 		if doneTasks >= taskMax then
 			doneTasks = 1
+			if job == 4 then RemoveGarbageBagProps() end
 			Notification('Tareas completadas. Ya puedes finalizar el trabajo.')
 			time = time - Config.JobOptions[job].TimeRemove
-			TriggerServerEvent('HD_Jail:TaskComplete', job)
+			TriggerServerEvent('HD_Jail:TaskComplete', job, completedTask)
 		else
 			doneTasks = doneTasks + 1
 			Notification(Config.Sayings[24])
@@ -680,7 +684,7 @@ function StartJob(jobie, trip)
 		if DoesEntityExist(PlayerHasProp[removes[i]].object) then
 			DeleteObject(PlayerHasProp[removes[i]].object)
 		end
-		table.remove(PlayerHasProp[removes[i]])
+		table.remove(PlayerHasProp, removes[i])
 	end
 	removes = {}
 	inAnim.Dict = nil

@@ -10,30 +10,31 @@ Qbox.RegisterCallback('HD_Jail:CheckItemMake', function(source, cb, num)
     end
 
     if totnum <= 0 then
-        if Config.OLDESX then
-            local sourceItem = xPlayer.getInventoryItem(Config.Crafts[num].MakeItem)
-            if sourceItem.limit ~= -1 and (sourceItem.count + 1) > sourceItem.limit then
-                cb(2)
-            else
-                cb(3)
-            end
+        if xPlayer.canCarryItem(Config.Crafts[num].MakeItem, 1) then
+            cb(3)
         else
-            if xPlayer.canCarryItem(Config.Crafts[num].MakeItem, 1) then
-                cb(3)
-            else
-                cb(2)
-            end
+            cb(2)
         end
     else
         cb(1)
     end
 end)
 
+local breakAttempts = {}
+
 Qbox.RegisterCallback('HD_Jail:CheckItemB', function(source, cb, num)
 	local xPlayer    = Qbox.GetPlayer(source)
-    if not xPlayer or not Config.RoomTools[num] then cb(false); return end
+    local index = tonumber(num)
+    local tool = index and Config.RoomTools[index]
+    if not tool and type(num) == 'string' then
+        for i = 1, #Config.RoomTools do
+            if Config.RoomTools[i].Item == num then index, tool = i, Config.RoomTools[i]; break end
+        end
+    end
+    if not xPlayer or not tool then cb(false); return end
 
-    if xPlayer.getInventoryItem(Config.RoomTools[num].Item).count >= 1 then
+    if xPlayer.getInventoryItem(tool.Item).count >= 1 then
+        breakAttempts[source] = {tool = index, readyAt = GetGameTimer() + tool.Time * 1000}
         cb(true)
     else
         cb(false)
@@ -136,38 +137,48 @@ RegisterServerEvent('HD_Jail:TakeItems4')
 AddEventHandler('HD_Jail:TakeItems4', function(itnuma)
     local xPlayer = Qbox.GetPlayer(source)
     local tool = Config.RoomTools[itnuma]
-    if not xPlayer or not tool or xPlayer.getInventoryItem(tool.Item).count < 1 then return end
+    if not xPlayer or not IsPrisoner(source, xPlayer) or not tool or xPlayer.getInventoryItem(tool.Item).count < 1 then return end
 
+    breakAttempts[source] = nil
     xPlayer.removeInventoryItem(tool.Item, 1)
 end)
 
 RegisterServerEvent('HD_Jail:TakeItems2')
 AddEventHandler('HD_Jail:TakeItems2', function(item)
     local xPlayer = Qbox.GetPlayer(source)
-    if not xPlayer or type(item) ~= 'string' or xPlayer.getInventoryItem(item).count < 1 then return end
+    if not xPlayer or not IsPrisoner(source, xPlayer) or type(item) ~= 'string' or xPlayer.getInventoryItem(item).count < 1 then return end
 
     xPlayer.removeInventoryItem(item, 1)
 end)
 
 RegisterServerEvent('HD_Jail:SuccessFul')
-AddEventHandler('HD_Jail:SuccessFul', function(id, time)
-    if tonumber(id) ~= source then return end
-    local xPlayer = Qbox.GetPlayer(id)
-    if not xPlayer then return end
+AddEventHandler('HD_Jail:SuccessFul', function(toolIndex)
+    local xPlayer = Qbox.GetPlayer(source)
+    local tool = Config.RoomTools[tonumber(toolIndex)]
+    local attempt = breakAttempts[source]
+    local _, cell = xPlayer and GetJailedPlayer(source, xPlayer)
+    local cellData = cell and Config.Cells[cell]
+    local ped = GetPlayerPed(source)
+    if not xPlayer or not tool or not attempt or attempt.tool ~= tonumber(toolIndex) or GetGameTimer() < attempt.readyAt or not cellData or ped <= 0 or not IsPrisoner(source, xPlayer) or xPlayer.job.name ~= 'prisoner' then return end
+
+    local coords = GetEntityCoords(ped)
+    if #(coords - cellData.BreakLoc.Loc) > 4.0 or xPlayer.getInventoryItem(tool.Item).count < 1 then return end
     local ident = xPlayer.identifier
 
     JailStorage.Get(xPlayer.identifier, function(newData)
+        if (tonumber(newData.jailtime) or 0) <= 0 or (tonumber(newData.breaks) or 0) >= Config.BreakHole or not CheckCooldown(source, 'breakout', 1000) then return end
+        breakAttempts[source] = nil
 
         if Log.Breaking then
             local this = {
                 {
                     ["name"] = "**Player Name:**",
-                    ["value"] = GetPlayerName(id),
+                    ["value"] = GetPlayerName(source),
                     ["inline"] = true
                 },
                 {
                     ["name"] = "**Player ID:**",
-                    ["value"] = id,
+                    ["value"] = source,
                     ["inline"] = true
                 },
                 {
@@ -195,7 +206,7 @@ AddEventHandler('HD_Jail:SuccessFul', function(id, time)
         end
 
         newData.breaks = newData.breaks + 1
-        TriggerClientEvent('HD_Jail:UpBreaks', id, newData.breaks, true, time)
+        TriggerClientEvent('HD_Jail:UpBreaks', source, newData.breaks, true, tool.Time * 1000)
         JailStorage.Save(xPlayer.identifier, newData)
     end)
 end)
@@ -204,7 +215,7 @@ RegisterServerEvent('HD_Jail:TakeItems')
 AddEventHandler('HD_Jail:TakeItems', function(itnuma)
     local xPlayer = Qbox.GetPlayer(source)
     local craft = Config.Crafts[itnuma]
-    if not xPlayer or not craft then return end
+    if not xPlayer or not IsPrisoner(source, xPlayer) or not craft then return end
     for _, needed in ipairs(craft.Needed) do
         if xPlayer.getInventoryItem(needed.Item).count < needed.Amount then return end
     end

@@ -128,12 +128,9 @@ RegisterServerEvent('HD_Jail:PoliceNotify')
 AddEventHandler('HD_Jail:PoliceNotify', function()
     local xPlayer = Qbox.GetPlayer(source)
 
+    if not xPlayer or not IsPrisoner(source, xPlayer) or not CheckCooldown(source, 'police_notify', 5000) then return end
     local fullname = nil
-    if Config.ESXVersion ~= '1.1' then
-        fullname = xPlayer.get("firstName") .. " " .. xPlayer.get("lastName")
-    else
-        fullname = GetPlayerName(xPlayer.source)
-    end
+    fullname = xPlayer.get("firstName") .. " " .. xPlayer.get("lastName")
     TriggerClientEvent('HD_Jail:PoliceWarning', -1, fullname)
 end)
 

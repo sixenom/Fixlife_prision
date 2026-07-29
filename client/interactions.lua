@@ -5,6 +5,8 @@ local taskProps = {}
 local laundryDropProps = {}
 local laundryDirtyProps = {}
 local laundryDirtyPropByIndex = {}
+local garbageBagProps = {}
+local garbagePicked = {}
 local taskAnimationLocation
 local laundryAnimationProp
 local laundryStageLocation
@@ -70,6 +72,35 @@ function RemoveLaundryDirtyProps()
     laundryDirtyPropByIndex = {}
 end
 
+function RemoveGarbageBagProps()
+    for _, prop in pairs(garbageBagProps) do
+        if DoesEntityExist(prop) then
+            SetEntityDrawOutline(prop, false)
+            DeleteObject(prop)
+        end
+    end
+    garbageBagProps = {}
+    garbagePicked = {}
+end
+
+local function SpawnGarbageBagProp(index)
+    local location = Config.GarbageBagLocs[index]
+    if not location then return end
+    local prop = garbageBagProps[index]
+    if prop and DoesEntityExist(prop) then return prop end
+    local model = 'prop_rub_binbag_06'
+    LoadPropDict(model)
+    prop = CreateObject(joaat(model), location.x, location.y, location.z, false, false, false)
+    PlaceObjectOnGroundProperly(prop)
+    SetEntityAsMissionEntity(prop, true, true)
+    SetEntityDrawOutlineColor(255, 200, 0, 255)
+    SetEntityDrawOutlineShader(1)
+    SetEntityDrawOutline(prop, true)
+    garbageBagProps[index] = prop
+    SetModelAsNoLongerNeeded(model)
+    return prop
+end
+
 function SpawnLaundryDropProp(index)
     local drop = Config.LaundryDropLocs[index]
     if not drop then return end
@@ -104,6 +135,7 @@ end
 
 function ResetLaundryRoute()
     ClearLaundryMachineOutlines()
+    RemoveGarbageBagProps()
     laundryPicked = {}
     laundryDeliveryIndex = nil
     taskAnimationLocation = nil
@@ -259,7 +291,20 @@ function UpdatePrisonTaskPoint()
     TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_task')
     for i = 1, 7, 2 do TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_task_' .. i) end
     for i = 1, 4 do TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_laundry_dirty_' .. i) end
+    for i = 1, 4 do TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_garbage_bag_' .. i) end
     if job ~= 0 and doneTasks ~= 0 and Config.JobOptions[job] then
+        if job == 4 and doneTasks % 2 == 1 then
+            RemovePrisonTaskProp()
+            local task = Config.JobOptions[4].Tasks[doneTasks]
+            for i = 1, #Config.GarbageBagLocs do
+                if not garbagePicked[i] then
+                    local prop = SpawnGarbageBagProp(i)
+                    local coords = GetEntityCoords(prop)
+                    point('fixlife_prision_garbage_bag_' .. i, vector3(coords.x, coords.y, coords.z + 0.8), Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:garbage_bag:' .. i, 'hand-holding.svg')
+                end
+            end
+            return
+        end
         if job == 2 and doneTasks % 2 == 1 and doneTasks <= 7 then
             RemovePrisonTaskProp()
             local task = Config.JobOptions[job].Tasks[1]
@@ -312,6 +357,18 @@ function UpdatePrisonTaskPoint()
             end
             return
         end
+        if job == 2 and doneTasks == 21 then
+            RemovePrisonTaskProp()
+            local action = Config.LaundryStorageAction
+            point('fixlife_prision_task', action.Loc, 'Guarda la ropa', 'Fixlife_prision:client:task', 'grid-2.svg')
+            return
+        end
+        if job == 4 and doneTasks % 2 == 0 then
+            RemovePrisonTaskProp()
+            local task = Config.JobOptions[4].Tasks[doneTasks]
+            point('fixlife_prision_task', task.TaskLoc.Loc, Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:task', 'truck-ramp-box.svg')
+            return
+        end
         local task = Config.JobOptions[job].Tasks[GetLaundryTaskIndex()]
         if task then
             SpawnPrisonTaskProp(task)
@@ -325,6 +382,22 @@ function UpdatePrisonTaskPoint()
 end
 
 for i = 1, 4 do
+    RegisterNetEvent('Fixlife_prision:client:garbage_bag:' .. i, function()
+        if not injail or using or isDead or job ~= 4 or doneTasks % 2 ~= 1 then return end
+        if garbagePicked[i] then return end
+        local prop = garbageBagProps[i]
+        if not prop or not DoesEntityExist(prop) then return end
+        TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_garbage_bag_' .. i)
+        garbagePicked[i] = true
+        SetEntityDrawOutline(prop, false)
+        DeleteObject(prop)
+        garbageBagProps[i] = nil
+        SetTaskAnimationLocation({Loc = Config.GarbageBagLocs[i], Heading = 0.0, World = true})
+        TaskComplete()
+    end)
+end
+
+for i = 1, 4 do
     RegisterNetEvent('Fixlife_prision:client:laundry_wet:' .. i, function()
         if not injail or using or isDead or job ~= 2 or doneTasks % 2 ~= 1 or doneTasks < 9 or doneTasks > 15 then return end
         if laundryWetPicked[i] then return end
@@ -332,7 +405,7 @@ for i = 1, 4 do
         laundryWetPicked[i] = true
         SetLaundryMachineOutlines('washer', false)
         SetLaundryMachineStage('dryer', i)
-        StartLaundryWasherAction(i, function() TaskComplete(true) end)
+        StartLaundryWasherAction(i, function() TaskComplete(true) end, true)
     end)
 end
 
@@ -343,7 +416,7 @@ for i = 1, 4 do
         TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_laundry_dry_' .. i)
         laundryDryPicked[i] = true
         SetLaundryMachineOutlines('dryer', false)
-        StartLaundryDryerAction(i, function() TaskComplete(true) end)
+        StartLaundryDryerAction(i, function() TaskComplete(true) end, true)
     end)
 end
 
@@ -446,6 +519,10 @@ end)
 RegisterNetEvent('Fixlife_prision:client:task', function()
     if not injail or using or isDead or job == 0 then return end
     TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_task')
+    if job == 2 and doneTasks == 21 then
+        StartLaundryStorageAction(function() TaskComplete(true) end)
+        return
+    end
     if job == 2 and doneTasks % 2 == 0 and doneTasks <= 16 then
         if not laundryWasherIndex then return end
         SetLaundryMachineOutline(laundryMachineType, laundryWasherIndex, false)
