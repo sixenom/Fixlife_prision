@@ -534,9 +534,10 @@ Config.GarbageBagLocs = {
     vector3(4037.053, 25.443264, 20.1352043),
     vector3(4019.80322, 21.315403, 19.9355831)
 }
-Config.GarbageDumpsterLoc = {Loc = vector3(4019.88086, -9.086115, 17.75792), Heading = 0.0}
-Config.GarbageDumpsterModel = 'prop_dumpster_01a'
-Config.GarbageDumpsterAnim = {Dict = '17mov_garbage', AnimName = 'ped_dumpster_01a_1', Time = 10}
+Config.GarbageDumpsterLoc = {Loc = vector3(4019.88086, -6.876818, 17.75792), Heading = -90.0}
+Config.GarbageDumpsterModel = 'prop_dumpster_02b'
+Config.GarbageDumpsterInteractionOffset = {0.0, -1.3, 0.8}
+Config.GarbageDumpsterAnim = {Dict = '17mov_garbage', AnimName = 'ped_dumpster_01a_1', PropAnimName = 'prop_dumpster_01a_1', Time = 10}
 
 Config.JMMarkNum = 27 -- Número del marcador 3D del administrador de trabajo
 Config.JMMarkColor = {r = 255, g = 0, b = 255} -- Color del marcador 3D del administrador de trabajo
@@ -2982,10 +2983,10 @@ do
             TaskName = 'Recoger bolsa de basura',
             TaskLoc = {Loc = Config.GarbageBagLocs[i], Heading = 0.0},
             TBlip = {Spawn = true, Sprite = 162, Color = 2, Size = 0.7},
-            Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
+            Anim = {Dict = 'custom@pickfromground', AnimName = 'pickfromground'},
             Time = 10,
             AttachItem = {Attach = false},
-            CarryItem = {Attach = true, Prop = 'prop_rub_binbag_06', Offsets = {First = 0.0, Second = -0.1, Third = -0.2, Four = 0.0, Five = 0.0, Six = 0.0}}
+            CarryItem = {Attach = true, Prop = 'prop_rub_binbag_06', Offsets = {First = 0.0, Second = 0.0400, Third = -0.3, Four = 0.0, Five = 0.0, Six = 0.0}}
         }
         tasks[#tasks + 1] = {
             TaskName = 'Dejar la basura',

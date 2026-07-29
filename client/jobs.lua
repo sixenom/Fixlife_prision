@@ -156,6 +156,8 @@ function OpenLaundryVehicleMenu()
 end
 
 function TaskComplete(skipAnimation)
+	if using then return end
+	using = true
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
 		local completedTask = doneTasks
@@ -195,17 +197,32 @@ function TaskComplete(skipAnimation)
 				TaskStartScenarioInPlace(ped, 'PROP_HUMAN_BUM_BIN', 0, true)
 			elseif Config.JobOptions[job].Tasks[doneTasks].AttachItem.Attach then
 				AddPropToPlayer(Config.JobOptions[job].Tasks[doneTasks].AttachItem.Prop, 28422, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.First, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Second, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Third, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Four, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Five, Config.JobOptions[job].Tasks[doneTasks].AttachItem.Offsets.Six , 'task', nil, true)
-				end
-			if not useLaundryScenario then
-				TaskPlayAnim(ped, Config.JobOptions[job].Tasks[doneTasks].Anim.Dict, Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName, 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-				inAnim.Dict = Config.JobOptions[job].Tasks[doneTasks].Anim.Dict
-				inAnim.Anim = Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName
-				inAnim.Atr = 1
-				inAnim.Freeze = true
+			elseif job == 4 and completedTask % 2 == 1 and garbagePickupProp and DoesEntityExist(garbagePickupProp) then
+				local bagCoords = GetOffsetFromEntityInWorldCoords(ped, 0.0, 0.55, 0.0)
+				SetEntityCollision(garbagePickupProp, false, false)
+				DetachEntity(garbagePickupProp, true, true)
+				SetEntityCoordsNoOffset(garbagePickupProp, bagCoords.x, bagCoords.y, bagCoords.z, false, false, false)
+				PlaceObjectOnGroundProperly(garbagePickupProp)
 			end
-			FreezeEntityPosition(ped, true)
-			Citizen.Wait(Config.JobOptions[job].Tasks[doneTasks].Time * 1000)
-			FreezeEntityPosition(ped, false)
+			if not useLaundryScenario then
+				local taskAnimFlag = job == 4 and completedTask % 2 == 1 and 0 or 1
+				TaskPlayAnim(ped, Config.JobOptions[job].Tasks[doneTasks].Anim.Dict, Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName, 8.0, 8.0, -1, taskAnimFlag, 1, 0, 0, 0)
+				if not (job == 4 and completedTask % 2 == 1) then
+					inAnim.Dict = Config.JobOptions[job].Tasks[doneTasks].Anim.Dict
+					inAnim.Anim = Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName
+					inAnim.Atr = 1
+					inAnim.Freeze = true
+				end
+			end
+			local freezeTask = not (job == 4 and completedTask % 2 == 1)
+			if freezeTask then FreezeEntityPosition(ped, true) end
+			local taskTime = Config.JobOptions[job].Tasks[doneTasks].Time
+			if job == 4 and completedTask % 2 == 1 then
+				local animationTime = GetAnimDuration(Config.JobOptions[job].Tasks[doneTasks].Anim.Dict, Config.JobOptions[job].Tasks[doneTasks].Anim.AnimName)
+				if animationTime > 0 then taskTime = animationTime end
+			end
+			Citizen.Wait(taskTime * 1000)
+			if freezeTask then FreezeEntityPosition(ped, false) end
 			if not useLaundryScenario then
 				inAnim.Dict = nil
 				inAnim.Anim = nil
@@ -226,6 +243,10 @@ function TaskComplete(skipAnimation)
 				rem = {}
 			end
 			ClearPedTasksImmediately(ped)
+		end
+		if job == 4 and completedTask % 2 == 1 and garbagePickupProp and DoesEntityExist(garbagePickupProp) then
+			DeleteObject(garbagePickupProp)
+			garbagePickupProp = nil
 		end
 		RemoveLaundryAnimationProp()
 		using = false
@@ -250,7 +271,12 @@ function TaskComplete(skipAnimation)
 		if carryItem.Attach and not (job == 2 and completedTask % 2 == 0 and completedTask <= 8) then
 			AddPropToPlayer(carryItem.Prop, 28422, carryItem.Offsets.First, carryItem.Offsets.Second, carryItem.Offsets.Third, carryItem.Offsets.Four, carryItem.Offsets.Five, carryItem.Offsets.Six, 'task', nil, true)
 		end
-		if job == 3 and doneTasks % 2 == 1 then
+		if job == 4 and completedTask % 2 == 1 then
+			inAnim.Dict = 'missfbi4prepp1'
+			inAnim.Anim = '_idle_garbage_man'
+			inAnim.Atr = 51
+			inAnim.Freeze = false
+		elseif job == 3 and doneTasks % 2 == 1 then
 			inAnim.Dict = 'anim@heists@box_carry@'
 			inAnim.Anim = 'idle'
 			inAnim.Atr = 51

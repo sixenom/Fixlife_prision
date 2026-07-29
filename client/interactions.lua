@@ -6,7 +6,13 @@ local laundryDropProps = {}
 local laundryDirtyProps = {}
 local laundryDirtyPropByIndex = {}
 local garbageBagProps = {}
+local garbageBagTargets = {}
 local garbagePicked = {}
+local garbageBagPointCoords = {}
+garbagePickupProp = nil
+local garbageDumpsterProp
+local garbageDumpsterMapProp
+local garbageDumpsterSpawned = false
 local taskAnimationLocation
 local laundryAnimationProp
 local laundryStageLocation
@@ -46,6 +52,7 @@ end
 function RemovePrisonTaskProp()
     for _, prop in ipairs(taskProps) do
         if DoesEntityExist(prop) then
+            exports.ox_target:removeLocalEntity(prop)
             SetEntityDrawOutline(prop, false)
             DeleteObject(prop)
         end
@@ -80,14 +87,59 @@ function RemoveGarbageBagProps()
         end
     end
     garbageBagProps = {}
+    garbageBagTargets = {}
     garbagePicked = {}
+    garbageBagPointCoords = {}
+    garbagePickupProp = nil
+end
+
+local function GetGarbageDumpster()
+    if garbageDumpsterProp and DoesEntityExist(garbageDumpsterProp) then return garbageDumpsterProp end
+    local location = Config.GarbageDumpsterLoc.Loc
+    garbageDumpsterMapProp = GetClosestObjectOfType(location.x, location.y, location.z, 5.0, joaat(Config.GarbageDumpsterModel), false, false, false)
+    if garbageDumpsterMapProp and DoesEntityExist(garbageDumpsterMapProp) then
+        garbageDumpsterProp = garbageDumpsterMapProp
+        garbageDumpsterSpawned = false
+        return garbageDumpsterProp
+    end
+    LoadPropDict(Config.GarbageDumpsterModel)
+    garbageDumpsterProp = CreateObject(joaat(Config.GarbageDumpsterModel), location.x, location.y, location.z, true, true, true)
+    SetEntityHeading(garbageDumpsterProp, Config.GarbageDumpsterLoc.Heading)
+    SetEntityAsMissionEntity(garbageDumpsterProp, true, true)
+    NetworkRegisterEntityAsNetworked(garbageDumpsterProp)
+    SetNetworkIdCanMigrate(NetworkGetNetworkIdFromEntity(garbageDumpsterProp), true)
+    garbageDumpsterSpawned = true
+    SetModelAsNoLongerNeeded(Config.GarbageDumpsterModel)
+    return garbageDumpsterProp
+end
+
+local function GetGarbageDumpsterInteractionCoords()
+    local prop = GetGarbageDumpster()
+    if prop and DoesEntityExist(prop) then
+        return GetOffsetFromEntityInWorldCoords(prop, table.unpack(Config.GarbageDumpsterInteractionOffset))
+    end
+    return Config.GarbageDumpsterLoc.Loc
+end
+
+local function SetGarbageDumpsterOutline(enabled)
+    local prop = GetGarbageDumpster()
+    if prop and DoesEntityExist(prop) then
+        SetEntityDrawOutlineColor(255, 255, 255, 255)
+        SetEntityDrawOutlineShader(1)
+        SetEntityDrawOutline(prop, enabled)
+    end
 end
 
 local function SpawnGarbageBagProp(index)
     local location = Config.GarbageBagLocs[index]
     if not location then return end
     local prop = garbageBagProps[index]
-    if prop and DoesEntityExist(prop) then return prop end
+    if prop and DoesEntityExist(prop) then
+        SetEntityDrawOutlineColor(255, 200, 0, 255)
+        SetEntityDrawOutlineShader(1)
+        SetEntityDrawOutline(prop, true)
+        return prop
+    end
     local model = 'prop_rub_binbag_06'
     LoadPropDict(model)
     prop = CreateObject(joaat(model), location.x, location.y, location.z, false, false, false)
@@ -97,6 +149,18 @@ local function SpawnGarbageBagProp(index)
     SetEntityDrawOutlineShader(1)
     SetEntityDrawOutline(prop, true)
     garbageBagProps[index] = prop
+    garbageBagTargets[index] = exports.ox_target:addLocalEntity(prop, {{
+        name = 'fixlife_prision_garbage_bag_' .. index,
+        label = 'Agarrar bolsa de basura',
+        icon = 'fa-solid fa-hand',
+        distance = 2.0,
+        canInteract = function(entity)
+            return injail and not using and not isDead and job == 4 and doneTasks % 2 == 1 and not garbagePicked[index] and garbageBagProps[index] == entity
+        end,
+        onSelect = function()
+            TriggerEvent('Fixlife_prision:client:garbage_bag:' .. index)
+        end
+    }})
     SetModelAsNoLongerNeeded(model)
     return prop
 end
@@ -135,6 +199,11 @@ end
 
 function ResetLaundryRoute()
     ClearLaundryMachineOutlines()
+    SetGarbageDumpsterOutline(false)
+    if garbageDumpsterSpawned and garbageDumpsterProp and DoesEntityExist(garbageDumpsterProp) then DeleteObject(garbageDumpsterProp) end
+    garbageDumpsterProp = nil
+    garbageDumpsterMapProp = nil
+    garbageDumpsterSpawned = false
     RemoveGarbageBagProps()
     laundryPicked = {}
     laundryDeliveryIndex = nil
@@ -299,8 +368,8 @@ function UpdatePrisonTaskPoint()
             for i = 1, #Config.GarbageBagLocs do
                 if not garbagePicked[i] then
                     local prop = SpawnGarbageBagProp(i)
-                    local coords = GetEntityCoords(prop)
-                    point('fixlife_prision_garbage_bag_' .. i, vector3(coords.x, coords.y, coords.z + 0.8), Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:garbage_bag:' .. i, 'hand-holding.svg')
+                    local coords = GetOffsetFromEntityInWorldCoords(prop, 0.0, 0.0, 0.8)
+                    garbageBagPointCoords[i] = coords
                 end
             end
             return
@@ -366,7 +435,8 @@ function UpdatePrisonTaskPoint()
         if job == 4 and doneTasks % 2 == 0 then
             RemovePrisonTaskProp()
             local task = Config.JobOptions[4].Tasks[doneTasks]
-            point('fixlife_prision_task', task.TaskLoc.Loc, Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:task', 'truck-ramp-box.svg')
+            SetGarbageDumpsterOutline(true)
+            point('fixlife_prision_task', GetGarbageDumpsterInteractionCoords(), Config.Sayings[22] .. task.TaskName, 'Fixlife_prision:client:task', 'truck-ramp-box.svg')
             return
         end
         local task = Config.JobOptions[job].Tasks[GetLaundryTaskIndex()]
@@ -388,11 +458,17 @@ for i = 1, 4 do
         local prop = garbageBagProps[i]
         if not prop or not DoesEntityExist(prop) then return end
         TriggerEvent('Fix_3dTextUi:eliminar', 'fixlife_prision_garbage_bag_' .. i)
+        exports.ox_target:removeLocalEntity(prop)
+        garbageBagTargets[i] = nil
         garbagePicked[i] = true
-        SetEntityDrawOutline(prop, false)
-        DeleteObject(prop)
+        for _, bagProp in pairs(garbageBagProps) do
+            if DoesEntityExist(bagProp) then SetEntityDrawOutline(bagProp, false) end
+        end
+        SetGarbageDumpsterOutline(true)
+        garbagePickupProp = prop
         garbageBagProps[i] = nil
-        SetTaskAnimationLocation({Loc = Config.GarbageBagLocs[i], Heading = 0.0, World = true})
+        local animationCoords = GetEntityCoords(prop)
+        SetTaskAnimationLocation({Loc = animationCoords, Heading = GetEntityHeading(prop), World = true})
         TaskComplete()
     end)
 end
@@ -537,6 +613,15 @@ RegisterNetEvent('Fixlife_prision:client:task', function()
         end
         if not hasTrolley then
             Notification('Debes descargar el carrito antes de entregar la ropa.')
+            return
+        end
+    end
+    if job == 4 and doneTasks % 2 == 0 then
+        local prop = GetGarbageDumpster()
+        if prop and DoesEntityExist(prop) then
+            local coords = GetGarbageDumpsterInteractionCoords()
+            SetGarbageDumpsterOutline(false)
+            StartGarbageDumpsterAction(prop, coords, function() TaskComplete(true) end)
             return
         end
     end

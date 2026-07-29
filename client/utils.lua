@@ -557,6 +557,68 @@ RegisterCommand('quitar_estante', function()
 end)
 
 ]]
+function StartGarbageDumpsterAction(prop, interactionCoords, finished)
+    if not prop or not DoesEntityExist(prop) then return end
+    using = true
+    local ped = PlayerPedId()
+    local anim = Config.GarbageDumpsterAnim
+    local coords = GetEntityCoords(prop)
+    local heading = GetEntityHeading(prop)
+    inAnim.Dict = nil
+    inAnim.Anim = nil
+    inAnim.Atr = 0
+    inAnim.Freeze = false
+    ClearPedTasksImmediately(ped)
+    local carriedBag
+    for i = #PlayerHasProp, 1, -1 do
+        if PlayerHasProp[i].id == 'task' then
+            if job == 4 and not carriedBag and DoesEntityExist(PlayerHasProp[i].object) then
+                carriedBag = PlayerHasProp[i].object
+            else
+                if DoesEntityExist(PlayerHasProp[i].object) then DeleteObject(PlayerHasProp[i].object) end
+                table.remove(PlayerHasProp, i)
+            end
+        end
+    end
+    SetEntityCoords(ped, interactionCoords.x+0.3, interactionCoords.y, interactionCoords.z, false, false, false, false)
+    SetEntityHeading(ped, heading)
+    LoadAnim(anim.Dict)
+    NetworkRequestControlOfEntity(prop)
+    -- El jugador empieza en el borde y ambos clips se reproducen hacia atrás.
+    local scene = CreateSynchronizedScene(interactionCoords.x + 0.34, interactionCoords.y, interactionCoords.z+0.15, 0.0, 0.0, heading, 2)
+    TaskSynchronizedScene(ped, scene, anim.Dict, anim.AnimName, 8.0, -8.0, 0, 0, 1000.0, 0)
+    SetSynchronizedScenePhase(scene, 0.99)
+    SetSynchronizedSceneRate(scene, -1.0)
+    Wait(700)
+    PlayEntityAnim(prop, anim.PropAnimName, anim.Dict, 1.0, false, true, false, 0, 1.0, 0)
+    local propDuration = math.max(GetAnimDuration(anim.Dict, anim.PropAnimName), 0.01)
+    local propTime = 0.0
+    SetEntityAnimCurrentTime(prop, anim.Dict, anim.PropAnimName, propTime)
+    while propTime <= 1.0 and DoesEntityExist(prop) do
+        SetEntityAnimCurrentTime(prop, anim.Dict, anim.PropAnimName, propTime)
+        propTime = propTime + (GetFrameTime() / propDuration)
+        Wait(0)
+    end
+    if DoesEntityExist(prop) then
+        SetEntityAnimCurrentTime(prop, anim.Dict, anim.PropAnimName, 1.0)
+        StopEntityAnim(prop, anim.PropAnimName, anim.Dict, true)
+    end
+    local duration = math.max(GetAnimDuration(anim.Dict, anim.AnimName), propDuration, 0.01)
+    if carriedBag then
+        CreateThread(function()
+            Wait(duration * 500)
+            if DoesEntityExist(carriedBag) then DeleteObject(carriedBag) end
+            for i = #PlayerHasProp, 1, -1 do
+                if PlayerHasProp[i].object == carriedBag then table.remove(PlayerHasProp, i) end
+            end
+        end)
+    end
+    Wait(math.max(duration - propDuration, 0.0) * 1000)
+    ClearPedTasksImmediately(ped)
+    using = false
+    if finished then finished() end
+end
+
 function StartLaundryStorageAction(finished)
     using = true
     local ped = PlayerPedId()
