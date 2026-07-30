@@ -491,47 +491,10 @@ function OpenWallMenu()
 end
 
 function BreakOutStart()
-	Citizen.CreateThread(function()
-		local ped = PlayerPedId()
-		using = true
-		RequestAnimDict('mini@repair')
-					
-		if not HasAnimDictLoaded('mini@repair') then
-			LoadAnim('mini@repair')
-		end
-	
-		SetEntityCoords(ped, Config.Cells[jailCell].BreakLoc.Loc.x, Config.Cells[jailCell].BreakLoc.Loc.y, Config.Cells[jailCell].BreakLoc.Loc.z - 1, false, false, false, false)
-		SetEntityHeading(ped, Config.Cells[jailCell].BreakLoc.Heading)
-		TaskPlayAnim(ped, 'mini@repair', 'fixing_a_ped', 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-		inAnim.Dict = 'mini@repair'
-		inAnim.Anim = 'fixing_a_ped'
-		inAnim.Atr = 1
-		inAnim.Freeze = false
-		FreezeEntityPosition(ped, true)
-		-- exports.rprogress:Start(Config.Sayings[161], Config.CrawlTime *1000)
-		-- Citizen.Wait(Config.CrawlTime *1000)
-		-- RemoveAnimDict("mini@repair")
-		lib.progressBar({ --escapando por el tunel
-			duration =  Config.CrawlTime *1000,
-			label =  Config.Sayings[161],
-			icon = 'fixlife.svg',
-			position = 'bottom',
-			useWhileDead = false,
-			canCancel = false,
-			disable = {
-				car = true,
-				move = true,
-				combat = true,
-				mouse = false,
-			},
-		}, RemoveAnimDict("mini@repair"))	
-		FreezeEntityPosition(ped, false)
-		inAnim.Dict = nil
-		inAnim.Anim = nil
-		inAnim.Atr = 0
-		inAnim.Freeze = false
-		ClearPedTasksImmediately(ped)
-		DoScreenFadeOut(1000)
+    Citizen.CreateThread(function()
+        local ped = PlayerPedId()
+        using = true
+        DoScreenFadeOut(1000)
 		Citizen.Wait(1000)
 	
 		for i = 1, #Config.BreakLocs, 1 do

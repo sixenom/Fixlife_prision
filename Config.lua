@@ -3518,8 +3518,8 @@ Config.Cells = {
             Heading = 185.9424
         },
         BreakLoc = {
-            Loc = vector3(3909.5630, 33.49953, 23.19205),
-            Heading = 4.5256
+            Loc = vector3(3909.53979, 33.5090637, 22.89),
+            Heading = -6.2
         },
         InvLoc = {
             Loc = vector3(3909.9010, 32.44114, 23.64975),
@@ -3533,8 +3533,8 @@ Config.Cells = {
             Heading = 185.9424
         },
         BreakLoc = {
-            Loc = vector3(3905.9640, 33.80193, 23.19205),
-            Heading = 4.5256
+            Loc = vector3(3905.9640, 33.80193, 22.89),
+            Heading = -6.2
         },
         InvLoc = {
             Loc = vector3(3906.3030, 32.74354, 23.64975),
@@ -3548,8 +3548,8 @@ Config.Cells = {
             Heading = 185.9424
         },
         BreakLoc = {
-            Loc = vector3(3898.8590, 34.41101, 23.19205),
-            Heading = 4.5256
+            Loc = vector3(3898.8590, 34.41101, 22.89),
+            Heading = -6.2
         },
         InvLoc = {
             Loc = vector3(3899.1980, 33.35262, 23.64975),
@@ -3563,8 +3563,8 @@ Config.Cells = {
             Heading = 185.9424
         },
         BreakLoc = {
-            Loc = vector3(3895.4010, 34.69491, 23.19205),
-            Heading = 4.5256
+            Loc = vector3(3895.4010, 34.69491, 22.89),
+            Heading = -6.2
         },
         InvLoc = {
             Loc = vector3(3895.7390, 33.63652, 23.64975),
@@ -3578,8 +3578,8 @@ Config.Cells = {
             Heading = 185.9424
         },
         BreakLoc = {
-            Loc = vector3(3909.6390, 33.49953, 26.72830),
-            Heading = 4.5256
+            Loc = vector3(3909.6390, 33.49953,  26.4273949),
+            Heading = -6.2
         },
         InvLoc = {
             Loc = vector3(3909.9780, 32.44114, 27.18599),
@@ -3593,8 +3593,8 @@ Config.Cells = {
             Heading = 185.9424
         },
         BreakLoc = {
-            Loc = vector3(3906.0400, 33.80193, 26.72830),
-            Heading = 4.5256
+            Loc = vector3(3906.0400, 33.80193,  26.4273949),
+            Heading = -6.2
         },
         InvLoc = {
             Loc = vector3(3906.3790, 32.74354, 27.18599),
@@ -3608,8 +3608,8 @@ Config.Cells = {
             Heading = 185.9424
         },
         BreakLoc = {
-            Loc = vector3(3898.9360, 34.41101, 26.72830),
-            Heading = 4.5256
+            Loc = vector3(3898.9360, 34.41101, 26.4273949),
+            Heading = -6.2
         },
         InvLoc = {
             Loc = vector3(3899.2740, 33.35262, 27.18599),
@@ -3623,8 +3623,8 @@ Config.Cells = {
             Heading = 185.9424
         },
         BreakLoc = {
-            Loc = vector3(3895.4770, 34.69491, 26.72830),
-            Heading = 4.5256
+            Loc = vector3(3895.4770, 34.69491, 26.4273949),
+            Heading = -6.2
         },
         InvLoc = {
             Loc = vector3(3895.8160, 33.63652, 27.18599),
@@ -3638,8 +3638,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3890.3580, 18.24248, 26.74738),
-            Heading = 184.3195
+            Loc = vector3(3890.3580, 18.24248, 26.4273949),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3891.0140, 19.22185, 27.20507),
@@ -3656,8 +3656,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3893.8530, 17.91798, 26.74738),
-            Heading = 184.3195
+            Loc = vector3(3893.8530, 17.91798, 26.4273949),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3894.5100, 18.89735, 27.20507),
@@ -3674,8 +3674,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3897.4980, 17.62230, 26.75231),
-            Heading = 184.3195
+            Loc = vector3(3897.4980, 17.62230, 26.4273949),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3898.1550, 18.60167, 27.21000),
@@ -3692,8 +3692,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3904.3360, 17.05845, 26.75231),
-            Heading = 184.3195
+            Loc = vector3(3904.3360, 17.05845, 26.4273949),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3904.9920, 18.03782, 27.21000),
@@ -3710,8 +3710,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3890.3580, 18.24248, 23.19119),
-            Heading = 184.3195
+            Loc = vector3(3890.3580, 18.24248, 22.89),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3891.0140, 19.22185, 23.64888),
@@ -3728,8 +3728,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3893.8530, 17.91798, 23.19119),
-            Heading = 184.3195
+            Loc = vector3(3893.8530, 17.91798, 22.89),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3894.5100, 18.89735, 23.64888),
@@ -3746,8 +3746,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3896.8120, 17.71468, 23.19119),
-            Heading = 184.3195
+            Loc = vector3(3896.8120, 17.71468, 22.89),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3896.9060, 19.33192, 23.64888),
@@ -3764,8 +3764,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3904.7260, 17.06676, 23.19119),
-            Heading = 184.3195
+            Loc = vector3(3904.7260, 17.06676, 22.89),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3903.8900, 18.57772, 23.64888),
@@ -3782,8 +3782,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3909.3230, 16.66922, 23.19119),
-            Heading = 184.3195
+            Loc = vector3(3909.3230, 16.66922, 22.89),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3909.2800, 18.26809, 23.64888),
@@ -3800,8 +3800,8 @@ Config.Cells = {
             Heading = 5.7362
         },
         BreakLoc = {
-            Loc = vector3(3908.0820, 16.66922, 27.70985),
-            Heading = 184.3195
+            Loc = vector3(3908.0820, 16.66922, 26.4273949),
+            Heading = 175.68
         },
         InvLoc = {
             Loc = vector3(3909.2800, 18.26809, 27.16755),

@@ -19,6 +19,8 @@ client_scripts {
     'client/jobs.lua',
     'client/client.lua',
     'client/targetmenus.lua'
+    , 'client/toilet_escape.lua'
+    , 'client/toilet_utils.lua'
 }
 
 server_scripts {
@@ -50,5 +52,17 @@ dependencies {
 }
 
 shared_scripts {'@ox_lib/init.lua'}
+
+files {
+    'config/config_c.lua',
+    'locales/*.json',
+    'web/**/*',
+    'stream/*.ycd',
+    'client/minigame/camera_manager.lua',
+    'client/minigame/animation_controller.lua',
+    'client/minigame/screw_game.lua',
+}
+
+ui_page 'web/index.html'
 
 data_file 'DLC_ITYP_REQUEST' 'stream/props_lavanderia.ytyp'

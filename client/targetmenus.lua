@@ -9,19 +9,14 @@ function CreatePrisonTargets(cell)
         radius = 0.5,
         options = {{
             name = 'fixlife_prision_cavar_celda_' .. cell,
-            label = Config.Sayings[93],
-            icon = 'fa-solid fa-person-digging',
+            label = 'Forzar inodoro',
+            icon = 'fa-solid fa-toilet',
             distance = 3.0,
             canInteract = function()
                 return injail and jailCell == cell and not using and not isDead and not breakout2
             end,
             onSelect = function()
-                if breakout3 then
-                    BreakOutStart()
-                else
-                    inMenu.coords, inMenu.is = data.BreakLoc.Loc, true
-                    OpenWallMenu()
-                end
+                StartToiletEscape()
             end
         }}
     })
