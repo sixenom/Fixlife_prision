@@ -3346,7 +3346,7 @@ Config.FenceTool =
 Config.WatchMarkNum = 1 -- Número del marcador de la torre de vigilancia
 Config.WatchMarkColor = {r = 255, g = 0, b = 0} -- Color del marcador de la torre de vigilancia
 
-Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, ConeColor = 5, Size = 0.7} -- Configuración del indicador de la cámara CCTV
+Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, ConeColor = 9, Size = 0.7} -- Configuración del indicador de la cámara CCTV
 Config.MaxWatchDist = 150 -- Distancia necesaria para escapar por completo
 Config.SeeWatchDist = 75 -- Distancia necesaria para ver el círculo 3D
 Config.WatchCameras = { -- Ubicaciones de las cámaras
