@@ -456,20 +456,26 @@ local watchCamerasDebug = false
 local watchCameraDebugBlips = {}
 local watchCameraEntities = {}
 local GetWatchCameraHeading
+local GetWatchCameraBlipHeading
+
+local function SetupWatchCameraCone(blip, heading)
+	local radians = (heading + 180.0) * math.pi / 180.0
+	Citizen.InvokeNative(0xF83D0FEBE75E62C9, blip, -1.0, 1.0, Config.WatchCameraConeWidth, 1.0, Config.WatchCameraConeLength, radians, 0, Config.WatchBlip.ConeColor)
+	SetBlipShowCone(blip, true, Config.WatchBlip.ConeColor)
+end
 
 function CreateWatchCameraBlip(camera, index)
-	local model = joaat('s_m_m_security_01')
+	local model = joaat('prop_cctv_cam_01a')
 	RequestModel(model)
 	while not HasModelLoaded(model) do Wait(0) end
 
-	local entity = CreatePed(4, model, camera.x, camera.y, camera.z, 0.0, false, false)
+	local entity = CreateObjectNoOffset(model, camera.x, camera.y, camera.z, false, false, false)
 	SetEntityVisible(entity, true, false)
 	SetEntityAlpha(entity, 0, false)
 	SetEntityCollision(entity, false, false)
 	FreezeEntityPosition(entity, true)
 	SetEntityInvincible(entity, true)
-	SetBlockingOfNonTemporaryEvents(entity, true)
-	SetPedCanRagdoll(entity, false)
+	SetEntityAsMissionEntity(entity, true, true)
 	SetEntityHeading(entity, GetWatchCameraHeading(index))
 	SetModelAsNoLongerNeeded(model)
 
@@ -478,7 +484,9 @@ function CreateWatchCameraBlip(camera, index)
 	SetBlipScale(blip, Config.WatchBlip.Size)
 	SetBlipColour(blip, Config.WatchBlip.Color)
 	SetBlipDisplay(blip, 4)
-	SetBlipShowCone(blip, true, Config.WatchBlip.Color)
+	SetupWatchCameraCone(blip, (GetWatchCameraBlipHeading(GetWatchCameraHeading(index)) + 180.0) % 360.0)
+	SetBlipSprite(blip, Config.WatchBlip.Sprite)
+	SetBlipColour(blip, Config.WatchBlip.Color)
 	SetBlipAsShortRange(blip, false)
 	BeginTextCommandSetBlipName('STRING')
 	AddTextComponentString(('Camara %d'):format(index))
@@ -534,7 +542,7 @@ local function DrawWatchCameraCone(camera, heading)
 	DrawLine(origin.x, origin.y, origin.z, right.x, right.y, right.z, 255, 220, 0, 180)
 end
 
-local function GetWatchCameraBlipHeading(heading)
+GetWatchCameraBlipHeading = function(heading)
 	return (360.0 - heading) % 360.0
 end
 
@@ -555,7 +563,7 @@ CreateThread(function()
 				local heading = GetWatchCameraHeading(entry.camera)
 				local radarHeading = GetWatchCameraBlipHeading(heading)
 				SetEntityHeading(entry.entity, radarHeading)
-				SetBlipShowCone(entry.blip, true, Config.WatchBlip.Color)
+				SetupWatchCameraCone(entry.blip, (radarHeading + 180.0) % 360.0)
 				SetBlipRotation(entry.blip, math.floor(radarHeading))
 			end
 		end
