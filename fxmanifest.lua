@@ -42,6 +42,7 @@ server_scripts {
 
 dependencies {
     'qbx_core',
+    'qbx_medical',
     'ox_inventory',
     'oxmysql',
     'ox_target',

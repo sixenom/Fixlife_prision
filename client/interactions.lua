@@ -9,10 +9,32 @@ local garbageBagProps = {}
 local garbageBagTargets = {}
 local garbagePicked = {}
 local garbageBagPointCoords = {}
+local garbageRouteBagLocs = {}
+local garbageRouteBagModels = {}
+local garbageRouteDumpster
+garbagePickupModel = nil
 garbagePickupProp = nil
 local garbageDumpsterProp
 local garbageDumpsterMapProp
 local garbageDumpsterSpawned = false
+
+function SetupGarbageRoute()
+    garbageRouteBagLocs = {}
+    garbageRouteBagModels = {}
+    local available = {}
+    for i = 1, #Config.GarbageBagLocs do available[i] = i end
+    math.randomseed(GetGameTimer() + PlayerId())
+    for i = 1, 4 do
+        local position = table.remove(available, math.random(#available))
+        garbageRouteBagLocs[i] = Config.GarbageBagLocs[position]
+        garbageRouteBagModels[i] = Config.GarbageBagModels[math.random(#Config.GarbageBagModels)]
+    end
+    garbageRouteDumpster = Config.GarbageDumpsterLocs[math.random(#Config.GarbageDumpsterLocs)]
+    for i = 1, 4 do
+        Config.JobOptions[4].Tasks[i * 2 - 1].TaskLoc = {Loc = garbageRouteBagLocs[i], Heading = 0.0}
+        Config.JobOptions[4].Tasks[i * 2].TaskLoc = garbageRouteDumpster
+    end
+end
 local taskAnimationLocation
 local laundryAnimationProp
 local laundryStageLocation
@@ -90,26 +112,29 @@ function RemoveGarbageBagProps()
     garbageBagTargets = {}
     garbagePicked = {}
     garbageBagPointCoords = {}
+    garbagePickupModel = nil
     garbagePickupProp = nil
 end
 
 local function GetGarbageDumpster()
     if garbageDumpsterProp and DoesEntityExist(garbageDumpsterProp) then return garbageDumpsterProp end
-    local location = Config.GarbageDumpsterLoc.Loc
-    garbageDumpsterMapProp = GetClosestObjectOfType(location.x, location.y, location.z, 5.0, joaat(Config.GarbageDumpsterModel), false, false, false)
+    local dumpster = garbageRouteDumpster or Config.GarbageDumpsterLoc
+    local location = dumpster.Loc
+    local model = dumpster.Model or Config.GarbageDumpsterModel
+    garbageDumpsterMapProp = GetClosestObjectOfType(location.x, location.y, location.z, 5.0, joaat(model), false, false, false)
     if garbageDumpsterMapProp and DoesEntityExist(garbageDumpsterMapProp) then
         garbageDumpsterProp = garbageDumpsterMapProp
         garbageDumpsterSpawned = false
         return garbageDumpsterProp
     end
-    LoadPropDict(Config.GarbageDumpsterModel)
-    garbageDumpsterProp = CreateObject(joaat(Config.GarbageDumpsterModel), location.x, location.y, location.z, true, true, true)
-    SetEntityHeading(garbageDumpsterProp, Config.GarbageDumpsterLoc.Heading)
+    LoadPropDict(model)
+    garbageDumpsterProp = CreateObject(joaat(model), location.x, location.y, location.z, true, true, true)
+    SetEntityHeading(garbageDumpsterProp, dumpster.Heading)
     SetEntityAsMissionEntity(garbageDumpsterProp, true, true)
     NetworkRegisterEntityAsNetworked(garbageDumpsterProp)
     SetNetworkIdCanMigrate(NetworkGetNetworkIdFromEntity(garbageDumpsterProp), true)
     garbageDumpsterSpawned = true
-    SetModelAsNoLongerNeeded(Config.GarbageDumpsterModel)
+    SetModelAsNoLongerNeeded(model)
     return garbageDumpsterProp
 end
 
@@ -131,7 +156,7 @@ local function SetGarbageDumpsterOutline(enabled)
 end
 
 local function SpawnGarbageBagProp(index)
-    local location = Config.GarbageBagLocs[index]
+    local location = garbageRouteBagLocs[index] or Config.GarbageBagLocs[index]
     if not location then return end
     local prop = garbageBagProps[index]
     if prop and DoesEntityExist(prop) then
@@ -140,7 +165,7 @@ local function SpawnGarbageBagProp(index)
         SetEntityDrawOutline(prop, true)
         return prop
     end
-    local model = 'prop_rub_binbag_06'
+    local model = garbageRouteBagModels[index] or 'prop_rub_binbag_06'
     LoadPropDict(model)
     prop = CreateObject(joaat(model), location.x, location.y, location.z, false, false, false)
     PlaceObjectOnGroundProperly(prop)
@@ -365,7 +390,7 @@ function UpdatePrisonTaskPoint()
         if job == 4 and doneTasks % 2 == 1 then
             RemovePrisonTaskProp()
             local task = Config.JobOptions[4].Tasks[doneTasks]
-            for i = 1, #Config.GarbageBagLocs do
+            for i = 1, #garbageRouteBagLocs do
                 if not garbagePicked[i] then
                     local prop = SpawnGarbageBagProp(i)
                     local coords = GetOffsetFromEntityInWorldCoords(prop, 0.0, 0.0, 0.8)
@@ -466,6 +491,7 @@ for i = 1, 4 do
         end
         SetGarbageDumpsterOutline(true)
         garbagePickupProp = prop
+        garbagePickupModel = garbageRouteBagModels[i] or 'prop_rub_binbag_06'
         garbageBagProps[i] = nil
         local animationCoords = GetEntityCoords(prop)
         SetTaskAnimationLocation({Loc = animationCoords, Heading = GetEntityHeading(prop), World = true})

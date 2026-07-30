@@ -467,13 +467,19 @@ Config.IMarkSize = {x = 1.0, y = 1.0, z = 0.5} -- Tamaño del marcador 3D del An
 
 -- Configuraciones del Administrador de Trabajo
 Config.JobManLoc = {Loc = vector3(3915.36, 20.52, 23.85), Heading = 357.52} -- Ubicación del peatón del administrador de trabajo
-Config.JobManLoc2 = {Loc = vector3(4082.6423, 42.1875, 18.7893), Heading = 15.4042}
+Config.JobManLoc2 = {
+    Loc = vector3(4082.6423, 42.1875, 18.7893),
+    Heading = 15.4042
+}
 Config.JobManBlip = {Spawn = true, Sprite = 267, Color = 0, Size = 0.9} -- Blip del administrador de trabajo
 Config.JobManPed = 's_m_m_prisguard_01' -- Peatón del administrador de trabajo
 -- ---------------------------------------------------------------------------
 -- Lavanderia: vehiculo y puntos de trabajo
 -- ---------------------------------------------------------------------------
-Config.LaundryVehicleNpcLoc = {Loc = vector3(4075.7576, 41.4845, 18.7589), Heading = 109.3173}
+Config.LaundryVehicleNpcLoc = {
+    Loc = vector3(4075.7576, 41.4845, 18.7589),
+    Heading = 109.3173
+}
 Config.LaundryVehicleNpc = 's_m_m_prisguard_01'
 Config.LaundryVehicleBlip = {Spawn = true, Sprite = 225, Color = 0, Size = 0.8}
 Config.LaundryVehicleModel = 'keitora'
@@ -502,10 +508,7 @@ Config.LaundryWasherLocs = {
     {Loc = vector3(4066.35449, 56.4548035, 18.5177574), Heading = 12.0}
 }
 Config.LaundryWasherInteractionOffsets = {
-    {0.0, -0.8, 0.8},
-    {0.0, -0.8, 0.8},
-    {0.0, -0.8, 0.8},
-    {0.0, -0.8, 0.8}
+    {0.0, -0.8, 0.8}, {0.0, -0.8, 0.8}, {0.0, -0.8, 0.8}, {0.0, -0.8, 0.8}
 }
 Config.LaundryDryerLocs = {
     {Loc = vector3(4067.19775, 51.53718, 17.7854881), Heading = 192.0},
@@ -514,10 +517,7 @@ Config.LaundryDryerLocs = {
     {Loc = vector3(4063.19678, 50.74868, 17.7854881), Heading = 192.0}
 }
 Config.LaundryDryerInteractionOffsets = {
-    {0.0, -0.8, 0.8},
-    {0.0, -0.8, 0.8},
-    {0.0, -0.8, 0.8},
-    {0.0, -0.8, 0.8}
+    {0.0, -0.8, 0.8}, {0.0, -0.8, 0.8}, {0.0, -0.8, 0.8}, {0.0, -0.8, 0.8}
 }
 Config.LaundryStorageAction = {
     Loc = vector3(4072.8677, 55.6293, 19.5065),
@@ -527,17 +527,49 @@ Config.LaundryStorageAction = {
     Duration = 2500
 }
 
--- Limpieza de basura: primer grupo de bolsas y contenedor.
+-- Limpieza de basura.
 Config.GarbageBagLocs = {
-    vector3(3994.39526, 49.75657, 18.4567528),
-    vector3(4046.04565, 23.92728, 19.9110374),
-    vector3(4037.053, 25.443264, 20.1352043),
-    vector3(4019.80322, 21.315403, 19.9355831)
+    vector3(4049.3669, 18.1602, 19.4217), vector3(4049.7622, 27.3301, 19.8733),
+    vector3(4032.7588, 29.4939, 20.5864), vector3(4039.1104, 23.7680, 21.0787),
+    vector3(4026.4204, 30.0082, 22.0508), vector3(4016.3054, 31.1498, 23.2917),
+    vector3(4017.4961, 34.5426, 19.7567), vector3(4009.9377, 44.9345, 17.8066),
+    vector3(3995.2183, 46.3300, 18.3948), vector3(3970.7842, 19.0812, 21.3606),
+    vector3(3960.8936, 17.0454, 19.9066), vector3(3968.1694, 28.0403, 19.9920),
+    vector3(3988.7834, 2.3887, 18.2469), vector3(3997.7666, 14.4281, 22.1145),
+    vector3(4007.5752, 4.8038, 19.0047), vector3(4020.3044, 20.7892, 20.9281)
 }
-Config.GarbageDumpsterLoc = {Loc = vector3(4019.88086, -6.876818, 17.75792), Heading = -90.0}
-Config.GarbageDumpsterModel = 'prop_dumpster_02b'
+Config.GarbageBagModels = {
+    'prop_rub_binbag_01b', 'prop_rub_binbag_03', 'prop_rub_binbag_03b',
+    'prop_rub_binbag_06', 'prop_rub_binbag_08'
+}
+Config.GarbageDumpsterLocs = {
+    {
+        Model = 'prop_dumpster_01a',
+        Loc = vector3(4019.88086, -2.23630834, 17.75792),
+        Heading = 90.0
+    }, {
+        Model = 'prop_dumpster_02a',
+        Loc = vector3(4019.88086, -4.570806, 17.75792),
+        Heading = 90.0
+    }, {
+        Model = 'prop_dumpster_02b',
+        Loc = vector3(4019.88086, -6.876818, 17.75792),
+        Heading = 90.0
+    }, {
+        Model = 'prop_dumpster_01a',
+        Loc = vector3(4019.88086, -9.086115, 17.75792),
+        Heading = 90.0
+    }
+}
+Config.GarbageDumpsterLoc = Config.GarbageDumpsterLocs[3]
+Config.GarbageDumpsterModel = Config.GarbageDumpsterLoc.Model
 Config.GarbageDumpsterInteractionOffset = {0.0, -1.3, 0.8}
-Config.GarbageDumpsterAnim = {Dict = '17mov_garbage', AnimName = 'ped_dumpster_01a_1', PropAnimName = 'prop_dumpster_01a_1', Time = 10}
+Config.GarbageDumpsterAnim = {
+    Dict = '17mov_garbage',
+    AnimName = 'ped_dumpster_01a_1',
+    PropAnimName = 'prop_dumpster_01a_1',
+    Time = 10
+}
 
 Config.JMMarkNum = 27 -- Número del marcador 3D del administrador de trabajo
 Config.JMMarkColor = {r = 255, g = 0, b = 255} -- Color del marcador 3D del administrador de trabajo
@@ -2953,7 +2985,10 @@ Config.JobOptions = {
 do
     local startTask = {
         TaskName = 'Agarra la ropa sucia',
-        TaskLoc = {Loc = vector3(4073.8359, 54.1713, 18.7869), Heading = 355.8455},
+        TaskLoc = {
+            Loc = vector3(4073.8359, 54.1713, 18.7869),
+            Heading = 355.8455
+        },
         TBlip = {Spawn = true, Sprite = 162, Color = 3, Size = 0.7},
         Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'},
         Time = 10,
@@ -2961,17 +2996,29 @@ do
         CarryItem = {
             Attach = true,
             Prop = 'bkr_prop_fakeid_binbag_01',
-            Offsets = {First = 0.0, Second = -0.13, Third = -0.2, Four = 0.0, Five = 0.0, Six = 0.0}
+            Offsets = {
+                First = 0.0,
+                Second = -0.13,
+                Third = -0.2,
+                Four = 0.0,
+                Five = 0.0,
+                Six = 0.0
+            }
         }
     }
-    local step = {TaskName = 'Tarea de lavandería', AttachItem = {Attach = false}, CarryItem = {Attach = false}}
+    local step = {
+        TaskName = 'Tarea de lavandería',
+        AttachItem = {Attach = false},
+        CarryItem = {Attach = false}
+    }
     step.Anim = {Dict = 'mini@repair', AnimName = 'fixing_a_ped'}
     step.Time = 10
     step.TaskLoc = startTask.TaskLoc
     step.TBlip = startTask.TBlip
     Config.JobOptions[2].Tasks = {
         startTask, step, startTask, step, startTask, step, startTask, step,
-        step, step, step, step, step, step, step, step, step, step, step, step, step
+        step, step, step, step, step, step, step, step, step, step, step, step,
+        step
     }
 end
 
@@ -2986,7 +3033,18 @@ do
             Anim = {Dict = 'custom@pickfromground', AnimName = 'pickfromground'},
             Time = 10,
             AttachItem = {Attach = false},
-            CarryItem = {Attach = true, Prop = 'prop_rub_binbag_06', Offsets = {First = 0.0, Second = 0.0400, Third = -0.3, Four = 0.0, Five = 0.0, Six = 0.0}}
+            CarryItem = {
+                Attach = true,
+                Prop = 'prop_rub_binbag_06',
+                Offsets = {
+                    First = 0.0,
+                    Second = 0.0400,
+                    Third = -0.3,
+                    Four = 0.0,
+                    Five = 0.0,
+                    Six = 0.0
+                }
+            }
         }
         tasks[#tasks + 1] = {
             TaskName = 'Dejar la basura',
@@ -3109,55 +3167,55 @@ Config.CheckUpTime = 10 -- Tiempo necesario para revisar a un prisionero (en seg
 Config.BedLocs = {
     [1] = {
         SpawnLoc = {
-            Loc = vector3(1777.4617919922, 2565.4919433594, 46.722312927246),
-            Heading = 268.2
+            Loc = vector3(4040.98657, -2.148099, 19.8),
+            Heading = 90.0
         }, -- Ubicación de aparición del médico
         DoctorSpawn = {
-            Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041),
-            Heading = 189.93
+            Loc = vector3(4037.3699, -3.6748, 18.7874),
+            Heading = 12.5144
         }, -- Ubicación de aparición del médico
         DocCheck = {
-            Loc = vector3(1779.1821289062, 2564.9467773438, 45.797836303711),
-            Heading = 65.82
+            Loc = vector3(4040.9111, -3.0005, 18.7874),
+            Heading = 355.8610
         }, -- Ubicación a la que camina el médico para revisar
         DocWalkTime = 7 -- Tiempo que debe tardar el médico en llegar (en segundos)
+    },
+    [2] = {
+        SpawnLoc = {Loc = vector3(4043.25586, -8.693617, 19.8), Heading = 90.0},
+        DoctorSpawn = {
+            Loc = vector3(4039.7917, -6.7746, 18.7874),
+            Heading = 183.0027
+        },
+        DocCheck = {
+            Loc = vector3(4043.0627, -7.7115, 18.7874),
+            Heading = 179.7846
+        },
+        DocWalkTime = 7
+    },
+    [3] = {
+        SpawnLoc = {Loc = vector3(4046.26953, -8.089871, 19.8), Heading = -90.0},
+        DoctorSpawn = {
+            Loc = vector3(4050.0994, -6.8582, 18.7874),
+            Heading = 358.5315
+        },
+        DocCheck = {
+            Loc = vector3(4046.3774, -7.2284, 18.7874),
+            Heading = 178.1526
+        },
+        DocWalkTime = 7
+    },
+    [4] = {
+        SpawnLoc = {Loc = vector3(4048.832, -1.75661325, 19.8), Heading = -90.0},
+        DoctorSpawn = {
+            Loc = vector3(4052.2546, -3.3960, 18.7874),
+            Heading = 8.0058
+        },
+        DocCheck = {
+            Loc = vector3(4049.2009, -2.6267, 18.7874),
+            Heading = 359.7542
+        },
+        DocWalkTime = 7
     }
-    -- [2] = {
-    --     SpawnLoc = {Loc = vector3(1777.5457763672, 2563.3625488281, 46.722332000732), Heading = 267.57},
-    --     DoctorSpawn = {Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041), Heading = 189.93},
-    --     DocCheck = {Loc = vector3(1779.0882568359, 2563.4348144531, 45.797836303711), Heading = 89.79},
-    --     DocWalkTime = 6
-    -- },
-    -- [3] = {
-    --     SpawnLoc = {Loc = vector3(1777.6226806641, 2561.3317871094, 46.722328186035), Heading = 269.24},
-    --     DoctorSpawn = {Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041), Heading = 189.93},
-    --     DocCheck = {Loc = vector3(1779.2280273438, 2561.4267578125, 45.797836303711), Heading = 90.0},
-    --     DocWalkTime = 5
-    -- },
-    -- [4] = {
-    --     SpawnLoc = {Loc = vector3(1777.57421875, 2558.9553222656, 46.722305297852), Heading = 267.91},
-    --     DoctorSpawn = {Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041), Heading = 189.93},
-    --     DocCheck = {Loc = vector3(1779.1295166016, 2559.0458984375, 45.797824859619), Heading = 87.48},
-    --     DocWalkTime = 5
-    -- },
-    -- [5] = {
-    --     SpawnLoc = {Loc = vector3(1781.6727294922, 2565.5573730469, 46.722312927246), Heading = 84.24},
-    --     DoctorSpawn = {Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041), Heading = 189.93},
-    --     DocCheck = {Loc = vector3(1780.111328125, 2564.7570800781, 45.797824859619), Heading = 292.52},
-    --     DocWalkTime = 7
-    -- },
-    -- [6] = {
-    --     SpawnLoc = {Loc = vector3(1781.6551513672, 2563.4787597656, 46.722332000732), Heading = 88.82},
-    --     DoctorSpawn = {Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041), Heading = 189.93},
-    --     DocCheck = {Loc = vector3(1780.013671875, 2563.4584960938, 45.797824859619), Heading = 270.36},
-    --     DocWalkTime = 6
-    -- },
-    -- [7] = {
-    --     SpawnLoc = {Loc = vector3(1781.6934814453, 2561.5017089844, 46.722312927246), Heading = 90.87},
-    --     DoctorSpawn = {Loc = vector3(1777.5787353516, 2555.0952148438, 45.797794342041), Heading = 189.93},
-    --     DocCheck = {Loc = vector3(1780.1590576172, 2561.4636230469, 45.797824859619), Heading = 268.96},
-    --     DocWalkTime = 6
-    -- }
 }
 
 -- Configuraciones de escape
@@ -3288,23 +3346,26 @@ Config.FenceTool =
 Config.WatchMarkNum = 1 -- Número del marcador de la torre de vigilancia
 Config.WatchMarkColor = {r = 255, g = 0, b = 0} -- Color del marcador de la torre de vigilancia
 
-Config.WatchBlip = {Spawn = true, Sprite = 181, Color = 1, Size = 0.7} -- Configuración del indicador de la torre de vigilancia
-Config.WatchDist = 20.0 -- Tamaño del círculo o distancia necesaria
+Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, Size = 0.7} -- Configuración del indicador de la cámara CCTV
 Config.MaxWatchDist = 150 -- Distancia necesaria para escapar por completo
 Config.SeeWatchDist = 75 -- Distancia necesaria para ver el círculo 3D
-Config.WatchTowers = { -- Todas las ubicaciones de las torres de vigilancia
-    [1] = vector3(1823.9467773438, 2621.1137695312, 45.8014793396),
-    [2] = vector3(1848.8317871094, 2699.4509277344, 45.8014793396),
-    [3] = vector3(1773.2802734375, 2762.8894042969, 45.8014793396),
-    [4] = vector3(1649.5051269531, 2758.0935058594, 45.8014793396),
-    [5] = vector3(1569.8160400391, 2680.447265625, 45.8014793396),
-    [6] = vector3(1534.6882324219, 2585.3349609375, 45.550983428955),
-    [7] = vector3(1540.5181884766, 2469.6254882812, 45.550983428955),
-    [8] = vector3(1658.923828125, 2394.5964355469, 45.550983428955),
-    [9] = vector3(1761.4342041016, 2410.2609863281, 45.550983428955),
-    [10] = vector3(1824.2727050781, 2475.5314941406, 45.550983428955),
-    [11] = vector3(1822.5385742188, 2574.7231445312, 45.67200088501)
+Config.WatchCameras = { -- Ubicaciones de las cámaras
+    [1] = vector3(3872.864, -31.87372, 35.5),
+    [2] = vector3(3838.44263, -17.7937088, 35.5),
+    [3] = vector3(3817.32446, 11.1535282, 35.5),
+    [4] = vector3(3922.08838, -6.68391228, 35.5),
+    [5] = vector3(4054.73584, -0.564636946, 35.5),
+    [6] = vector3(4065.01123, 28.1750088, 35.5),
+    [7] = vector3(3968.9834, 32.069313, 35.5),
+    [8] = vector3(3944.25049, 51.9409561, 35.5),
+    [9] = vector3(3967.12817, 54.20391, 35.5),
+    [10] = vector3(3941.412, 18.7877922, 35.5),
 }
+
+Config.WatchCameraSweepSpeed = 10.0
+Config.WatchCameraSweepAngle = 110.0
+Config.WatchCameraRange = 55.0
+Config.WatchCameraFov = 65.0
 
 -- Configuraciones de duchas
 -- ============================================================================

@@ -161,6 +161,8 @@ function TaskComplete(skipAnimation)
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
 		local completedTask = doneTasks
+		local completedJob = job
+		local finished = doneTasks >= taskMax
 		if job == 2 and completedTask == 8 then
 			lib.progressBar({duration = 20000, label = 'Lavadoras en funcionamiento', icon = 'fixlife.svg', position = 'bottom', useWhileDead = false, canCancel = false})
 			HighlightAvailableLaundryWashers()
@@ -265,6 +267,8 @@ function TaskComplete(skipAnimation)
 			inAnim.Anim = 'idle'
 			inAnim.Atr = 51
 			inAnim.Freeze = false
+		elseif job == 4 and completedTask % 2 == 1 then
+			carryItem = {Attach = true, Prop = garbagePickupModel or 'prop_rub_binbag_06', Offsets = {First = 0.0, Second = 0.0400, Third = -0.3, Four = 0.0, Five = 0.0, Six = 0.0}}
 		elseif job == 3 and doneTasks % 2 == 1 then
 			carryItem = {Attach = true, Prop = 'ch_prop_ch_laundry_trolley_01b', Offsets = {First = 0.0, Second = -0.8, Third = -1.340, Four = 0.0, Five = 0.0, Six = 90.0}}
 		end
@@ -288,12 +292,12 @@ function TaskComplete(skipAnimation)
 			inAnim.Freeze = false
 			ClearPedTasksImmediately(ped)
 		end
-		if doneTasks >= taskMax then
-			doneTasks = 1
+		if finished then
+			doneTasks = 0
 			if job == 4 then RemoveGarbageBagProps() end
 			Notification('Tareas completadas. Ya puedes finalizar el trabajo.')
 			time = time - Config.JobOptions[job].TimeRemove
-			TriggerServerEvent('HD_Jail:TaskComplete', job, completedTask)
+			TriggerServerEvent('HD_Jail:TaskComplete', completedJob, completedTask)
 		else
 			doneTasks = doneTasks + 1
 			Notification(Config.Sayings[24])
@@ -315,10 +319,17 @@ function TaskComplete(skipAnimation)
 		end
 		if job == 2 and completedTask % 2 == 0 and completedTask <= 16 then ClearLaundryStageLocation() end
 		if job == 3 and completedTask % 2 == 0 then SpawnLaundryDropProp(GetLaundryDropIndex()) end
-		UpdateJobHud()
-		UpdatePrisonTaskPoint()
+		if finished then
+			job = 0
+			taskMax = 0
+			UpdateJobHud()
+			UpdatePrisonTaskPoint()
+		else
+			UpdateJobHud()
+			UpdatePrisonTaskPoint()
+		end
 	
-		TriggerServerEvent('HD_Jail:TaskComplete1', job)
+		TriggerServerEvent('HD_Jail:TaskComplete1', completedJob)
 	
 		local removes = {}
 		for i = 1, #blips, 1 do
@@ -333,15 +344,17 @@ function TaskComplete(skipAnimation)
 			table.remove(blips[removes[i]])
 		end
 	
-	local nextTask = Config.JobOptions[job].Tasks[GetLaundryTaskIndex()]
-	local blip4 = AddBlipForCoord(nextTask.TaskLoc.Loc.x, nextTask.TaskLoc.Loc.y, nextTask.TaskLoc.Loc.z)
-	SetBlipSprite(blip4, nextTask.TBlip.Sprite)
-	SetBlipScale(blip4, nextTask.TBlip.Size)
-	SetBlipColour(blip4, nextTask.TBlip.Color)
-	BeginTextCommandSetBlipName("STRING")
-	AddTextComponentString(nextTask.TaskName..' | '..Config.Sayings[26]..doneTasks..'/'..taskMax)
+	if not finished then
+		local nextTask = Config.JobOptions[job].Tasks[GetLaundryTaskIndex()]
+		local blip4 = AddBlipForCoord(nextTask.TaskLoc.Loc.x, nextTask.TaskLoc.Loc.y, nextTask.TaskLoc.Loc.z)
+		SetBlipSprite(blip4, nextTask.TBlip.Sprite)
+		SetBlipScale(blip4, nextTask.TBlip.Size)
+		SetBlipColour(blip4, nextTask.TBlip.Color)
+		BeginTextCommandSetBlipName("STRING")
+		AddTextComponentString(nextTask.TaskName..' | '..Config.Sayings[26]..doneTasks..'/'..taskMax)
 		EndTextCommandSetBlipName(blip4)
 		table.insert(blips, {id = 'task', data = blip4})
+	end
 		ClearTaskAnimationLocation()
 	end)
 end
@@ -723,6 +736,7 @@ function StartJob(jobie, trip)
 	if jobie ~= 0 then
 		job = jobie
 		doneTasks = 1
+		if jobie == 4 then SetupGarbageRoute() end
 		UpdatePrisonTaskPoint()
 		taskMax = 0
 		for i = 1, #Config.JobOptions[jobie].Tasks, 1 do

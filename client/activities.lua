@@ -545,15 +545,9 @@ function BreakOutStart()
 			table.insert(blips, {id = 'escape', data = blip5})
 		end
 	
-		for i = 1, #Config.WatchTowers, 1 do
-			local blip5 = AddBlipForCoord(Config.WatchTowers[i].x, Config.WatchTowers[i].y, Config.WatchTowers[i].z)
-			SetBlipSprite(blip5, Config.WatchBlip.Sprite)
-			SetBlipScale(blip5, Config.WatchBlip.Size)
-			SetBlipColour(blip5, Config.WatchBlip.Color)
-			BeginTextCommandSetBlipName("STRING")
-			AddTextComponentString(Config.Sayings[99])
-			EndTextCommandSetBlipName(blip5)
-			table.insert(blips, {id = 'tower', data = blip5})
+		for i = 1, #Config.WatchCameras, 1 do
+			local cameraBlip = CreateWatchCameraBlip(Config.WatchCameras[i], i)
+			table.insert(blips, {id = 'tower', data = cameraBlip.blip, camera = i, entity = cameraBlip.entity})
 		end
 		SetEntityCoords(ped, Config.Cells[jailCell].ExitLoc.Loc.x, Config.Cells[jailCell].ExitLoc.Loc.y, Config.Cells[jailCell].ExitLoc.Loc.z - 1, false, false, false, false)
 		SetEntityHeading(ped, Config.Cells[jailCell].ExitLoc.Heading)

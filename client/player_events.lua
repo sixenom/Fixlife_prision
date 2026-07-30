@@ -38,6 +38,25 @@ AddEventHandler('HD_Jail:onPlayerDeath', function()
 	end
 end)
 
+RegisterNetEvent('qbx_medical:client:onPlayerDied')
+AddEventHandler('qbx_medical:client:onPlayerDied', function()
+	if not injail or time <= 0 or jailCell <= 0 or isDead then return end
+
+	TriggerEvent('HD_Jail:onPlayerDeath')
+	CreateThread(function()
+		Wait(500)
+		TriggerEvent('qbx_medical:client:playerRevived')
+		Wait(100)
+		TriggerEvent('HD_Jail:onPlayerSpawn')
+	end)
+end)
+
+RegisterCommand('probarenfermeria', function()
+	if not injail or time <= 0 or jailCell <= 0 or using or isDead then return end
+	isDead = true
+	TriggerEvent('HD_Jail:onPlayerSpawn')
+end)
+
 RegisterNetEvent('HD_Jail:onPlayerSpawn')
 AddEventHandler('HD_Jail:onPlayerSpawn', function()
 	Citizen.CreateThread(function()

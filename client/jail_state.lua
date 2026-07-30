@@ -452,6 +452,138 @@ RegisterCommand('probarhelicoptero', function()
 	exports['Fixlife_hud']:setCinematicMode(false)
 end)
 
+local watchCamerasDebug = false
+local watchCameraDebugBlips = {}
+local watchCameraEntities = {}
+local GetWatchCameraHeading
+
+function CreateWatchCameraBlip(camera, index)
+	local model = joaat('s_m_m_security_01')
+	RequestModel(model)
+	while not HasModelLoaded(model) do Wait(0) end
+
+	local entity = CreatePed(4, model, camera.x, camera.y, camera.z, 0.0, false, false)
+	SetEntityVisible(entity, true, false)
+	SetEntityAlpha(entity, 0, false)
+	SetEntityCollision(entity, false, false)
+	FreezeEntityPosition(entity, true)
+	SetEntityInvincible(entity, true)
+	SetBlockingOfNonTemporaryEvents(entity, true)
+	SetPedCanRagdoll(entity, false)
+	SetEntityHeading(entity, GetWatchCameraHeading(index))
+	SetModelAsNoLongerNeeded(model)
+
+	local blip = AddBlipForEntity(entity)
+	SetBlipSprite(blip, Config.WatchBlip.Sprite)
+	SetBlipScale(blip, Config.WatchBlip.Size)
+	SetBlipColour(blip, Config.WatchBlip.Color)
+	SetBlipDisplay(blip, 4)
+	SetBlipShowCone(blip, true, Config.WatchBlip.Color)
+	SetBlipAsShortRange(blip, false)
+	BeginTextCommandSetBlipName('STRING')
+	AddTextComponentString(('Camara %d'):format(index))
+	EndTextCommandSetBlipName(blip)
+
+	local entry = {blip = blip, entity = entity, camera = index}
+	watchCameraEntities[#watchCameraEntities + 1] = entry
+	return entry
+end
+
+local function SetWatchCameraDebugBlips(enabled)
+	if not enabled then
+		for _, entry in ipairs(watchCameraDebugBlips) do
+			if DoesBlipExist(entry.blip) then RemoveBlip(entry.blip) end
+		end
+		watchCameraDebugBlips = {}
+		return
+	end
+
+	for i, camera in ipairs(Config.WatchCameras) do
+		watchCameraDebugBlips[#watchCameraDebugBlips + 1] = CreateWatchCameraBlip(camera, i)
+	end
+end
+
+GetWatchCameraHeading = function(index)
+	local center = (index - 1) * 360.0 / #Config.WatchCameras
+	local cycle = (GetGameTimer() / 1000.0 * Config.WatchCameraSweepSpeed + index * 37.0) % 360.0
+	local halfSweep = Config.WatchCameraSweepAngle / 2.0
+	local offset = cycle <= 180.0 and (cycle / 180.0 * Config.WatchCameraSweepAngle - halfSweep) or ((360.0 - cycle) / 180.0 * Config.WatchCameraSweepAngle - halfSweep)
+	return (center + offset) % 360.0
+end
+
+local function IsPlayerInWatchCamera(camera, heading, coords)
+	local distance = #(vector3(coords.x, coords.y, 0.0) - vector3(camera.x, camera.y, 0.0))
+	if distance > Config.WatchCameraRange then return false end
+
+	local targetHeading = (math.deg(math.atan(coords.x - camera.x, coords.y - camera.y)) + 360.0) % 360.0
+	local delta = math.abs((targetHeading - heading + 180.0) % 360.0 - 180.0)
+	return delta <= Config.WatchCameraFov / 2.0
+end
+
+local function DrawWatchCameraCone(camera, heading)
+	local function pointAt(angle, distance, z)
+		local radians = math.rad(angle)
+		return vector3(camera.x + math.sin(radians) * distance, camera.y + math.cos(radians) * distance, z)
+	end
+
+	local left = pointAt(heading - Config.WatchCameraFov / 2.0, Config.WatchCameraRange, camera.z - 1.0)
+	local right = pointAt(heading + Config.WatchCameraFov / 2.0, Config.WatchCameraRange, camera.z - 1.0)
+	local origin = vector3(camera.x, camera.y, camera.z)
+	DrawPoly(origin.x, origin.y, origin.z, left.x, left.y, left.z, right.x, right.y, right.z, 255, 220, 0, 45)
+	DrawLine(origin.x, origin.y, origin.z, left.x, left.y, left.z, 255, 220, 0, 180)
+	DrawLine(origin.x, origin.y, origin.z, right.x, right.y, right.z, 255, 220, 0, 180)
+end
+
+local function GetWatchCameraBlipHeading(heading)
+	return (360.0 - heading) % 360.0
+end
+
+RegisterCommand('probar_camaras', function()
+	watchCamerasDebug = not watchCamerasDebug
+	SetWatchCameraDebugBlips(watchCamerasDebug)
+	Notification(watchCamerasDebug and 'Prueba de camaras activada' or 'Prueba de camaras desactivada')
+end)
+
+CreateThread(function()
+	while true do
+		for i = #watchCameraEntities, 1, -1 do
+			local entry = watchCameraEntities[i]
+			if not DoesBlipExist(entry.blip) then
+				if DoesEntityExist(entry.entity) then DeleteEntity(entry.entity) end
+				table.remove(watchCameraEntities, i)
+			else
+				local heading = GetWatchCameraHeading(entry.camera)
+				local radarHeading = GetWatchCameraBlipHeading(heading)
+				SetEntityHeading(entry.entity, radarHeading)
+				SetBlipShowCone(entry.blip, true, Config.WatchBlip.Color)
+				SetBlipRotation(entry.blip, math.floor(radarHeading))
+			end
+		end
+		Wait(#watchCameraEntities > 0 and 100 or 500)
+	end
+end)
+
+CreateThread(function()
+	while true do
+		if not watchCamerasDebug then
+			Wait(500)
+		else
+			local coords = GetEntityCoords(PlayerPedId())
+			for i, tower in ipairs(Config.WatchCameras) do
+				local heading = GetWatchCameraHeading(i)
+				local distance = #(coords - tower)
+				DrawWatchCameraCone(tower, heading)
+				DrawMarker(Config.WatchMarkNum, tower.x, tower.y, tower.z, 0.0, 0.0, 0.0, 0.0, 0.0, heading, 0.6, 0.6, 0.6, Config.WatchMarkColor.r, Config.WatchMarkColor.g, Config.WatchMarkColor.b, 180, false, false, 2, false, nil, nil, false)
+				if distance <= Config.SeeWatchDist then
+					local seen = IsPlayerInWatchCamera(tower, heading, coords)
+					DrawText3D(tower.x, tower.y, tower.z + 0.5, ('Camara %d | %.1fm | %s'):format(i, distance, seen and 'TE VE' or 'seguro'))
+				end
+			end
+			Wait(0)
+		end
+	end
+end)
+
 
 
 RegisterNetEvent('HD_Jail:TakeBooze')
@@ -872,8 +1004,8 @@ Citizen.CreateThread(function()
 		if breakout2 then
 			local minDistance3 = 100
 			local minDistance2 = 5
-			for i = 1, #Config.WatchTowers, 1 do
-				dist2 = Vdist(Config.WatchTowers[i].x, Config.WatchTowers[i].y, Config.WatchTowers[i].z, coords)
+			for i = 1, #Config.WatchCameras, 1 do
+				dist2 = Vdist(Config.WatchCameras[i].x, Config.WatchCameras[i].y, Config.WatchCameras[i].z, coords)
 				if dist2 < minDistance3 then
 					minDistance3 = dist2
 					closestTower = i
@@ -942,23 +1074,31 @@ Citizen.CreateThread(function()
 				Citizen.Wait(1000)
 			end
 		elseif breakout2 then
-			local dist = Vdist(Config.WatchTowers[closestTower].x, Config.WatchTowers[closestTower].y, Config.WatchTowers[closestTower].z - 1, coords)
-
 			if not using and not isDead then
-				if dist <= Config.SeeWatchDist then
-					Citizen.Wait(100)
-					if dist <= Config.WatchDist then
-						breakout2 = false
-						breakout4 = true
-						TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
+				local seen = false
+				local nearestDistance = math.huge
+				for i, camera in ipairs(Config.WatchCameras) do
+					local distance = #(coords - camera)
+					if distance < nearestDistance then
+						nearestDistance = distance
+						closestTower = i
 					end
+					if IsPlayerInWatchCamera(camera, GetWatchCameraHeading(i), coords) then
+						seen = true
+						break
+					end
+				end
+
+				if seen then
+					breakout2 = false
+					breakout4 = true
+					TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
+				elseif nearestDistance >= Config.MaxWatchDist then
+					IEscaped()
+					breakout2 = false
+					breakout4 = true
 				else
-					if dist >= Config.MaxWatchDist then
-						IEscaped()
-						breakout2 = false
-						breakout4 = true
-					end
-					Citizen.Wait(500)
+					Citizen.Wait(100)
 				end
 			else
 				Citizen.Wait(1000)
