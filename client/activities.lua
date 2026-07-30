@@ -556,7 +556,9 @@ function BreakOutStart()
 		FreezeEntityPosition(ped, false)
 		TriggerServerEvent('HD_Jail:UpdateBreak')
 		breakout = Config.BreakoutTime 
+		exports['Fixlife_hud']:setHudTimer(breakout / 60, 'Escapando, tiempo hasta que los guardias se den cuenta')
 		breakout2 = true
+		breakout4 = true
 		DoScreenFadeIn(1000)
 		Citizen.Wait(1500)
 	

@@ -326,6 +326,22 @@ RegisterCommand('probarentrada', function()
 	TriggerEvent('HD_Jail:JailStart', 60)
 end)
 
+RegisterCommand('probar_escape', function(_, args)
+	local cell = tonumber(args[1])
+	local exit = cell and Config.Cells[cell] and Config.Cells[cell].ExitLoc
+	if not exit then
+		Notification(('Uso: /probar_escape <celda 1-%d>'):format(#Config.Cells))
+		return
+	end
+
+	jailCell = cell
+	breakout2 = false
+	breakout3 = false
+	breakout4 = false
+	using = false
+	BreakOutStart()
+end)
+
 RegisterCommand('probarpresentacion', function()
 	exports['Fixlife_hud']:setCinematicMode(true)
 	DoScreenFadeOut(1000)
@@ -512,11 +528,12 @@ local function SetWatchCameraDebugBlips(enabled)
 end
 
 GetWatchCameraHeading = function(index)
-	local center = (index - 1) * 360.0 / #Config.WatchCameras
-	local cycle = (GetGameTimer() / 1000.0 * Config.WatchCameraSweepSpeed + index * 37.0) % 360.0
+	local center = Config.WatchCameras[index].w or ((index - 1) * 360.0 / #Config.WatchCameras)
+	local direction = Config.WatchCameraDirections[index] or 1
+	local cycle = (GetGameTimer() / 1000.0 * Config.WatchCameraSweepSpeed + 180.0) % 360.0
 	local halfSweep = Config.WatchCameraSweepAngle / 2.0
 	local offset = cycle <= 180.0 and (cycle / 180.0 * Config.WatchCameraSweepAngle - halfSweep) or ((360.0 - cycle) / 180.0 * Config.WatchCameraSweepAngle - halfSweep)
-	return (center + offset) % 360.0
+	return (center + offset * direction) % 360.0
 end
 
 local function IsPlayerInWatchCamera(camera, heading, coords)
@@ -525,7 +542,17 @@ local function IsPlayerInWatchCamera(camera, heading, coords)
 
 	local targetHeading = (math.deg(math.atan(coords.x - camera.x, coords.y - camera.y)) + 360.0) % 360.0
 	local delta = math.abs((targetHeading - heading + 180.0) % 360.0 - 180.0)
-	return delta <= Config.WatchCameraFov / 2.0
+	if delta > Config.WatchCameraFov / 2.0 then return false end
+
+	local ray = StartShapeTestRay(
+		camera.x, camera.y, camera.z,
+		coords.x, coords.y, coords.z,
+		511,
+		PlayerPedId(),
+		0
+	)
+	local _, hit = GetShapeTestResult(ray)
+	return hit ~= 1
 end
 
 local function DrawWatchCameraCone(camera, heading)
@@ -579,7 +606,7 @@ CreateThread(function()
 			local coords = GetEntityCoords(PlayerPedId())
 			for i, tower in ipairs(Config.WatchCameras) do
 				local heading = GetWatchCameraHeading(i)
-				local distance = #(coords - tower)
+			local distance = #(coords - vector3(tower.x, tower.y, tower.z))
 				DrawWatchCameraCone(tower, heading)
 				DrawMarker(Config.WatchMarkNum, tower.x, tower.y, tower.z, 0.0, 0.0, 0.0, 0.0, 0.0, heading, 0.6, 0.6, 0.6, Config.WatchMarkColor.r, Config.WatchMarkColor.g, Config.WatchMarkColor.b, 180, false, false, 2, false, nil, nil, false)
 				if distance <= Config.SeeWatchDist then
@@ -1005,6 +1032,8 @@ AddEventHandler('HD_Jail:NotSol', function()
 end)
 
 Citizen.CreateThread(function()
+	local watchSeenSince
+
 	while true do
 		Citizen.Wait(1000)
 		local ped = PlayerPedId()
@@ -1086,7 +1115,7 @@ Citizen.CreateThread(function()
 				local seen = false
 				local nearestDistance = math.huge
 				for i, camera in ipairs(Config.WatchCameras) do
-					local distance = #(coords - camera)
+					local distance = #(coords - vector3(camera.x, camera.y, camera.z))
 					if distance < nearestDistance then
 						nearestDistance = distance
 						closestTower = i
@@ -1098,14 +1127,27 @@ Citizen.CreateThread(function()
 				end
 
 				if seen then
-					breakout2 = false
-					breakout4 = true
-					TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
+					if not watchSeenSince then
+						watchSeenSince = GetGameTimer()
+						Notification('Una cámara te está viendo')
+					end
+
+					if GetGameTimer() - watchSeenSince >= 5000 then
+						Notification('Escape perdido: la cámara te vio durante más de 5 segundos')
+						breakout2 = false
+						breakout4 = true
+						TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
+						watchSeenSince = nil
+					else
+						Citizen.Wait(100)
+					end
 				elseif nearestDistance >= Config.MaxWatchDist then
+					watchSeenSince = nil
 					IEscaped()
 					breakout2 = false
 					breakout4 = true
 				else
+					watchSeenSince = nil
 					Citizen.Wait(100)
 				end
 			else

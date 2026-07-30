@@ -365,6 +365,11 @@ Citizen.CreateThread(function()
 			Citizen.Wait(1000)
 			if breakout > 0 then
 				breakout = breakout - 1
+				exports['Fixlife_hud']:setHudTimer(breakout / 60, 'Escapando, tiempo hasta que los guardias se den cuenta')
+				if breakout == 0 then
+					Notification('Se acabó el tiempo del escape')
+					TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
+				end
 
 				if not Config.SimpleTime then
 					local duration = breakout
@@ -554,22 +559,14 @@ end)
 
 Citizen.CreateThread(function()
 	while true do
-		if injail and time > 0 and breakout4 then
+		if injail and time > 0 and breakout4 and breakout == 0 and soltime > 0 then
 			Citizen.Wait(5)
-			if breakout > 0 then
-				if not Config.SimpleTime then
-					drawTxt(Config.Sayings[92]..diffBreak.Hours..'~w~H~o~ '..diffBreak.Mins..'~w~M~o~ '..diffBreak.Seconds..'~w~S',0,1,0.5,0.9,0.35,255,255,255,255)
-				else
-					drawTxt(Config.Sayings[92]..breakout..Config.Sayings[54],0,1,0.5,0.9,0.35,255,255,255,255)
-				end
-			elseif soltime > 0 then
-				local ped = PlayerPedId()
+			local ped = PlayerPedId()
 
-				SetEntityCanBeDamaged(ped, false)
-				SetPlayerCanDoDriveBy(ped, false)
-				DisablePlayerFiring(ped, true)
-				DisableControlAction(0, 140)
-			end
+			SetEntityCanBeDamaged(ped, false)
+			SetPlayerCanDoDriveBy(ped, false)
+			DisablePlayerFiring(ped, true)
+			DisableControlAction(0, 140)
 		else
 			Citizen.Wait(1000)
 		end

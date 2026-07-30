@@ -3346,20 +3346,36 @@ Config.FenceTool =
 Config.WatchMarkNum = 1 -- Número del marcador de la torre de vigilancia
 Config.WatchMarkColor = {r = 255, g = 0, b = 0} -- Color del marcador de la torre de vigilancia
 
-Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, ConeColor = 9, Size = 0.7} -- Configuración del indicador de la cámara CCTV
+Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, ConeColor = 0, Size = 0.7} -- Configuración del indicador de la cámara CCTV
 Config.MaxWatchDist = 150 -- Distancia necesaria para escapar por completo
 Config.SeeWatchDist = 75 -- Distancia necesaria para ver el círculo 3D
 Config.WatchCameras = { -- Ubicaciones de las cámaras
-    [1] = vector3(3872.864, -31.87372, 35.5),
-    [2] = vector3(3838.44263, -17.7937088, 35.5),
-    [3] = vector3(3817.32446, 11.1535282, 35.5),
-    [4] = vector3(3922.08838, -6.68391228, 35.5),
-    [5] = vector3(4054.73584, -0.564636946, 35.5),
-    [6] = vector3(4065.01123, 28.1750088, 35.5),
-    [7] = vector3(3968.9834, 32.069313, 35.5),
-    [8] = vector3(3944.25049, 51.9409561, 35.5),
-    [9] = vector3(3967.12817, 54.20391, 35.5),
-    [10] = vector3(3941.412, 18.7877922, 35.5),
+    [1] = vector4(3872.864, -31.87372, 35.5, 350.0),
+    [2] = vector4(3838.44263, -17.7937088, 35.5, 90.0),
+    [3] = vector4(3817.32446, 11.1535282, 35.5, 20.0),
+    [4] = vector4(3922.08838, -6.68391228, 35.5, 108.0),
+    [5] = vector4(4054.73584, -0.564636946, 35.5, 144.0),
+    [6] = vector4(4065.01123, 28.1750088, 35.5, 0.0),--4064.3853, 27.1188, 18.7589, 319.1920
+    [7] = vector4(3968.9834, 32.069313, 35.5, 90.0),
+    [8] = vector4(3944.25049, 51.9409561, 35.5, 90),
+    [9] = vector4(3967.12817, 54.20391, 35.5, 288.0),
+    [10] = vector4(3941.412, 18.7877922, 35.5, 270.0),
+    [11] = vector4(4023.2395, 29.6116, 48.6724, 119.4506), 
+}
+
+-- Heading inicial independiente por cámara; omite una entrada para usar el heading automático
+Config.WatchCameraDirections = {
+    [1] = 1,
+    [2] = -1,
+    [3] = 1,
+    [4] = 1,
+    [5] = -1,
+    [6] = 1,
+    [7] = -1,
+    [8] = 1,
+    [9] = 1,
+    [10] = 1,
+    [11] = -1,
 }
 
 Config.WatchCameraSweepSpeed = 10.0
@@ -3367,7 +3383,7 @@ Config.WatchCameraSweepAngle = 110.0
 Config.WatchCameraRange = 55.0
 Config.WatchCameraFov = 65.0
 Config.WatchCameraConeWidth = 0.5
-Config.WatchCameraConeLength = 55.0
+Config.WatchCameraConeLength = 53.0
 
 -- Configuraciones de duchas
 -- ============================================================================

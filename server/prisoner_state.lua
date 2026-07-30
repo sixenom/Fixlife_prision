@@ -42,7 +42,11 @@ AddEventHandler('HD_Jail:UnBreak', function(id)
 
     if found1 ~= 0 then
         inJail[found1].Players[found2].Breako = 0
-        TriggerClientEvent('HD_Jail:UnBreak2', id)
+        if Config.FailBreakToSol and Config.Solitary then
+            TriggerEvent('HD_Jail:SendToSol', id, Config.SolBreakTime, Config.Sayings[108])
+        else
+            TriggerClientEvent('HD_Jail:UnBreak2', id)
+        end
     end
 end)
 

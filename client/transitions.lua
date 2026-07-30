@@ -28,6 +28,7 @@ AddEventHandler('HD_Jail:UnBreak2', function()
 		local ped = PlayerPedId()
 		breakout3 = false
 		breakout = 0
+		exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
 		breakout2 = false
 		DoScreenFadeOut(1000)
 		FreezeEntityPosition(ped, true)
@@ -48,7 +49,7 @@ AddEventHandler('HD_Jail:UnBreak2', function()
 			table.remove(blips[removes[i]])
 		end
 		if Config.FailBreakToSol and Config.Solitary then
-			TriggerServerEvent('HD_Jail:SendToSol', GetPlayerServerId(PlayerId()), Config.SolBreakTime, Config.Sayings[108])
+			DoScreenFadeIn(500)
 		else
 			SetEntityCoords(ped, Config.Cells[jailCell].SpawnLoc.Loc.x, Config.Cells[jailCell].SpawnLoc.Loc.y, Config.Cells[jailCell].SpawnLoc.Loc.z - 1, false, false, false, false)
 			SetEntityHeading(ped, Config.Cells[jailCell].SpawnLoc.Heading)
