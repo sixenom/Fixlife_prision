@@ -515,12 +515,11 @@ function ScrewGame:playExitSequence()
     SetEntityHeading(cache.ped, exitLoc.Heading)
     DoScreenFadeIn(500)
 
-    lib.playAnim(cache.ped, 'promt@jail_5', 'jail_exit_ped')
-    SetEntityAnimCurrentTime(cache.ped, 'promt@jail_5', 'jail_exit_ped', 0.5)
-    Wait(crawlDuration / 2)
-
     SetEntityCollision(cache.ped, true, true)
     SetEntityCollision(self.entity, true, true)
+
+    lib.playAnim(cache.ped, 'move_m@_idles@shake_off', 'shakeoff_1')
+    Wait(3500)
 end
 
 function ScrewGame:cancelWithAnimation()

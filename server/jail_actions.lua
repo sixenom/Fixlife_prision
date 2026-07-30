@@ -109,6 +109,7 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                         RemovePlayerFromCells(inJail, ident)
                         local lowest = {val = GetRandomCell(inJail, Config.MaxPerCell)}
                         table.insert(inJail[lowest.val].Players, {Player = ident, Timie = time, ID = id, Sol = 0, Dead = false, Breako = 0})
+                        newData.cell = lowest.val
                         if Log.Jail then
                             if Config.SimpleTime then
                                 local this = {

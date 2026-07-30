@@ -4,6 +4,7 @@ local ScrewGame = require 'client.minigame.screw_game'
 local active = false
 local mapToiletModel = joaat('hei_heist_toilet01')
 local hiddenToiletCoords
+local replacementToilet
 
 local function restoreMapToilet()
     if not hiddenToiletCoords then return end
@@ -20,6 +21,11 @@ function StartToiletEscape()
 
     active = true
     using = true
+
+    if replacementToilet and DoesEntityExist(replacementToilet) then
+        DeleteEntity(replacementToilet)
+    end
+    replacementToilet = nil
 
     local cell = Config.Cells[jailCell]
     local toiletCoords = cell and cell.BreakLoc
@@ -47,16 +53,22 @@ function StartToiletEscape()
     local game = ScrewGame.new(toilet)
     local completed = game:start()
 
-    DeleteEntity(toilet)
-    restoreMapToilet()
+    SetEntityVisible(toilet, true, false)
+    SetEntityCollision(toilet, true, true)
+    FreezeEntityPosition(toilet, false)
+    replacementToilet = toilet
     active, using = false, false
 
-    if completed then BreakOutStart() end
+    if completed then BreakOutStart(true) end
 end
 
 AddEventHandler('onResourceStop', function(resource)
     if resource == cache.resource then
         SetNuiFocus(false, false)
+        if replacementToilet and DoesEntityExist(replacementToilet) then
+            DeleteEntity(replacementToilet)
+        end
+        replacementToilet = nil
         restoreMapToilet()
     end
 end)

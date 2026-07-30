@@ -4,7 +4,8 @@ AddEventHandler('HD_Jail:ReJail', function(id, values)
     RemovePlayerFromCells(inJail, ident)
     local theS = values
     local tots = 0
-    if theS.cell == 0 then theS.cell = 1 end
+    local savedCell = tonumber(theS.cell) or 0
+    if savedCell == 0 then theS.cell = 1 end
     local targetCell = inJail[theS.cell]
     if not targetCell or not targetCell.Players then return end
     for i = 1, #targetCell.Players do tots = tots + 1 end
@@ -82,7 +83,8 @@ AddEventHandler('HD_Jail:ReJail', function(id, values)
                 sendToDiscord(this, 16562691, "Re-Jailing Player")
             end
         end
-        TriggerEvent('HD_Jail:UpdateCell', lowest.val, id)
+        theS.cell = lowest.val
+        JailStorage.Save(ident, theS)
         if type(theS.clothes) == 'table' and next(theS.clothes) ~= nil then
             TriggerClientEvent('HD_Jail:GoToJail', id, theS.jailtime, theS.job, false)
             Wait(4000)
@@ -94,6 +96,7 @@ AddEventHandler('HD_Jail:ReJail', function(id, values)
         end
     else
         table.insert(targetCell.Players, {Player = ident, Timie = theS.jailtime, ID = id, Sol = theS.soli, Dead = false, Breako = 0})
+        if savedCell ~= tonumber(theS.cell) then JailStorage.Save(ident, theS) end
         if Log.ReJail then
             if not Config.SimpleTime then
                 local this = {

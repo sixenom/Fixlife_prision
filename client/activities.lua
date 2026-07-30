@@ -490,12 +490,15 @@ function OpenWallMenu()
 	end)
 end
 
-function BreakOutStart()
+function BreakOutStart(alreadyAtExit)
     Citizen.CreateThread(function()
         local ped = PlayerPedId()
         using = true
-        DoScreenFadeOut(1000)
-		Citizen.Wait(1000)
+
+        if not alreadyAtExit then
+            DoScreenFadeOut(1000)
+		    Citizen.Wait(1000)
+		end
 	
 		for i = 1, #Config.BreakLocs, 1 do
 			local blip5 = AddBlipForCoord(Config.BreakLocs[i].StartLoc.Loc.x, Config.BreakLocs[i].StartLoc.Loc.y, Config.BreakLocs[i].StartLoc.Loc.z)
@@ -512,17 +515,18 @@ function BreakOutStart()
 			local cameraBlip = CreateWatchCameraBlip(Config.WatchCameras[i], i)
 			table.insert(blips, {id = 'tower', data = cameraBlip.blip, camera = i, entity = cameraBlip.entity})
 		end
-		SetEntityCoords(ped, Config.Cells[jailCell].ExitLoc.Loc.x, Config.Cells[jailCell].ExitLoc.Loc.y, Config.Cells[jailCell].ExitLoc.Loc.z - 1, false, false, false, false)
-		SetEntityHeading(ped, Config.Cells[jailCell].ExitLoc.Heading)
-		FreezeEntityPosition(ped, true)
-		Citizen.Wait(1000)
-		FreezeEntityPosition(ped, false)
+		if not alreadyAtExit then
+		    SetEntityCoords(ped, Config.Cells[jailCell].ExitLoc.Loc.x, Config.Cells[jailCell].ExitLoc.Loc.y, Config.Cells[jailCell].ExitLoc.Loc.z - 1, false, false, false, false)
+		    SetEntityHeading(ped, Config.Cells[jailCell].ExitLoc.Heading)
+		    FreezeEntityPosition(ped, true)
+		    Citizen.Wait(1000)
+		    FreezeEntityPosition(ped, false)
+		end
 		TriggerServerEvent('HD_Jail:UpdateBreak')
-		breakout = Config.BreakoutTime 
-		exports['Fixlife_hud']:setHudTimer(breakout / 60, 'Escapando, tiempo hasta que los guardias se den cuenta')
+		breakout = 0
 		breakout2 = true
 		breakout4 = true
-		DoScreenFadeIn(1000)
+		if not alreadyAtExit then DoScreenFadeIn(1000) end
 		Citizen.Wait(1500)
 	
 		using = false

@@ -1,8 +1,8 @@
 RegisterServerEvent('HD_Jail:UnJailPlayer')
 AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
-    if tonumber(source) ~= 65535 then return end
+    local eventSource = tonumber(source) or 0
     local xPlayer = Qbox.GetPlayer(tonumber(id))
-    if xPlayer then
+    if eventSource == 65535 and xPlayer then
         local ident = xPlayer.identifier
         local found = 0
         local found2 = 0

@@ -1132,22 +1132,21 @@ Citizen.CreateThread(function()
 						Notification('Una cámara te está viendo')
 					end
 
-					if GetGameTimer() - watchSeenSince >= 5000 then
-						Notification('Escape perdido: la cámara te vio durante más de 5 segundos')
-						breakout2 = false
-						breakout4 = true
-						TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
-						watchSeenSince = nil
-					else
-						Citizen.Wait(100)
+					if breakout == 0 and GetGameTimer() - watchSeenSince >= 5000 then
+						breakout = Config.BreakoutTime
+						exports['Fixlife_hud']:setHudTimer(breakout / 60, 'Escapando, tiempo hasta que los guardias se den cuenta')
+						Notification('Los guardias han sido alertados: tienes 2 minutos para escapar')
 					end
+					Citizen.Wait(100)
 				elseif nearestDistance >= Config.MaxWatchDist then
 					watchSeenSince = nil
 					IEscaped()
 					breakout2 = false
 					breakout4 = true
-				else
+				elseif breakout == 0 then
 					watchSeenSince = nil
+					Citizen.Wait(100)
+				else
 					Citizen.Wait(100)
 				end
 			else
