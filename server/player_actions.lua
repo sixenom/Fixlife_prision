@@ -1,7 +1,7 @@
 AddEventHandler('HD_Jail:PlayerDie', function(trip)
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     if not xPlayer then return end
-    local ident = xPlayer.identifier
+    local ident = xPlayer.PlayerData.citizenid
     local found1 = 0
     local found2 = 0
 
@@ -26,9 +26,9 @@ end)
 
 RegisterServerEvent('HD_Jail:KilledBy')
 AddEventHandler('HD_Jail:KilledBy', function(id)
-    local xPlayer = Qbox.GetPlayer(id)
+    local xPlayer = exports.qbx_core:GetPlayer(id)
     if xPlayer then
-        local ident = xPlayer.identifier
+        local ident = xPlayer.PlayerData.citizenid
         local found1 = 0
         local found2 = 0
     
@@ -52,9 +52,9 @@ end)
 
 RegisterServerEvent('HD_Jail:UpdateBreak')
 AddEventHandler('HD_Jail:UpdateBreak', function()
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     if not xPlayer then return end
-    local ident = xPlayer.identifier
+    local ident = xPlayer.PlayerData.citizenid
     local found1 = 0
     local found2 = 0
 
@@ -72,18 +72,18 @@ AddEventHandler('HD_Jail:UpdateBreak', function()
     if found1 ~= 0 then
         inJail[found1].Players[found2].Breako = Config.BreakoutTime
 
-        JailStorage.Get(xPlayer.identifier, function(newData)
+        JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
             newData.breaks = 0
-            JailStorage.Save(xPlayer.identifier, newData)
+            JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
         end) 
     end
 end)
 
 RegisterServerEvent('HD_Jail:UpdateBreaking')
 AddEventHandler('HD_Jail:UpdateBreaking', function()
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     if not xPlayer then return end
-    local ident = xPlayer.identifier
+    local ident = xPlayer.PlayerData.citizenid
     local found1 = 0
     local found2 = 0
 
@@ -112,14 +112,14 @@ end
 RegisterServerEvent('HD_Jail:EscapeComplete')
 AddEventHandler('HD_Jail:EscapeComplete', function()
     local src = source
-    local xPlayer = Qbox.GetPlayer(src)
+    local xPlayer = exports.qbx_core:GetPlayer(src)
     if not xPlayer or not IsPrisoner(src, xPlayer) or not IsNearFinalFence(src) or not CheckCooldown(src, 'escape', 5000) then return end
 
     for i = 1, #inJail do
         local cell = inJail[i]
         for j = 1, #(cell.Players or {}) do
             local prisoner = cell.Players[j]
-            if prisoner and prisoner.Player == xPlayer.identifier and prisoner.Breako > 0 then
+            if prisoner and prisoner.Player == xPlayer.PlayerData.citizenid and prisoner.Breako > 0 then
                 TriggerEvent('HD_Jail:UnJailPlayer', src, false)
                 return
             end
@@ -129,9 +129,9 @@ end)
 
 RegisterServerEvent('HD_Jail:TaskComplete1')
 AddEventHandler('HD_Jail:TaskComplete1', function(taskJob)
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     if not xPlayer or not IsPrisoner(source, xPlayer) or not HasPrisonJob(source, taskJob, xPlayer) or not CheckCooldown(source, 'steal', 1500) or not Config.JobOptions[taskJob] then return end
-    local ident = xPlayer.identifier
+    local ident = xPlayer.PlayerData.citizenid
 
     local ran = math.random(1,10)
     local ranq = 0
@@ -152,7 +152,7 @@ AddEventHandler('HD_Jail:TaskComplete1', function(taskJob)
         local finish = 0 
         finish = rannym
 
-        xPlayer.addInventoryItem(Config.JobOptions[taskJob].StealItems[totNims[finish].value].Item, 1)
+        exports.ox_inventory:AddItem(xPlayer.PlayerData.source, Config.JobOptions[taskJob].StealItems[totNims[finish].value].Item, 1)
         TriggerClientEvent('ox_lib:notify', source, {
             type = 'inform',
             description = Config.Sayings[86]..Config.JobOptions[taskJob].StealItems[totNims[finish].value].Name
@@ -162,10 +162,10 @@ end)
 
 RegisterServerEvent('HD_Jail:LoadedIn')
 AddEventHandler('HD_Jail:LoadedIn', function()
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     if not xPlayer then return end
     local _source = source
-    JailStorage.Get(xPlayer.identifier, function(newData)
+    JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
         if newData.jailtime > 0 then
             TriggerEvent('HD_Jail:ReJail', _source, newData)
         end

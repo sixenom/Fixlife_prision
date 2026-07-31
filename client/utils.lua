@@ -506,57 +506,6 @@ function ClearLaundryMachineOutlines()
         end
     end
 end
-
---[[
-    if not laundryStorageProp or not DoesEntityExist(laundryStorageProp) then
-        laundryStorageProp = GetClosestObjectOfType(Config.LaundryStorageProp.Loc.x, Config.LaundryStorageProp.Loc.y, Config.LaundryStorageProp.Loc.z, 20.0, joaat(Config.LaundryStorageProp.Model), false, false, false)
-        if not laundryStorageProp or not DoesEntityExist(laundryStorageProp) then
-            local action = Config.LaundryStorageAction.Loc
-            laundryStorageProp = GetClosestObjectOfType(action.x, action.y, action.z, 20.0, joaat(Config.LaundryStorageProp.Model), false, false, false)
-        end
-        if not laundryStorageProp or not DoesEntityExist(laundryStorageProp) then
-            local target = Config.LaundryStorageProp.Loc
-            laundryStorageProp = GetClosestObjectOfType(target.x, target.y, target.z, 5.0, 161765395, false, false, false)
-        end
-        if not laundryStorageProp or not DoesEntityExist(laundryStorageProp) then
-            local target = Config.LaundryStorageProp.Loc
-            laundryStorageProp = GetClosestObjectOfType(target.x, target.y, target.z, 5.0, 3340290, false, false, false)
-        end
-    end
-    if laundryStorageProp and DoesEntityExist(laundryStorageProp) then
-        SetEntityDrawOutlineColor(255, 255, 255, 255)
-        SetEntityDrawOutlineShader(1)
-        SetEntityDrawOutline(laundryStorageProp, enabled)
-        return true
-    end
-    return false
-end
-
-RegisterCommand('probar_estante', function()
-    if SetLaundryStorageOutline(true) then
-        local coords = GetEntityCoords(laundryStorageProp)
-        print(('[Fixlife_prision] Estante encontrado en %.4f, %.4f, %.4f'):format(coords.x, coords.y, coords.z))
-    else
-        print('[Fixlife_prision] No se encontró ch_prop_ch_laundry_shelving_01b.')
-        local target = Config.LaundryStorageProp.Loc
-        local nearby = 0
-        for _, entity in ipairs(GetGamePool('CObject')) do
-            local coords = GetEntityCoords(entity)
-            local distance = Vdist(target.x, target.y, target.z, coords.x, coords.y, coords.z)
-            if distance <= 20.0 then
-                nearby = nearby + 1
-                print(('[Fixlife_prision] Objeto cercano hash %s en %.4f, %.4f, %.4f (%.2fm)'):format(GetEntityModel(entity), coords.x, coords.y, coords.z, distance))
-            end
-        end
-        print(('[Fixlife_prision] Objetos cercanos: %d'):format(nearby))
-    end
-end)
-
-RegisterCommand('quitar_estante', function()
-    SetLaundryStorageOutline(false)
-end)
-
-]]
 function StartGarbageDumpsterAction(prop, interactionCoords, finished)
     if not prop or not DoesEntityExist(prop) then return end
     using = true
@@ -584,7 +533,7 @@ function StartGarbageDumpsterAction(prop, interactionCoords, finished)
     SetEntityHeading(ped, heading)
     LoadAnim(anim.Dict)
     NetworkRequestControlOfEntity(prop)
-    -- El jugador empieza en el borde y ambos clips se reproducen hacia atrás.
+    -- El jugador empieza en el borde y ambos clips se reproducen hacia atrÃ¡s.
     local scene = CreateSynchronizedScene(interactionCoords.x + 0.34, interactionCoords.y, interactionCoords.z+0.15, 0.0, 0.0, heading, 2)
     TaskSynchronizedScene(ped, scene, anim.Dict, anim.AnimName, 8.0, -8.0, 0, 0, 1000.0, 0)
     SetSynchronizedScenePhase(scene, 0.99)
@@ -802,7 +751,7 @@ RegisterCommand('probarsecadora', function(_, args)
 	NetworkAddPedToSynchronisedScene(ped, dryerTestScene, dryerTestDict, anim, 8.0, -8.0, 0, 0, 1000.0, 0)
 	NetworkAddEntityToSynchronisedScene(dryerTestProp, dryerTestScene, dryerTestDict, propAnim, 1.0, 1.0, 1)
 	NetworkStartSynchronisedScene(dryerTestScene)
-	print(('Secadora creada. Ped: %s | Prop: %s | Dirección: %s'):format(anim, propAnim, closing and 'cerrando' or 'abriendo'))
+	print(('Secadora creada. Ped: %s | Prop: %s | DirecciÃ³n: %s'):format(anim, propAnim, closing and 'cerrando' or 'abriendo'))
 end)
 
 RegisterCommand('pararsecadora', function()
@@ -911,12 +860,10 @@ function Notification(text)
 	-- 	-- ESX.ShowNotification(text)
 	-- 	TriggerEvent('Fix_systems:notificacioneslibfix', 'PRISION', text, 5000,  'handcuffs',  '#ff00ff', 'bottom')
 	-- elseif Config.Notifications == 'tnotify' then
-	-- 	exports['t-notify']:Alert({
 	-- 		style = 'message', 
 	-- 		message = text
 	-- 	})
 	-- elseif Config.Notifications == 'mythic' then
-	-- 	exports['mythic_notify']:DoHudText('inform', text)
 	-- end
 end
 

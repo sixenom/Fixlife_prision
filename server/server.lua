@@ -78,12 +78,13 @@ AddEventHandler('onResourceStart', function(resource)
             for name, item in pairs(exports.ox_inventory:Items()) do
                 table.insert(Items, {name = name, label = item.label or name})
             end
-            for _, playerId in ipairs(Qbox.GetPlayers()) do
-                local xPlayer = Qbox.GetPlayer(playerId)
+            for playerId in pairs(exports.qbx_core:GetQBPlayers()) do
+                local xPlayer = exports.qbx_core:GetPlayer(playerId)
                 if xPlayer then
-                    JailStorage.Get(xPlayer.identifier, function(newData)
-                        if (tonumber(newData.jailtime) or 0) <= 0 and xPlayer.job.name == 'prisoner' then
-                            xPlayer.setJob(Config.DefaultSetJob.Name, Config.DefaultSetJob.Grade)
+                    local data = xPlayer.PlayerData
+                    JailStorage.Get(data.citizenid, function(newData)
+                        if (tonumber(newData.jailtime) or 0) <= 0 and data.job.name == 'prisoner' then
+                            exports.qbx_core:SetJob(data.citizenid, Config.DefaultSetJob.Name, Config.DefaultSetJob.Grade)
                         end
                     end)
                 end
@@ -97,10 +98,10 @@ Citizen.CreateThread(function()
         while true do
             Citizen.Wait(Config.RanMessageTime* 60000)
     
-            local xPlayers = Qbox.GetPlayers()
-            if xPlayers[1] ~= nil then
-                for i=1, #xPlayers, 1 do
-                    local xPlayer = Qbox.GetPlayer(xPlayers[i])
+            local xPlayers = exports.qbx_core:GetQBPlayers()
+            if next(xPlayers) then
+                for playerId in pairs(xPlayers) do
+                    local xPlayer = exports.qbx_core:GetPlayer(playerId)
                     local total = 0
                     local ranMessage = nil
             
@@ -108,7 +109,7 @@ Citizen.CreateThread(function()
                         total = total + 1
                     end
                     ranMessage = math.random(1, total)
-                    TriggerClientEvent('HD_Jail:SendNotif2', xPlayer.source, Config.RanMessages[ranMessage])
+                    TriggerClientEvent('HD_Jail:SendNotif2', xPlayer.PlayerData.source, Config.RanMessages[ranMessage])
                 end
             end
         end
@@ -117,8 +118,6 @@ end)
 
 RegisterServerEvent('HD_Jail:Send2Prisoners')
 AddEventHandler('HD_Jail:Send2Prisoners', function(messago)
-    local xTarget = Qbox.GetPlayer(source)
-
     if CheckUser(source, 'message') then
         TriggerClientEvent('HD_Jail:SendNotif', -1, Config.Sayings[168]..messago, true)
     end
@@ -126,11 +125,11 @@ end)
 
 RegisterServerEvent('HD_Jail:PoliceNotify')
 AddEventHandler('HD_Jail:PoliceNotify', function()
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
 
     if not xPlayer or not IsPrisoner(source, xPlayer) or not CheckCooldown(source, 'police_notify', 5000) then return end
     local fullname = nil
-    fullname = xPlayer.get("firstName") .. " " .. xPlayer.get("lastName")
+    fullname = xPlayer.PlayerData.charinfo.firstname .. " " .. xPlayer.PlayerData.charinfo.lastname
     TriggerClientEvent('HD_Jail:PoliceWarning', -1, fullname)
 end)
 

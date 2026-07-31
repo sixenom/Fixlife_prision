@@ -7,6 +7,7 @@ end)
 infoLoc = 1
 
 time = 0
+serverTimeSync = true
 difftime = {Hours = 0, Mins = 0, Seconds = 0}
 
 soltime = 0

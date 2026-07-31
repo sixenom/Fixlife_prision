@@ -4,9 +4,9 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
     if time <= 0 or time > Config.MaxJail * 60 then return end
     reason = tostring(reason or '')
     if CheckUser(source, 'jail') then
-        local xPlayer = Qbox.GetPlayer(id)
+        local xPlayer = exports.qbx_core:GetPlayer(id)
         if not xPlayer then return end
-        local ident = xPlayer.identifier 
+        local ident = xPlayer.PlayerData.citizenid 
         local bad = false
         local cell = 0
         
@@ -21,14 +21,11 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                 end
             end
             if not bad then
-                JailStorage.Get(xPlayer.identifier, function(newData)
+                JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                     newData.jailtime = time
-                    newData.jobo = xPlayer.job.name
-                    newData.grade = xPlayer.job.grade
-                    --[[
-                        print(('[Fixlife_prision] No se encontrÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â³ hdjail_data para citizenid %s (source %s)'):format(tostring(xPlayer.identifier), tostring(id)))
-                    ]]
-                    xPlayer.setJob('prisoner', 0)
+                    newData.jobo = xPlayer.PlayerData.job.name
+                    newData.grade = xPlayer.PlayerData.job.grade.level
+                    exports.qbx_core:SetJob(xPlayer.PlayerData.citizenid, 'prisoner', 0)
                     local itemz = exports.ox_inventory:GetInventoryItems(id) or {}
                     local keep = {}
                     for _, item in pairs(itemz) do
@@ -62,9 +59,9 @@ AddEventHandler('HD_Jail:sendToJail', function(id, time, reason)
                         end
                     end
                     newData.items = keep
-                    JailStorage.Save(xPlayer.identifier, newData, function(rowsChanged)
+                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData, function(rowsChanged)
                         TriggerClientEvent('HD_Jail:JailStart', id, time)
-                        local fullname = xPlayer.get("firstName") .. " " .. xPlayer.get("lastName")
+                        local fullname = xPlayer.PlayerData.charinfo.firstname .. " " .. xPlayer.PlayerData.charinfo.lastname
                         if Config.SimpleTime then
                             -- TriggerClientEvent('chat:addMessage', -1, {args = {Config.ServerName..' '..Config.Sayings[7], fullname..Config.Sayings[8]..ESX.Math.Round(time / 60)..Config.Sayings[21]..reason}, color = {147, 196, 109}})
                             TriggerClientEvent('chat:addMessage', -1, {

@@ -7,7 +7,6 @@ Config = {}
 Config.CurrentV = "1.0 HD" -- No modificar
 
 -- Configuraciones Importantes
-Config.MenuLoc = 'right' -- Alineación de los menús
 Config.UsingHDBlips = true -- Esto es si estás usando mi script de manejo gratuito de indicadores (blips). Si es así, solo funcionará para el indicador de prisión.
 Config.SyncInterval = 2 -- Con qué frecuencia el servidor actualiza la base de datos para los tiempos restantes de los jugadores
 Config.MaxPerCell = 2 -- Cuántos están permitidos por celda. Se recomienda dejarlo alto.
@@ -52,8 +51,6 @@ Config.SimpleTime = false -- Esto es si deseas que el tiempo sea en segundos sol
 
 -- Configuraciones Generales
 Config.SeeDist = 5 -- Qué tan cerca debes estar para ver los marcadores 3D
-Config.TextDist = 1 -- Qué tan cerca debes estar para ver el texto 3D
-Config.TextLift = 0.3 -- Cuánto se eleva el texto 3D sobre el marcador
 
 Config.JailBlip = {Spawn = false, Sprite = 238, Color = 1, Size = 0.7} -- Todas las configuraciones relacionadas con el indicador (blip) de la prisión
 Config.JailLoc = vector3(3908.3909, 25.6009, 48.8995) -- Ubicación de la prisión (generalmente el centro para que no dé lugar a errores al verificar la ubicación)
@@ -74,10 +71,6 @@ Config.LockDownDist = 4 -- Cuánto puedes alejarte de la celda antes de ser tele
 Config.PoliceCanSearchInv = true -- Si la policía puede registrar los inventarios
 
 Config.SeePoliceDist = 5 -- Qué tan cerca debes estar para ver los marcadores 3D
-Config.UsePoliceDist = 1 -- Qué tan cerca debes estar para ver el texto 3D
-Config.PMarkNum = 22 -- Número del marcador
-Config.PMarkColor = {r = 235, g = 116, b = 52} -- Colores del marcador
-Config.PMarkSize = {x = 0.5, y = 0.5, z = 0.3} -- Tamaño del marcador
 
 -- Configuraciones de Objetos Utilizables
 Config.ShankWeapon = 'weapon_knife' -- Nombre del arma para el shank (no cambiar)
@@ -87,12 +80,10 @@ Config.ShankAllowed = true -- Si se puede usar el shank
 Config.BoozeAllowed = true -- Si se puede usar el objeto booze
 Config.BoozeEffect = true -- Si el consumo de booze tiene un efecto
 Config.BoozeGive = 80000 -- Cuánta sed se sacia al beber booze (de 1,000,000)
-Config.BoozeProp = nil -- Prop a generar mientras se usa el objeto (dejar nil si deseas la copa predeterminada)
 Config.BoozeEffectTime = 30 -- Cuánto tiempo dura el efecto
 
 Config.PunchAllowed = true -- Si se puede usar el objeto punch
 Config.PunchGive = 100000 -- Cuánta sed se sacia al beber punch (de 1,000,000)
-Config.PunchProp = nil -- Prop a generar mientras se usa el objeto (dejar nil si deseas el vaso predeterminado)
 
 -- Guía de Entrada
 Config.HaveGuide = true -- Si hay una guía de la prisión cuando son enviados por primera vez
@@ -101,8 +92,6 @@ Config.TimePer = 5 -- Cuánto tiempo por cámara para la guía (en segundos)
 -- ============================================================================
 -- 2. ENTRADA A PRISION Y CAMARAS DE INTRODUCCION
 -- ============================================================================
-Config.PrisonCam = vector3(3911.7275, -132.4698, 89.8866) -- Posición de la vista de la cámara
-Config.PrisonCamRot = {x = -35.0, y = 0.0, z = -10.0} -- Rotación de la vista de la cámara
 Config.PrisonIntroDuration = 20
 Config.PrisonIntroBlend = 1200
 Config.PrisonIntroBank = 6.0
@@ -129,22 +118,17 @@ Config.PrisonIntroPath = {
 }
 
 Config.JobCam = vector3(3915.46, 24.37, 23.89) -- Posición de la vista de la cámara
-Config.JobCamRot = {x = 0.0, y = 0.0, z = 180.0} -- Rotación de la vista de la cámara
 
 Config.SolCam = vector3(3889.2332, 26.5927, 27.4285) -- Posición de la vista de la cámara (Solo se muestra si el aislamiento está activado)
-Config.SolCamRot = {x = -10.0, y = 0.0, z = 90.0} -- Rotación de la vista de la cámara (Solo se muestra si el aislamiento está activado)
 
 Config.ShowerCam = vector3(3910.1936, 39.0764, 24.9793) -- Posición de la vista de la cámara (Solo se muestra si las duchas están activadas)
-Config.ShowerCamRot = {x = -20.0, y = 0.0, z = 90.0} -- Rotación de la vista de la cámara (Solo se muestra si las duchas están activadas)
 
 Config.FoodCam = vector3(3929.5596, 29.0406, 24.9793) -- Posición de la vista de la cámara
-Config.FoodCamRot = {x = 0.0, y = 0.0, z = 70.0} -- Rotación de la vista de la cámara
 
 Config.HospitalCam = vector3(4032.4121, 0.2040, 20.0884) -- Posición de la vista de la cámara (Solo se muestra si el hospital está activado)
 Config.HospitalCamRot = {x = -25.0, y = 0.0, z = 180.0} -- Rotación de la vista de la cámara (Solo se muestra si el hospital está activado)
 
 Config.ItemCam = vector3(3865.8289, -23.6205, 7.8507) -- Posición de la vista de la cámara (Solo se muestra si hay objetos para guardar)
-Config.ItemCamRot = {x = -10.0, y = 0.0, z = 0.0} -- Rotación de la vista de la cámara (Solo se muestra si hay objetos para guardar)
 
 -- Configuraciones de la escena de entrada a prisión (No modificar si no sabes lo que haces)
 Config.GuardPed = 'csb_cop' -- Personaje que te lleva al interior
@@ -258,7 +242,6 @@ Config.DontGiveBackItems =
         'meth_glass'
     }
 
-Config.AlertServerUponJail = true -- Si se envía un mensaje en el chat cuando alguien es encarcelado
 
 -- Configuraciones de Salida
 -- ============================================================================
@@ -269,16 +252,12 @@ Config.LeaveLoc = {
     Heading = 4.0136
 } -- Ubicación de salida con orientación
 
-Config.LMarkNum = 22 -- Número del marcador para recoger objetos
-Config.LMarkColor = {r = 235, g = 116, b = 52} -- Color del marcador para recoger objetos
-Config.LMarkSize = {x = 0.5, y = 0.5, z = 0.3} -- Tamaño del marcador para recoger objetos
 Config.ItemLoc = {
     Loc = vector3(1829.0867, 2602.6274, 45.8891),
     Heading = 359.1612
 } -- Ubicación de dónde recoger objetos
 Config.ItemBlip = {Spawn = true, Sprite = 475, Color = 1, Size = 0.7} -- Indicador (blip) para recoger objetos
 Config.ShowItemDist = 7 -- Distancia para mostrar el marcador 3D
-Config.ItemTextDist = 1 -- Distancia para mostrar el texto 3D sobre el marcador
 Config.RetreiveTime = 5 -- Cuánto tiempo se necesita para recoger los objetos de nuevo (en segundos)
 
 -- Configuraciones de Comida
@@ -576,7 +555,6 @@ Config.JMMarkColor = {r = 255, g = 0, b = 255} -- Color del marcador 3D del admi
 Config.JMMarkSize = {x = 1.0, y = 1.0, z = 0.5} -- Tamaño del marcador 3D del administrador de trabajo
 
 Config.SeeTaskMark = 5 -- Qué tan cerca debes estar para ver el marcador 3D
-Config.SeeTaskText = 0.8 -- Qué tan cerca debes estar para realizar la tarea
 -- ============================================================================
 -- 5B. TRABAJOS Y TAREAS
 -- ============================================================================
@@ -3225,15 +3203,10 @@ Config.BedLocs = {
 Config.Breakout = true -- Si los prisioneros pueden escapar de la prisión
 Config.BreakHole = 2 -- Cantidad de excavaciones exitosas necesarias
 
-Config.CrawlTime = 15 -- Tiempo necesario para atravesar la pared arrastrándose (en segundos)
 Config.BreakoutTime = 120 -- Tiempo disponible para escapar antes de ser atrapado (en segundos)
 
-Config.BreakMarkNum = 22 -- Número del marcador de escape
-Config.BreakMarkColor = {r = 255, g = 255, b = 255} -- Color del marcador de escape
-Config.BreakMarkSize = {x = 0.5, y = 0.5, z = 0.5} -- Tamaño del marcador de escape
 
 Config.SeeBreakDist = 15 -- Distancia necesaria para ver los marcadores
-Config.BreakTextDist = 1 -- Distancia necesaria para usarlo
 Config.BreakBlips = {Spawn = true, Sprite = 186, Color = 49, Size = 0.5} -- Indicadores de todas las ubicaciones de escape y corte
 
 Config.BreakLocs =
@@ -3346,7 +3319,7 @@ Config.FenceTool =
 Config.WatchMarkNum = 1 -- Número del marcador de la torre de vigilancia
 Config.WatchMarkColor = {r = 255, g = 0, b = 0} -- Color del marcador de la torre de vigilancia
 
-Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, ConeColor = 0, Size = 0.7} -- Configuración del indicador de la cámara CCTV
+Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, ConeColor = 0, ConeAlertColor = 6, Size = 0.7} -- Configuración del indicador de la cámara CCTV
 Config.MaxWatchDist = 150 -- Distancia necesaria para escapar por completo
 Config.FenceEscapePoints = {
     { type = 'internal', coords = vector3(3981.978, 64.45724, 12.9470), heading = 349.7489 },
@@ -3432,8 +3405,6 @@ Config.ShowMarkSize = {x = 0.5, y = 0.5, z = 0.5} -- Tamaño del marcador 3D de 
 
 Config.GetReadyTime = 5 -- Tiempo necesario para cambiarse
 Config.ShowerFullDist = 7 -- Distancia necesaria para ver el marcador 3D
-Config.ShowerMarkerDist = 10 -- Distancia necesaria para ver el marcador inicial
-Config.ShowerDist = 1 -- Distancia necesaria para usar la ducha
 Config.MaxDistShower = 20 -- Distancia máxima antes de cancelar la ducha
 
 Config.ShowerLocs = { -- Todas las ubicaciones de las duchas

@@ -123,7 +123,6 @@ AddEventHandler('HD_Jail:onPlayerSpawn', function()
 				Citizen.Wait(Config.BedLocs[numo].DocWalkTime *1000)
 				TaskAchieveHeading(byped, Config.BedLocs[numo].DocCheck.Heading, 1000)
 				Citizen.Wait(1000)
-				-- exports.rprogress:Start( Config.Sayings[70] ,Config.CheckUpTime *1000)
 				lib.progressBar({ --tomando bandeja
 					duration =  Config.CheckUpTime *1000,
 					label =  Config.Sayings[70],
@@ -138,7 +137,6 @@ AddEventHandler('HD_Jail:onPlayerSpawn', function()
 						mouse = false,
 					},
 				})
-				-- Citizen.Wait(Config.CheckUpTime *1000)
 				TaskGoStraightToCoord(byped, Config.BedLocs[numo].DoctorSpawn.Loc.x, Config.BedLocs[numo].DoctorSpawn.Loc.y, Config.BedLocs[numo].DoctorSpawn.Loc.z, 1.0, Config.BedLocs[numo].DocWalkTime *1000, Config.BedLocs[numo].DoctorSpawn.Heading, 0)
 				Citizen.Wait(Config.BedLocs[numo].DocWalkTime *1000)
 				DoScreenFadeOut(1000)

@@ -7,6 +7,11 @@ local animationDict = 'anim@scripted@heist@ig4_bolt_cutters@male@'
 local cutting = false
 local cutFences = {}
 
+RegisterNetEvent('HD_Jail:ResetEscape', function()
+    cutFences = {}
+    cutting = false
+end)
+
 local fencePoints = Config.FenceEscapePoints
 local function loadAsset(request, loaded, asset)
     request(asset)
@@ -24,26 +29,14 @@ local function isPointAvailable(point)
     return point.type == 'internal' or hasCutInternalFence()
 end
 
-local function getNearestFence(coords)
-    local nearest
-    for index, point in ipairs(fencePoints) do
-        if not cutFences[index] and isPointAvailable(point) then
-            local distance = #(coords - point.coords)
-            if not nearest or distance < nearest.distance then
-                nearest = { index = index, point = point, distance = distance }
-            end
-        end
-    end
-    return nearest
-end
-
-local function cutFence(target)
+local function cutFence(index)
     if cutting or not injail or (not breakout2 and not breakout3) or using then return end
-    if not target or target.distance > 6.0 then return end
+    local point = fencePoints[index]
+    if not point or cutFences[index] or not isPointAvailable(point) then return end
 
     cutting, using = true, true
     local ped = PlayerPedId()
-    local point, coords = target.point, target.point.coords
+    local coords = point.coords
     SetEntityCoords(ped, coords.x, coords.y, coords.z - 1.0, false, false, false, false)
     SetEntityHeading(ped, point.heading)
 
@@ -70,7 +63,7 @@ local function cutFence(target)
     SetModelAsNoLongerNeeded(cutterModel)
     CreateModelSwap(coords, 0.1, fenceModel, brokenFenceModel, true)
     CreateModelHide(coords.x, coords.y, coords.z, 1.5, fenceModel, true)
-    cutFences[target.index] = true
+    cutFences[index] = true
     using, cutting = false, false
 
     if point.type == 'external' then
@@ -80,38 +73,25 @@ local function cutFence(target)
     end
 end
 
-CreateThread(function()
-    while true do
-        local wait = 1000
-        local playerCoords = GetEntityCoords(PlayerPedId())
-        if injail and (breakout2 or breakout3) and not using then
-            local target = getNearestFence(playerCoords)
-            for index, point in ipairs(fencePoints) do
-                if not cutFences[index] and isPointAvailable(point) and #(playerCoords - point.coords) <= 50.0 then
-                    wait = 0
-                    DrawMarker(1, point.coords.x, point.coords.y, point.coords.z - 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 255, 120, 0, 120, false, false, 2, false, nil, nil, false)
+for index, point in ipairs(fencePoints) do
+    exports.ox_target:addSphereZone({
+        coords = point.coords,
+        radius = 1.5,
+        options = {{
+            name = 'fixlife_prision_cut_fence_' .. index,
+            label = 'Cortar reja',
+            icon = 'fa-solid fa-scissors',
+            distance = 2.0,
+            canInteract = function()
+                return injail and (breakout2 or breakout3) and not using and not cutFences[index] and isPointAvailable(point)
+            end,
+            onSelect = function()
+                if lib.callback.await('HD_Jail:CheckItemB2', false, 'hd_file') then
+                    cutFence(index)
+                else
+                    Notification(Config.Sayings[95])
                 end
             end
-            if target and target.distance <= 6.0 then
-                wait = 0
-                BeginTextCommandDisplayHelp('STRING')
-                AddTextComponentSubstringPlayerName('Pulsa ~INPUT_CONTEXT~ para cortar la reja')
-                EndTextCommandDisplayHelp(0, false, true, -1)
-                if IsControlJustReleased(0, 38) then
-                    if lib.callback.await('HD_Jail:CheckItemB2', false, 'hd_file') then
-                        cutFence(target)
-                    else
-                        Notification(Config.Sayings[95])
-                    end
-                end
-            end
-        end
-        Wait(wait)
-    end
-end)
-
-RegisterCommand('fixlife_fence_debug', function()
-    local target = getNearestFence(GetEntityCoords(PlayerPedId()))
-    print(('[Fixlife_prision] fence debug injail=%s breakout2=%s breakout3=%s target=%s distance=%s'):format(tostring(injail), tostring(breakout2), tostring(breakout3), target and target.index or 'none', target and string.format('%.2f', target.distance) or 'none'))
-    Notification(('Reja: %s | distancia: %s | injail=%s | breakout2=%s | breakout3=%s'):format(target and target.index or 'ninguna', target and string.format('%.2f', target.distance) or 'fuera', tostring(injail), tostring(breakout2), tostring(breakout3)))
-end, false)
+        }}
+    })
+end

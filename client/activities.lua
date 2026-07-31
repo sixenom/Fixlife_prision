@@ -1,3 +1,4 @@
+
 function StartShower()
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
@@ -18,8 +19,6 @@ function StartShower()
 		inAnim.Atr = 1
 		inAnim.Freeze = true
 		FreezeEntityPosition(ped, true)
-		-- exports.rprogress:Start(Config.Sayings[114], Config.GetReadyTime *1000)
-		-- Citizen.Wait(Config.GetReadyTime *1000)
 		-- RemoveAnimDict("clothingtie")
 		lib.progressBar({ --cambiar ropa en duchas
 			duration =  Config.GetReadyTime *1000,
@@ -75,14 +74,14 @@ function OpenBreakingMenu()
 		flip = true
 	end
 
-	NativeMenu.CloseAll()
+	lib.hideContext()
 
 	Citizen.CreateThread(function()
-		NativeMenu.Open('default', GetCurrentResourceName(), 'fence_menu', {
-			title    = Config.Sayings[94],
-			align    = Config.MenuLoc,
-			elements = element
-		}, function(data, menu)
+		local options = {}
+		for _, item in ipairs(element) do
+			options[#options + 1] = {title = item.label, onSelect = function()
+				local data = {current = item}
+				local menu = {close = lib.hideContext}
 			if flip then
 				lib.callback('HD_Jail:CheckItemB2', false, function(can)
 					if can then
@@ -107,7 +106,6 @@ function OpenBreakingMenu()
 							inAnim.Atr = 1
 							inAnim.Freeze = true
 							FreezeEntityPosition(ped, true)
-							-- exports.rprogress:Start(Config.Sayings[96], Config.RoomTools[data.current.value].Time *1000)
 							lib.progressBar({ --cavar
 								duration =  Config.RoomTools[data.current.value].Time *1000,
 								label =  Config.Sayings[96],
@@ -122,7 +120,6 @@ function OpenBreakingMenu()
 									mouse = false,
 								},
 							}, RemoveAnimDict("mini@repair"))				
-							-- Citizen.Wait(Config.RoomTools[data.current.value].Time *1000)
 							-- RemoveAnimDict("mini@repair")
 							FreezeEntityPosition(ped, false)
 							inAnim.Dict = nil
@@ -171,8 +168,6 @@ function OpenBreakingMenu()
 							inAnim.Atr = 0
 							inAnim.Freeze = false
 							FreezeEntityPosition(ped, true)
-							-- exports.rprogress:Start(Config.Sayings[96], Config.RoomTools[data.current.value].Time *1000)
-							-- Citizen.Wait(Config.RoomTools[data.current.value].Time *1000)
 							-- RemoveAnimDict("mini@repair")
 							lib.progressBar({ --cavar
 							duration =  Config.RoomTools[data.current.value].Time *1000,
@@ -224,7 +219,6 @@ function OpenBreakingMenu()
 							inAnim.Atr = 1
 							inAnim.Freeze = true
 							FreezeEntityPosition(ped, true)
-							-- exports.rprogress:Start(Config.Sayings[97], Config.FenceTool[data.current.value].Time *1000)
 							lib.progressBar({ --cortar
 								duration =  Config.FenceTool[data.current.value].Time *1000,
 								label =  Config.Sayings[97],
@@ -239,7 +233,6 @@ function OpenBreakingMenu()
 									mouse = false,
 								},
 							}, RemoveAnimDict("mp_arresting"))	
-							-- Citizen.Wait(Config.FenceTool[data.current.value].Time *1000)
 							-- RemoveAnimDict("mp_arresting")
 							FreezeEntityPosition(ped, false)
 							inAnim.Dict = nil
@@ -272,8 +265,6 @@ function OpenBreakingMenu()
 							inAnim.Atr = 0
 							inAnim.Freeze = false
 							FreezeEntityPosition(ped, true)
-							-- exports.rprogress:Start(Config.Sayings[97], Config.FenceTool[data.current.value].Time *1000)
-							-- Citizen.Wait(Config.FenceTool[data.current.value].Time *1000)
 							-- RemoveAnimDict("mp_arresting")
 							lib.progressBar({ --cortar
 							duration =  Config.FenceTool[data.current.value].Time *1000,
@@ -303,11 +294,13 @@ function OpenBreakingMenu()
 					end
 				end, Config.FenceTool[data.current.value].Item)
 			end
-		end, function(data, menu)
-			menu.close()
+		end}
+		end
+		lib.registerContext({id = 'fixlife_prision_fence_menu', title = Config.Sayings[94], options = options, onExit = function()
 			inMenu.is = false
 			inMenu.coords = nil
-		end)
+		end})
+		lib.showContext('fixlife_prision_fence_menu')
 	end)
 end
 
@@ -325,14 +318,14 @@ function OpenWallMenu()
 		table.insert(element, {label = Config.RoomTools[i].Name, value = i})
 	end
 
-	NativeMenu.CloseAll()
+	lib.hideContext()
 
 	Citizen.CreateThread(function()
-		NativeMenu.Open('default', GetCurrentResourceName(), 'wall_menu', {
-			title    = Config.Sayings[87],
-			align    = Config.MenuLoc,
-			elements = element
-		}, function(data, menu)
+		local options = {}
+		for _, item in ipairs(element) do
+			options[#options + 1] = {title = item.label, onSelect = function()
+				local data = {current = item}
+				local menu = {close = lib.hideContext}
 			lib.callback('HD_Jail:CheckItemB', false, function(can)
 				if can then
 					local hnum = 0
@@ -355,8 +348,6 @@ function OpenWallMenu()
 						inAnim.Atr = 1
 						inAnim.Freeze = true
 						FreezeEntityPosition(ped, true)
-						-- exports.rprogress:Start(Config.Sayings[96], Config.RoomTools[data.current.value].Time *1000)
-						-- Citizen.Wait(Config.RoomTools[data.current.value].Time *1000)
 						-- RemoveAnimDict("mini@repair")
 						lib.progressBar({ --cabando
 							duration =  Config.RoomTools[data.current.value].Time *1000,
@@ -398,8 +389,6 @@ function OpenWallMenu()
 						inAnim.Atr = 1
 						inAnim.Freeze = false
 						FreezeEntityPosition(ped, true)
-						-- exports.rprogress:Start(Config.Sayings[96] ,Config.RoomTools[data.current.value].Time *1000)
-						-- Citizen.Wait(Config.RoomTools[data.current.value].Time *1000)
 						-- RemoveAnimDict("mini@repair")
 						lib.progressBar({ --cavando
 							duration =  Config.RoomTools[data.current.value].Time *1000,
@@ -428,11 +417,13 @@ function OpenWallMenu()
 					Notification(Config.Sayings[88])
 				end
 			end, data.current.value)
-		end, function(data, menu)
-			menu.close()
+		end}
+		end
+		lib.registerContext({id = 'fixlife_prision_wall_menu', title = Config.Sayings[87], options = options, onExit = function()
 			inMenu.is = false
 			inMenu.coords = nil
-		end)
+		end})
+		lib.showContext('fixlife_prision_wall_menu')
 	end)
 end
 
@@ -468,7 +459,6 @@ function BreakOutStart(alreadyAtExit)
 		    Citizen.Wait(1000)
 		    FreezeEntityPosition(ped, false)
 		end
-		TriggerServerEvent('HD_Jail:UpdateBreak')
 		breakout = 0
 		breakout2 = true
 		breakout4 = true

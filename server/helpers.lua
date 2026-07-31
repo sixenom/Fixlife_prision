@@ -52,12 +52,12 @@ function GetGoodTime(timo)
 end
 
 function GetJailedPlayer(source, xPlayer)
-    xPlayer = xPlayer or Qbox.GetPlayer(source)
+    xPlayer = xPlayer or exports.qbx_core:GetPlayer(source)
     if not xPlayer then return end
 
     for cell = 1, #inJail do
         for index = 1, #inJail[cell].Players do
-            if inJail[cell].Players[index].Player == xPlayer.identifier then
+            if inJail[cell].Players[index].Player == xPlayer.PlayerData.citizenid then
                 return xPlayer, cell, index
             end
         end
@@ -83,64 +83,70 @@ function CheckCooldown(source, key, delay)
 end
 
 function HasPrisonJob(source, job, xPlayer)
-    xPlayer = xPlayer or Qbox.GetPlayer(source)
-    local data = xPlayer and JailStorage.Cache[xPlayer.identifier]
+    xPlayer = xPlayer or exports.qbx_core:GetPlayer(source)
+    local data = xPlayer and JailStorage.Cache[xPlayer.PlayerData.citizenid]
     return data and tonumber(data.job) == tonumber(job)
 end
 
 function CheckUser(yupiue, checkfor)
-    local xPlayer = Qbox.GetPlayer(yupiue)
+    local xPlayer = exports.qbx_core:GetPlayer(yupiue)
     local wegood = false
+    local job = xPlayer and xPlayer.PlayerData.job
+    local permissions = xPlayer and exports.qbx_core:GetPermission(yupiue) or {}
+    local group
+    for permission, enabled in pairs(permissions) do
+        if enabled then group = permission break end
+    end
 
-    if not xPlayer or not xPlayer.job then return false end
+    if not xPlayer or not job then return false end
 
     for i = 1, #Config.PoliceRoles, 1 do
-        if xPlayer.job.name == Config.PoliceRoles[i] then
+        if job.name == Config.PoliceRoles[i] then
             if checkfor == 'jail' then
                 for j = 1, #Config.PoliceRanks.Jailing, 1 do
-                    if xPlayer.job.name == Config.PoliceRanks.Jailing[j].Job and xPlayer.job.grade >= Config.PoliceRanks.Jailing[j].Grade then
+                    if job.name == Config.PoliceRanks.Jailing[j].Job and job.grade.level >= Config.PoliceRanks.Jailing[j].Grade then
                         wegood = true
                     end
                 end
             elseif checkfor == 'unjail' then
                 for j = 1, #Config.PoliceRanks.UnJail, 1 do
-                    if xPlayer.job.name == Config.PoliceRanks.UnJail[j].Job and xPlayer.job.grade >= Config.PoliceRanks.UnJail[j].Grade then
+                    if job.name == Config.PoliceRanks.UnJail[j].Job and job.grade.level >= Config.PoliceRanks.UnJail[j].Grade then
                         wegood = true
                     end
                 end
             elseif checkfor == 'add' then
                 for j = 1, #Config.PoliceRanks.AddTime, 1 do
-                    if xPlayer.job.name == Config.PoliceRanks.AddTime[j].Job and xPlayer.job.grade >= Config.PoliceRanks.AddTime[j].Grade then
+                    if job.name == Config.PoliceRanks.AddTime[j].Job and job.grade.level >= Config.PoliceRanks.AddTime[j].Grade then
                         wegood = true
                     end
                 end
             elseif checkfor == 'remove' then
                 for j = 1, #Config.PoliceRanks.RemoveTime, 1 do
-                    if xPlayer.job.name == Config.PoliceRanks.RemoveTime[j].Job and xPlayer.job.grade >= Config.PoliceRanks.RemoveTime[j].Grade then
+                    if job.name == Config.PoliceRanks.RemoveTime[j].Job and job.grade.level >= Config.PoliceRanks.RemoveTime[j].Grade then
                         wegood = true
                     end
                 end
             elseif checkfor == 'solitary' then
                 for j = 1, #Config.PoliceRanks.Send2Solitary, 1 do
-                    if xPlayer.job.name == Config.PoliceRanks.Send2Solitary[j].Job and xPlayer.job.grade >= Config.PoliceRanks.Send2Solitary[j].Grade then
+                    if job.name == Config.PoliceRanks.Send2Solitary[j].Job and job.grade.level >= Config.PoliceRanks.Send2Solitary[j].Grade then
                         wegood = true
                     end
                 end
             elseif checkfor == 'unsolitary' then
                 for j = 1, #Config.PoliceRanks.RemoveFromSolitary, 1 do
-                    if xPlayer.job.name == Config.PoliceRanks.RemoveFromSolitary[j].Job and xPlayer.job.grade >= Config.PoliceRanks.RemoveFromSolitary[j].Grade then
+                    if job.name == Config.PoliceRanks.RemoveFromSolitary[j].Job and job.grade.level >= Config.PoliceRanks.RemoveFromSolitary[j].Grade then
                         wegood = true
                     end
                 end
             elseif checkfor == 'lockdown' then
                 for j = 1, #Config.PoliceRanks.Lockdown, 1 do
-                    if xPlayer.job.name == Config.PoliceRanks.Lockdown[j].Job and xPlayer.job.grade >= Config.PoliceRanks.Lockdown[j].Grade then
+                    if job.name == Config.PoliceRanks.Lockdown[j].Job and job.grade.level >= Config.PoliceRanks.Lockdown[j].Grade then
                         wegood = true
                     end
                 end
             elseif checkfor == 'message' then
                 for j = 1, #Config.PoliceRanks.Message, 1 do
-                    if xPlayer.job.name == Config.PoliceRanks.Message[j].Job and xPlayer.job.grade >= Config.PoliceRanks.Message[j].Grade then
+                    if job.name == Config.PoliceRanks.Message[j].Job and job.grade.level >= Config.PoliceRanks.Message[j].Grade then
                         wegood = true
                     end
                 end
@@ -149,52 +155,52 @@ function CheckUser(yupiue, checkfor)
     end
 
     for i = 1, #adminRoles, 1 do
-        if xPlayer.group == adminRoles[i] then
+        if group == adminRoles[i] then
             if checkfor == 'jail' then
                 for j = 1, #adminAbilities.Jailing, 1 do
-                    if xPlayer.group == adminAbilities.Jailing[j] then
+                    if group == adminAbilities.Jailing[j] then
                         wegood = true
                     end
                 end
             elseif checkfor == 'unjail' then
                 for j = 1, #adminAbilities.UnJail, 1 do
-                    if xPlayer.group == adminAbilities.UnJail[j] then
+                    if group == adminAbilities.UnJail[j] then
                         wegood = true
                     end
                 end
             elseif checkfor == 'add' then
                 for j = 1, #adminAbilities.AddTime, 1 do
-                    if xPlayer.group == adminAbilities.AddTime[j] then
+                    if group == adminAbilities.AddTime[j] then
                         wegood = true
                     end
                 end
             elseif checkfor == 'remove' then
                 for j = 1, #adminAbilities.RemoveTime, 1 do
-                    if xPlayer.group == adminAbilities.RemoveTime[j] then
+                    if group == adminAbilities.RemoveTime[j] then
                         wegood = true
                     end
                 end
             elseif checkfor == 'solitary' then
                 for j = 1, #adminAbilities.Send2Solitary, 1 do
-                    if xPlayer.group == adminAbilities.Send2Solitary[j] then
+                    if group == adminAbilities.Send2Solitary[j] then
                         wegood = true
                     end
                 end
             elseif checkfor == 'unsolitary' then
                 for j = 1, #adminAbilities.RemoveFromSolitary, 1 do
-                    if xPlayer.group == adminAbilities.RemoveFromSolitary[j] then
+                    if group == adminAbilities.RemoveFromSolitary[j] then
                         wegood = true
                     end
                 end
             elseif checkfor == 'lockdown' then
                 for j = 1, #adminAbilities.Lockdown, 1 do
-                    if xPlayer.group == adminAbilities.Lockdown[j] then
+                    if group == adminAbilities.Lockdown[j] then
                         wegood = true
                     end
                 end
             elseif checkfor == 'message' then
                 for j = 1, #adminAbilities.Message, 1 do
-                    if xPlayer.group == adminAbilities.Message[j] then
+                    if group == adminAbilities.Message[j] then
                         wegood = true
                     end
                 end

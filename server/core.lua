@@ -1,6 +1,4 @@
 local qbx = exports.qbx_core
-local inventory = exports.ox_inventory
-Qbox = {}
 
 JailStorage = { Default = { cell = 0, chest = {}, jailtime = 0, items = {}, clothes = {}, job = 0, breaks = 0, soli = 0, jobo = 'nil', grade = 0 }, Cache = {}, LastSaved = {}, Gets = {}, Saves = {} }
 
@@ -140,64 +138,6 @@ end
 CreateThread(function()
     if not qbx:GetJob('prisoner') then qbx:CreateJob('prisoner', { label = 'Prisoner', type = 'none', defaultDuty = true, offDutyPay = false, grades = { [0] = { name = 'Inmate', payment = 0 } } }) end
 end)
-
-function Qbox.GetPlayers()
-    local players = {}
-    for source in pairs(qbx:GetQBPlayers()) do players[#players + 1] = source end
-    return players
-end
-
-function Qbox.GetPlayer(source)
-    local player = qbx:GetPlayer(source)
-    if not player then return nil end
-    local data = player.PlayerData
-    local job = {}
-    for key, value in pairs(data.job) do job[key] = value end
-    job.grade = data.job.grade.level or data.job.grade
-    local permissions = qbx:GetPermission(source) or {}
-    local group
-    for permission, enabled in pairs(permissions) do if enabled then group = permission break end end
-    return {
-        source = source, identifier = data.citizenid, job = job, group = group,
-        get = function(key)
-            if key == 'firstName' then return data.charinfo.firstname end
-            if key == 'lastName' then return data.charinfo.lastname end
-            return data[key]
-        end,
-        setJob = function(jobName, grade)
-            jobName = tostring(jobName or '')
-            if not qbx:GetJob(jobName) then jobName = 'unemployed' end
-            qbx:SetJob(data.citizenid, jobName, tonumber(grade) or 0)
-        end,
-        addInventoryItem = function(item, amount) return inventory:AddItem(source, item, amount) end,
-        removeInventoryItem = function(item, amount) return inventory:RemoveItem(source, item, amount) end,
-        getInventoryItem = function(item) return { count = inventory:GetItem(source, item, nil, true) or 0 } end,
-        canCarryItem = function(item, amount) return inventory:CanCarryItem(source, item, amount) end
-    }
-end
-
-function Qbox.RegisterCallback(name, handler)
-    lib.callback.register(name, function(source, ...)
-        local result
-        local done = false
-        local ok, err = pcall(handler, source, function(value)
-            if done then return end
-            result, done = value, true
-        end, ...)
-        if not ok then
-            print(('[Fixlife_prision] callback %s failed: %s'):format(name, err))
-            return nil
-        end
-
-        local deadline = GetGameTimer() + 5000
-        while not done and GetGameTimer() < deadline do Wait(0) end
-        return result
-    end)
-end
-
-function Qbox.RegisterUsableItem(item, handler)
-    qbx:CreateUseableItem(item, function(source) handler(source) end)
-end
 
 function GetRandomCell(cells, maxPlayers)
     local available = {}

@@ -6,7 +6,6 @@ client_scripts {
     'Config.lua',
     'locale/es.lua',
     'client/appearance.lua',
-    'client/ui.lua',
     'client/interactions.lua',
     'client/utils.lua',
     'client/breakout_menu.lua',

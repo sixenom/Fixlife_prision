@@ -1,33 +1,22 @@
+
 function OpenPoliceShitMenu()
 	using = true
 	lib.callback('HD_Jail:GetPlayerInCell', false, function(players)
-		local ped = PlayerPedId()
-		local element = {}
-	
-		for i = 1, #players, 1 do
-			table.insert(element, {label = players[i].name..Config.Sayings[156]..players[i].id, value = players[i].id, namio = players[i].name})
+		local options = {}
+		for i = 1, #players do
+			local player = players[i]
+			options[#options + 1] = {title = player.name .. Config.Sayings[156] .. player.id, onSelect = function()
+				OpenPoliceMenu2(player.name, player.id)
+			end}
 		end
-
-		if element[1] == nil then
-			table.insert(element, {label = Config.Sayings[69], value = 'none'})
-		end
-
-		NativeMenu.CloseAll()
-	
-		NativeMenu.Open('default', GetCurrentResourceName(), 'police_shit', {
-			title    = Config.Sayings[155],
-			align    = Config.MenuLoc,
-			elements = element
-		}, function(data, menu)
-			if data.current.value ~= 'none' then
-				OpenPoliceMenu2(data.current.namio, data.current.value)
-			end
-		end, function(data, menu)
-			menu.close()
+		if #options == 0 then options[1] = {title = Config.Sayings[69], disabled = true} end
+		lib.hideContext()
+		lib.registerContext({id = 'fixlife_prision_police_shit', title = Config.Sayings[155], options = options, onExit = function()
 			using = false
 			inMenu.is = false
 			inMenu.coords = nil
-		end)
+		end})
+		lib.showContext('fixlife_prision_police_shit')
 	end, closestPoliceInv)
 end
 
@@ -36,181 +25,37 @@ function OpenPoliceMenu2(name, theirID)
 	using = false
 	return
 end
-
---[[
-	Citizen.CreateThread(function()
-		local ped = PlayerPedId()
-
-		RequestAnimDict('mini@repair')
-								
-		if not HasAnimDictLoaded('mini@repair') then
-			LoadAnim('mini@repair')
-		end
-		SetEntityCoords(ped, Config.Cells[closestPoliceInv].InvLoc.Loc.x, Config.Cells[closestPoliceInv].InvLoc.Loc.y, Config.Cells[closestPoliceInv].InvLoc.Loc.z - 1, false, false, false, false)
-		SetEntityHeading(ped, Config.Cells[closestPoliceInv].InvLoc.Heading)
-		TaskPlayAnim(ped, 'mini@repair', 'fixing_a_ped', 8.0, 8.0, -1, 1, 1, 0, 0, 0)
-		inAnim.Dict = 'mini@repair'
-		inAnim.Anim = 'fixing_a_ped'
-		inAnim.Atr = 1
-		inAnim.Freeze = true
-		FreezeEntityPosition(ped, true)
-	lib.progressBar({ --comiendo
-			duration =  Config.OpenCloseTime *1000,
-			label =  Config.Sayings[35],
-			icon = 'fixlife.svg',
-			position = 'bottom',
-			useWhileDead = false,
-			canCancel = false,
-			disable = {
-				car = true,
-				move = true,
-				combat = true,
-				mouse = false,
-			},
-		})
-		-- Citizen.Wait(Config.OpenCloseTime *1000)
-	
-		lib.callback('HD_Jail:GetChest2', false, function(cvalue)
-			local valuesc = {}
-			local element = {}
-	
-			valuesc = cvalue
-			if valuesc[1] ~= nil then
-				for i = 1, #valuesc, 1 do 
-					table.insert(element, {label = valuesc[i].amt..'x '..valuesc[i].itemName, value = i})
-				end
-			else
-				table.insert(element, {label = Config.Sayings[33], value = 'none'})
-			end
-	
-			NativeMenu.CloseAll()
-	
-			NativeMenu.Open('default', GetCurrentResourceName(), 'inv_menu2', {
-				title    = name..Config.Sayings[157],
-				align    = Config.MenuLoc,
-				elements = element
-			}, function(data, menu)
-				if data.current.value ~= 'none' then
-					local numies = data.current.value
-					menu.close()
-					NativeMenu.Open('dialog', GetCurrentResourceName(), 'inv_amt', {
-						title = (Config.Sayings[37])
-					}, function(data, menu)
-						local amount = tonumber(data.value)
-			
-						if amount == nil or amount < 0 then
-							Notification(Config.Sayings[38])
-						elseif amount > valuesc[numies].amt then
-							Notification(Config.Sayings[39])
-						else
-							menu.close()
-							TriggerServerEvent('HD_Jail:RemoveItem2', valuesc[numies].ite, amount, valuesc[numies].itemName, theirID)
-						end
-					end, function(data, menu)
-						menu.close()
-						-- exports.rprogress:Start(Config.Sayings[36], Config.OpenCloseTime *1000)
-						lib.progressBar({ --bajando cama
-							duration =  Config.OpenCloseTime *1000,
-							label =  Config.Sayings[36],
-							icon = 'fixlife.svg',
-							position = 'bottom',
-							useWhileDead = false,
-							canCancel = false,
-							disable = {
-								car = true,
-								move = true,
-								combat = true,
-								mouse = false,
-							},
-						})
-						-- Citizen.Wait(Config.OpenCloseTime *1000)
-						FreezeEntityPosition(ped, false)
-						inAnim.Dict = nil
-						inAnim.Anim = nil
-						inAnim.Atr = 0
-						inAnim.Freeze = false
-						RemoveAnimDict('mini@repair')
-						ClearPedTasksImmediately(ped)
-						OpenPoliceMenu2(name, theirID)
-					end)
-				end
-			end, function(data, menu)
-				menu.close()
-				ClearPedTasksImmediately(ped)
-				OpenPoliceShitMenu()
-			end)
-		end, theirID)
-	end)
-end
-
-]]
-
 function OpenInfoMenu()
-	local ped = PlayerPedId()
-	local element = {
-		[1] = {label = Config.Sayings[47], value = 'make'},
-		[2] = {label = Config.Sayings[46], value = 'break'}
-	}
-
-	NativeMenu.CloseAll()
-
-	NativeMenu.Open('default', GetCurrentResourceName(), 'info_menu', {
-		title    = Config.Sayings[45],
-		align    = Config.MenuLoc,
-		elements = element
-	}, function(data, menu)
-		if data.current.value == 'make' then
-			OpenMakeMenu()
-		else
-			OpenBreakMenu()
-		end
-	end, function(data, menu)
-		menu.close()
+	lib.hideContext()
+	lib.registerContext({id = 'fixlife_prision_info_menu', title = Config.Sayings[45], options = {
+		{title = Config.Sayings[47], onSelect = OpenMakeMenu},
+		{title = Config.Sayings[46], onSelect = OpenBreakMenu},
+	}, onExit = function()
 		inMenu.is = false
 		inMenu.coords = nil
-	end)
+	end})
+	lib.showContext('fixlife_prision_info_menu')
 end
 
 function OpenMakeMenu()
-	local ped = PlayerPedId()
-	local element = {}
-
-	for i = 1, #Config.Crafts, 1 do
-		table.insert(element, {label = Config.Crafts[i].Name, value = i})
+	local options = {}
+	for i = 1, #Config.Crafts do
+		local index = i
+		options[#options + 1] = {title = Config.Crafts[index].Name, onSelect = function() OpenCraftMenu(index) end}
 	end
-
-	NativeMenu.CloseAll()
-
-	NativeMenu.Open('default', GetCurrentResourceName(), 'make_menu', {
-		title    = Config.Sayings[48],
-		align    = Config.MenuLoc,
-		elements = element
-	}, function(data, menu)
-		OpenCraftMenu(data.current.value)
-	end, function(data, menu)
-		menu.close()
-		OpenInfoMenu()
-	end)
+	lib.hideContext()
+	lib.registerContext({id = 'fixlife_prision_make_menu', title = Config.Sayings[48], options = options, onExit = OpenInfoMenu})
+	lib.showContext('fixlife_prision_make_menu')
 end
 
 function OpenCraftMenu(itnum)
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
-		local element = {
-			[1] = {label = Config.Sayings[50], value = 'need'},
-			[2] = {label = Config.Sayings[51], value = 'make'}
-		}
-	
-		NativeMenu.CloseAll()
-	
-		NativeMenu.Open('default', GetCurrentResourceName(), 'make_menu2', {
-			title    = Config.Crafts[itnum].Name,
-			align    = Config.MenuLoc,
-			elements = element
-		}, function(data, menu)
-			if data.current.value == 'need' then
-				OpenNeedsMenu(itnum)
-			else
+		local options = {
+			{title = Config.Sayings[50], onSelect = function() OpenNeedsMenu(itnum) end},
+			{title = Config.Sayings[51], onSelect = function()
+				local menu = {close = lib.hideContext}
+		lib.hideContext()
 				menu.close()
 				lib.callback('HD_Jail:CheckItemMake', false, function(can)
 					if can == 1 then
@@ -244,7 +89,6 @@ function OpenCraftMenu(itnum)
 							inAnim.Freeze = true
 							FreezeEntityPosition(ped, true)
 							FreezeEntityPosition(pedi, true)
-							-- exports.rprogress:Start(Config.Sayings[85], Config.Crafts[itnum].Time *1000)
 							lib.progressBar({ --Creando
 								duration =  Config.Crafts[itnum].Time *1000,
 								label =  Config.Sayings[85],
@@ -259,7 +103,6 @@ function OpenCraftMenu(itnum)
 									mouse = false,
 								},
 							})
-							-- Citizen.Wait(Config.Crafts[itnum].Time *1000)
 							ClearPedTasksImmediately(pedi)
 							ClearPedTasksImmediately(ped)
 							FreezeEntityPosition(pedi, false)
@@ -274,33 +117,21 @@ function OpenCraftMenu(itnum)
 						end)
 					end
 				end, itnum)
-			end
-		end, function(data, menu)
-			menu.close()
-			OpenMakeMenu()
-		end)
+			end},
+		}
+		lib.registerContext({id = 'fixlife_prision_make_menu2', title = Config.Crafts[itnum].Name, options = options, onExit = OpenMakeMenu})
+		lib.showContext('fixlife_prision_make_menu2')
 	end)
 end
 
 function OpenNeedsMenu(numzioe)
-	local ped = PlayerPedId()
-	local element = {}
-
-	for i = 1, #Config.Crafts[numzioe].Needed, 1 do
-		table.insert(element, {label = Config.Crafts[numzioe].Needed[i].Amount..'x '..Config.Crafts[numzioe].Needed[i].Name, value = i})
+	local options = {}
+	for i = 1, #Config.Crafts[numzioe].Needed do
+		local item = Config.Crafts[numzioe].Needed[i]
+		options[#options + 1] = {title = item.Amount .. 'x ' .. item.Name}
 	end
-
-	NativeMenu.CloseAll()
-
-	NativeMenu.Open('default', GetCurrentResourceName(), 'need_menu', {
-		title    = Config.Sayings[52],
-		align    = Config.MenuLoc,
-		elements = element
-	}, function(data, menu)
-
-	end, function(data, menu)
-		menu.close()
-		OpenCraftMenu(numzioe)
-	end)
+	lib.hideContext()
+	lib.registerContext({id = 'fixlife_prision_need_menu', title = Config.Sayings[52], options = options, onExit = function() OpenCraftMenu(numzioe) end})
+	lib.showContext('fixlife_prision_need_menu')
 end
 

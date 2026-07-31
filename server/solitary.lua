@@ -1,9 +1,9 @@
 RegisterServerEvent('HD_Jail:CheckSol')
 AddEventHandler('HD_Jail:CheckSol', function(id)
     if tonumber(id) ~= source then return end
-    local xPlayer = Qbox.GetPlayer(id)
+    local xPlayer = exports.qbx_core:GetPlayer(id)
     if not xPlayer then return end
-    local ident = xPlayer.identifier
+    local ident = xPlayer.PlayerData.citizenid
     local found1, found2 = 0, 0
     for i = 1, #inJail do
         for j = 1, #inJail[i].Players do
@@ -19,14 +19,22 @@ AddEventHandler('HD_Jail:CheckSol', function(id)
     TriggerClientEvent('HD_Jail:SendSol', id, inJail[found1].Players[found2].Sol, cell)
 end)
 
-RegisterServerEvent('HD_Jail:SendToSol')
-AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
-    if tonumber(source) ~= 65535 then return end
+function SendToSolitary(id, tima, reasons, internal)
+    local caller = tonumber(source) or 0
+    local target = tonumber(id) or 0
+    if not internal and caller ~= 65535 and caller ~= target and not CheckUser(caller, 'solitary') then return end
     tima = math.floor(tonumber(tima) or 0)
     if tima <= 0 then return end
-    local xPlayer = Qbox.GetPlayer(tonumber(id))
+    local xPlayer = exports.qbx_core:GetPlayer(tonumber(id))
     if xPlayer then
-        local ident = xPlayer.identifier
+        if internal then
+            for _, item in pairs(exports.ox_inventory:GetInventoryItems(id) or {}) do
+                if item and item.count and item.count > 0 then
+                    exports.ox_inventory:RemoveItem(id, item.name, item.count)
+                end
+            end
+        end
+        local ident = xPlayer.PlayerData.citizenid
         local timaz = tima *60
         local found = 0
         local found2 = 0
@@ -43,7 +51,7 @@ AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
         end
     
         if found ~= 0 then
-            JailStorage.Get(xPlayer.identifier, function(newData)
+            JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                 newData.soli = timaz
     
                 local lowest = {val = GetRandomCell(solJail, 1)}
@@ -123,13 +131,13 @@ AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
                 end
     
                 TriggerClientEvent('HD_Jail:SendSol', id, timaz, lowest.val)
-                JailStorage.Save(xPlayer.identifier, newData)
+                JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
             end)
         end
-    else
+    elseif not internal then
         if CheckUser(source, 'solitary') then
-            local xPlayer = Qbox.GetPlayer(id)
-            local ident = xPlayer.identifier
+            local xPlayer = exports.qbx_core:GetPlayer(id)
+            local ident = xPlayer.PlayerData.citizenid
             local timaz = tima *60
             local found = 0
             local found2 = 0
@@ -146,7 +154,7 @@ AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
             end
         
             if found ~= 0 then
-                JailStorage.Get(xPlayer.identifier, function(newData)
+                JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                     newData.soli = timaz
         
                     local lowest = {val = GetRandomCell(solJail, 1)}
@@ -226,7 +234,7 @@ AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
                     end
         
                     TriggerClientEvent('HD_Jail:SendSol', id, timaz, lowest.val)
-                    JailStorage.Save(xPlayer.identifier, newData)
+                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
                 end)
             end
         else
@@ -234,16 +242,21 @@ AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
             TriggerClientEvent('HD_Jail:SendNotif', _source, Config.Sayings[159])
         end
     end
+end
+
+RegisterServerEvent('HD_Jail:SendToSol')
+AddEventHandler('HD_Jail:SendToSol', function(id, tima, reasons)
+    SendToSolitary(id, tima, reasons, false)
 end)
 
 RegisterServerEvent('HD_Jail:UnSol')
 
 AddEventHandler('HD_Jail:UnSol', function(id)
-    local xTarget = Qbox.GetPlayer(source)
+    local xTarget = exports.qbx_core:GetPlayer(source)
     if xTarget == nil then
-        local xPlayer = Qbox.GetPlayer(id)
+        local xPlayer = exports.qbx_core:GetPlayer(id)
         if not xPlayer then return end
-        local ident = xPlayer.identifier
+        local ident = xPlayer.PlayerData.citizenid
         local found = 0
         local found2 = 0
         local found3 = 0
@@ -297,16 +310,16 @@ AddEventHandler('HD_Jail:UnSol', function(id)
                 sendToDiscord(this, 2303, "Player Being Removed From Solitary")
             end
     
-            JailStorage.Get(xPlayer.identifier, function(newData)
+            JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                 newData.soli = 0
                 TriggerClientEvent('HD_Jail:UnnSol', id)
-                JailStorage.Save(xPlayer.identifier, newData)
+                JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
             end)
         end
     else
         if CheckUser(source, 'unsolitary') then
-            local xPlayer = Qbox.GetPlayer(source)
-            local ident = xPlayer.identifier
+            local xPlayer = exports.qbx_core:GetPlayer(source)
+            local ident = xPlayer.PlayerData.citizenid
             local found = 0
             local found2 = 0
             local found3 = 0
@@ -360,10 +373,10 @@ AddEventHandler('HD_Jail:UnSol', function(id)
                     sendToDiscord(this, 2303, "Player Being Removed From Solitary")
                 end
         
-                JailStorage.Get(xPlayer.identifier, function(newData)
+                JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                     newData.soli = 0
                     TriggerClientEvent('HD_Jail:UnnSol', id)
-                    JailStorage.Save(xPlayer.identifier, newData)
+                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
                 end)
             end
         else

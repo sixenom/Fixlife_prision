@@ -471,13 +471,15 @@ end)
 local watchCamerasDebug = false
 local watchCameraDebugBlips = {}
 local watchCameraEntities = {}
+local watchCameraConeColors = {}
 local GetWatchCameraHeading
 local GetWatchCameraBlipHeading
 
-local function SetupWatchCameraCone(blip, heading)
+local function SetupWatchCameraCone(blip, heading, color)
+	color = color or Config.WatchBlip.ConeColor
 	local radians = (heading + 180.0) * math.pi / 180.0
-	Citizen.InvokeNative(0xF83D0FEBE75E62C9, blip, -1.0, 1.0, Config.WatchCameraConeWidth, 1.0, Config.WatchCameraConeLength, radians, 0, Config.WatchBlip.ConeColor)
-	SetBlipShowCone(blip, true, Config.WatchBlip.ConeColor)
+	Citizen.InvokeNative(0xF83D0FEBE75E62C9, blip, -1.0, 1.0, Config.WatchCameraConeWidth, 1.0, Config.WatchCameraConeLength, radians, 0, color)
+	SetBlipShowCone(blip, true, color)
 end
 
 function CreateWatchCameraBlip(camera, index)
@@ -555,7 +557,11 @@ local function IsPlayerInWatchCamera(camera, heading, coords)
 	return hit ~= 1
 end
 
-local function DrawWatchCameraCone(camera, heading)
+local function DrawWatchCameraCone(camera, heading, color)
+	local r, g, b = 255, 255, 255
+	if (color or Config.WatchBlip.ConeColor) == 6 then
+		r, g, b = 224, 50, 50
+	end
 	local function pointAt(angle, distance, z)
 		local radians = math.rad(angle)
 		return vector3(camera.x + math.sin(radians) * distance, camera.y + math.cos(radians) * distance, z)
@@ -564,9 +570,9 @@ local function DrawWatchCameraCone(camera, heading)
 	local left = pointAt(heading - Config.WatchCameraFov / 2.0, Config.WatchCameraRange, camera.z - 1.0)
 	local right = pointAt(heading + Config.WatchCameraFov / 2.0, Config.WatchCameraRange, camera.z - 1.0)
 	local origin = vector3(camera.x, camera.y, camera.z)
-	DrawPoly(origin.x, origin.y, origin.z, left.x, left.y, left.z, right.x, right.y, right.z, 255, 220, 0, 45)
-	DrawLine(origin.x, origin.y, origin.z, left.x, left.y, left.z, 255, 220, 0, 180)
-	DrawLine(origin.x, origin.y, origin.z, right.x, right.y, right.z, 255, 220, 0, 180)
+	DrawPoly(origin.x, origin.y, origin.z, left.x, left.y, left.z, right.x, right.y, right.z, r, g, b, 45)
+	DrawLine(origin.x, origin.y, origin.z, left.x, left.y, left.z, r, g, b, 180)
+	DrawLine(origin.x, origin.y, origin.z, right.x, right.y, right.z, r, g, b, 180)
 end
 
 GetWatchCameraBlipHeading = function(heading)
@@ -590,7 +596,7 @@ CreateThread(function()
 				local heading = GetWatchCameraHeading(entry.camera)
 				local radarHeading = GetWatchCameraBlipHeading(heading)
 				SetEntityHeading(entry.entity, radarHeading)
-				SetupWatchCameraCone(entry.blip, (radarHeading + 180.0) % 360.0)
+				SetupWatchCameraCone(entry.blip, (radarHeading + 180.0) % 360.0, watchCameraConeColors[entry.camera])
 				SetBlipRotation(entry.blip, math.floor(radarHeading))
 			end
 		end
@@ -606,12 +612,12 @@ CreateThread(function()
 			local coords = GetEntityCoords(PlayerPedId())
 			for i, tower in ipairs(Config.WatchCameras) do
 				local heading = GetWatchCameraHeading(i)
-			local distance = #(coords - vector3(tower.x, tower.y, tower.z))
-				DrawWatchCameraCone(tower, heading)
+				local distance = #(coords - vector3(tower.x, tower.y, tower.z))
+				local cameraSeen = IsPlayerInWatchCamera(tower, heading, coords)
+				DrawWatchCameraCone(tower, heading, cameraSeen and Config.WatchBlip.ConeAlertColor or Config.WatchBlip.ConeColor)
 				DrawMarker(Config.WatchMarkNum, tower.x, tower.y, tower.z, 0.0, 0.0, 0.0, 0.0, 0.0, heading, 0.6, 0.6, 0.6, Config.WatchMarkColor.r, Config.WatchMarkColor.g, Config.WatchMarkColor.b, 180, false, false, 2, false, nil, nil, false)
 				if distance <= Config.SeeWatchDist then
-					local seen = IsPlayerInWatchCamera(tower, heading, coords)
-					DrawText3D(tower.x, tower.y, tower.z + 0.5, ('Camara %d | %.1fm | %s'):format(i, distance, seen and 'TE VE' or 'seguro'))
+					DrawText3D(tower.x, tower.y, tower.z + 0.5, ('Camara %d | %.1fm | %s'):format(i, distance, cameraSeen and 'TE VE' or 'seguro'))
 				end
 			end
 			Wait(0)
@@ -647,7 +653,7 @@ RegisterNetEvent('HD_Jail:ChangeLoc')
 AddEventHandler('HD_Jail:ChangeLoc', function(newLoc)
 	if inMenu.is then
 		if inMenu.coords == Config.InfoPedLoc[infoLoc].Loc then
-			NativeMenu.CloseAll()
+			lib.hideContext()
 			inMenu.is = false
 			inMenu.coords = false
 		end
@@ -788,7 +794,7 @@ function LoadJailCell(timu, firstTime)
 		SetBlipScale(blipLaundryVehicle, Config.LaundryVehicleBlip.Size)
 		SetBlipColour(blipLaundryVehicle, Config.LaundryVehicleBlip.Color)
 		BeginTextCommandSetBlipName("STRING")
-		AddTextComponentString('Vehículo de lavandería')
+		AddTextComponentString('VehÃ­culo de lavanderÃ­a')
 		EndTextCommandSetBlipName(blipLaundryVehicle)
 		table.insert(blips, {id = 'laundry_vehicle', data = blipLaundryVehicle})
 	end
@@ -1120,20 +1126,23 @@ Citizen.CreateThread(function()
 						nearestDistance = distance
 						closestTower = i
 					end
-					if IsPlayerInWatchCamera(camera, GetWatchCameraHeading(i), coords) then
+					local cameraSeen = IsPlayerInWatchCamera(camera, GetWatchCameraHeading(i), coords)
+					local coneColor = cameraSeen and Config.WatchBlip.ConeAlertColor or Config.WatchBlip.ConeColor
+					watchCameraConeColors[i] = coneColor
+					if cameraSeen then
 						seen = true
-						break
 					end
 				end
 
 				if seen then
 					if not watchSeenSince then
 						watchSeenSince = GetGameTimer()
-						Notification('Una cámara te está viendo')
+						Notification('Una cÃ¡mara te estÃ¡ viendo')
 					end
 
 					if breakout == 0 and GetGameTimer() - watchSeenSince >= 5000 then
 						breakout = Config.BreakoutTime
+						TriggerServerEvent('HD_Jail:UpdateBreak')
 						exports['Fixlife_hud']:setHudTimer(breakout / 60, 'Escapando, tiempo hasta que los guardias se den cuenta')
 						Notification('Los guardias han sido alertados: tienes 2 minutos para escapar')
 					end
@@ -1151,7 +1160,7 @@ Citizen.CreateThread(function()
 			else
 				Citizen.Wait(1000)
 			end
-		elseif time > 0 then
+		elseif time > 0 and jailLocs[closestLoc] then
 			local dist = Vdist(jailLocs[closestLoc].Loc.x, jailLocs[closestLoc].Loc.y, jailLocs[closestLoc].Loc.z, coords)
 			
 			if not using and not isDead then

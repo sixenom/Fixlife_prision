@@ -1,17 +1,17 @@
 RegisterServerEvent('HD_Jail:UpdateClothes')
 AddEventHandler('HD_Jail:UpdateClothes', function(numie)
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     if not xPlayer or not IsPrisoner(source, xPlayer) or type(numie) ~= 'table' or #json.encode(numie) > 10000 then return end
 
-    JailStorage.Get(xPlayer.identifier, function(newData)
+    JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
         newData.clothes = numie
-        JailStorage.Save(xPlayer.identifier, newData)
+        JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
 	end)
 end)
 
 RegisterServerEvent('HD_Jail:Ate')
 AddEventHandler('HD_Jail:Ate', function()
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     if not xPlayer or not IsPrisoner(source, xPlayer) or not IsNearPoint(source, Config.GetFoodLoc.Loc, 2.0) or not CheckCooldown(source, 'eat', 3000) then return end
     local currentHunger = exports.qbx_core:GetMetadata(source, 'hunger') or 0
     local currentThirst = exports.qbx_core:GetMetadata(source, 'thirst') or 0
@@ -23,9 +23,9 @@ RegisterServerEvent('HD_Jail:UnBreak')
 AddEventHandler('HD_Jail:UnBreak', function(id)
     local eventSource = tonumber(source) or 0
     if eventSource > 0 and eventSource ~= 65535 and tonumber(id) ~= eventSource then return end
-    local xPlayer = Qbox.GetPlayer(id)
+    local xPlayer = exports.qbx_core:GetPlayer(id)
     if not xPlayer then return end
-    local ident = xPlayer.identifier
+    local ident = xPlayer.PlayerData.citizenid
     local found1 = 0
     local found2 = 0
 
@@ -43,7 +43,7 @@ AddEventHandler('HD_Jail:UnBreak', function(id)
     if found1 ~= 0 then
         inJail[found1].Players[found2].Breako = 0
         if Config.FailBreakToSol and Config.Solitary then
-            TriggerEvent('HD_Jail:SendToSol', id, Config.SolBreakTime, Config.Sayings[108])
+            SendToSolitary(id, Config.SolBreakTime, Config.Sayings[108], true)
         else
             TriggerClientEvent('HD_Jail:UnBreak2', id)
         end
@@ -53,10 +53,10 @@ end)
 RegisterServerEvent('HD_Jail:RetrieveItems')
 AddEventHandler('HD_Jail:RetrieveItems', function(itoms)
     local src = source
-    local xPlayer = Qbox.GetPlayer(src)
+    local xPlayer = exports.qbx_core:GetPlayer(src)
     if not xPlayer then return end
 
-    JailStorage.Get(xPlayer.identifier, function(newData)
+    JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
         if (tonumber(newData.jailtime) or 0) > 0 then return end
 
         local remaining = {}
@@ -71,15 +71,15 @@ AddEventHandler('HD_Jail:RetrieveItems', function(itoms)
             end
         end
         newData.items = remaining
-        JailStorage.Save(xPlayer.identifier, newData)
+        JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
     end)
 end)
 
 RegisterServerEvent('HD_Jail:SetJob')
 AddEventHandler('HD_Jail:SetJob', function(jobii, flip)
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     if not xPlayer or not IsPrisoner(source, xPlayer) or (jobii ~= 0 and not Config.JobOptions[jobii]) then return end
-    local ident = xPlayer.identifier
+    local ident = xPlayer.PlayerData.citizenid
     local found1 = 0
     local found2 = 0
     local id = nil
@@ -94,7 +94,7 @@ AddEventHandler('HD_Jail:SetJob', function(jobii, flip)
         end
     end
 
-    JailStorage.Get(xPlayer.identifier, function(newData)
+    JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
 
         if Log.Job and flip then
             local jobzo = nil
@@ -140,23 +140,23 @@ AddEventHandler('HD_Jail:SetJob', function(jobii, flip)
         end
 
         newData.job = jobii
-        JailStorage.Save(xPlayer.identifier, newData)
+        JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
 	end)
 end)
 
 RegisterServerEvent('HD_Jail:TaskComplete')
 AddEventHandler('HD_Jail:TaskComplete', function(taskJob, taskIndex)
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     taskJob = tonumber(taskJob)
     taskIndex = tonumber(taskIndex)
     local jobData = Config.JobOptions[taskJob]
     local taskData = jobData and jobData.Tasks[taskIndex]
     local ped = GetPlayerPed(source)
-    if not xPlayer or not IsPrisoner(source, xPlayer) or xPlayer.job.name ~= 'prisoner' or not HasPrisonJob(source, taskJob, xPlayer) or not CheckCooldown(source, 'task', 1500) or not taskData or ped <= 0 then return end
+    if not xPlayer or not IsPrisoner(source, xPlayer) or xPlayer.PlayerData.job.name ~= 'prisoner' or not HasPrisonJob(source, taskJob, xPlayer) or not CheckCooldown(source, 'task', 1500) or not taskData or ped <= 0 then return end
 
     local taskCoords = taskData.TaskLoc and taskData.TaskLoc.Loc
     if not taskCoords or #(GetEntityCoords(ped) - taskCoords) > 6.0 then return end
-    local ident = xPlayer.identifier
+    local ident = xPlayer.PlayerData.citizenid
     local found1 = 0
     local found2 = 0
 
@@ -180,12 +180,12 @@ AddEventHandler('HD_Jail:TaskComplete', function(taskJob, taskIndex)
                 local this = {
                     {
                         ["name"] = "**Player Name:**",
-                        ["value"] = GetPlayerName(xPlayer.source),
+                        ["value"] = GetPlayerName(xPlayer.PlayerData.source),
                         ["inline"] = true
                     },
                     {
                         ["name"] = "**Player ID:**",
-                        ["value"] = xPlayer.source,
+                        ["value"] = xPlayer.PlayerData.source,
                         ["inline"] = true
                     },
                     {
@@ -219,12 +219,12 @@ AddEventHandler('HD_Jail:TaskComplete', function(taskJob, taskIndex)
                 local this = {
                     {
                         ["name"] = "**Player Name:**",
-                        ["value"] = GetPlayerName(xPlayer.source),
+                        ["value"] = GetPlayerName(xPlayer.PlayerData.source),
                         ["inline"] = true
                     },
                     {
                         ["name"] = "**Player ID:**",
-                        ["value"] = xPlayer.source,
+                        ["value"] = xPlayer.PlayerData.source,
                         ["inline"] = true
                     },
                     {

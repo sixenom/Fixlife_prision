@@ -1,6 +1,6 @@
 AddEventHandler('HD_Jail:ReJail', function(id, values)
-    local xPlayer = Qbox.GetPlayer(id)
-    local ident = xPlayer.identifier
+    local xPlayer = exports.qbx_core:GetPlayer(id)
+    local ident = xPlayer.PlayerData.citizenid
     RemovePlayerFromCells(inJail, ident)
     local theS = values
     local tots = 0
@@ -218,6 +218,7 @@ Citizen.CreateThread(function()
                             end
                         end
                     end
+                    TriggerClientEvent('HD_Jail:SyncTimes', prisoner.ID, prisoner.Timie, prisoner.Sol, prisoner.Breako)
                 end
             end
             end
@@ -227,10 +228,10 @@ end)
 
 AddEventHandler('playerDropped', function(reason) 
     local src = source
-    local xPlayer = Qbox.GetPlayer(src)
+    local xPlayer = exports.qbx_core:GetPlayer(src)
     if xPlayer then
         local cert = nil
-        cert = xPlayer.identifier
+        cert = xPlayer.PlayerData.citizenid
     
         local found1 = 0
         local found2 = 0

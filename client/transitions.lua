@@ -22,6 +22,23 @@ AddEventHandler('HD_Jail:UpBreaks', function(amt, flip, time)
 	end
 end)
 
+RegisterNetEvent('HD_Jail:SyncTimes', function(jailtime, solitary, escape)
+	time = math.max(0, tonumber(jailtime) or 0)
+	soltime = math.max(0, tonumber(solitary) or 0)
+	breakout = math.max(0, tonumber(escape) or 0)
+	if soltime > 0 then
+		exports['Fixlife_hud']:setHudTimer(soltime / 60, 'Celda de castigo')
+	elseif breakout > 0 then
+		exports['Fixlife_hud']:setHudTimer(breakout / 60, 'Escapando, tiempo hasta que los guardias se den cuenta')
+	elseif time > 0 then
+		if job ~= 0 and taskMax > 0 then
+			UpdateJobHud()
+		else
+			exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
+		end
+	end
+end)
+
 RegisterNetEvent('HD_Jail:UnBreak2')
 AddEventHandler('HD_Jail:UnBreak2', function()
 	Citizen.CreateThread(function()
@@ -84,8 +101,6 @@ Citizen.CreateThread(function()
 
 			DrawText3D(coords.x, coords.y, coords.z, Config.Sayings[44])
 			if IsControlJustReleased(0, 38) then
-				-- exports.rprogress:Start(Config.Sayings[139], Config.EatTime *1000)
-				-- Citizen.Wait(Config.EatTime *1000)
 				lib.progressBar({ --comiendo
 					duration =  Config.EatTime *1000,
 					label =  Config.Sayings[139],
@@ -272,6 +287,17 @@ RegisterNetEvent('HD_Jail:SendSol')
 AddEventHandler('HD_Jail:SendSol', function(soltimez, cell)
 	Citizen.CreateThread(function()
 		local ped = PlayerPedId()
+		breakout = 0
+		breakout2 = false
+		breakout3 = false
+		breakout4 = true
+		TriggerEvent('HD_Jail:ResetEscape')
+		for i = #blips, 1, -1 do
+			if blips[i].id == 'escape' or blips[i].id == 'tower' then
+				if DoesBlipExist(blips[i].data) then RemoveBlip(blips[i].data) end
+				table.remove(blips, i)
+			end
+		end
 		using = false
 		inAnim.Dict = nil
 		inAnim.Anim = nil
@@ -303,6 +329,11 @@ AddEventHandler('HD_Jail:UnnSol', function()
 		DoScreenFadeOut(1000)
 		Citizen.Wait(1500)
 		soltime = 0
+		breakout = 0
+		breakout2 = false
+		breakout3 = false
+		breakout4 = true
+		TriggerEvent('HD_Jail:ResetEscape')
 		exports['Fixlife_hud']:setHudTimer(time / 60, 'Tiempo restante')
 		solcell = 0
 		SetEntityCoords(ped, Config.Cells[jailCell].SpawnLoc.Loc.x, Config.Cells[jailCell].SpawnLoc.Loc.y, Config.Cells[jailCell].SpawnLoc.Loc.z - 1, false, false, false, false)

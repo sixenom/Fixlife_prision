@@ -101,31 +101,28 @@ end)
 
 function OpenLaundryVehicleMenu()
 	if job ~= 3 and not (laundryVehicle and DoesEntityExist(laundryVehicle)) then
-		Notification('Este vehículo solo está disponible para el corredor de lavandería.')
+		Notification('Este vehÃ­culo solo estÃ¡ disponible para el corredor de lavanderÃ­a.')
 		return
 	end
 	local elements = {
 		{label = 'Sacar Keitora', value = 'spawn'},
-		{label = 'Devolver vehículo', value = 'return'}
+		{label = 'Devolver vehÃ­culo', value = 'return'}
 	}
-	NativeMenu.CloseAll()
-	NativeMenu.Open('default', GetCurrentResourceName(), 'laundry_vehicle_menu', {
-		title = 'Vehículo de lavandería',
-		align = Config.MenuLoc,
-		elements = elements
-	}, function(data, menu)
-		menu.close()
-		if data.current.value == 'return' then
+	lib.hideContext()
+	local options = {}
+	for _, element in ipairs(elements) do
+		options[#options + 1] = {title = element.label, onSelect = function()
+			if element.value == 'return' then
 			if laundryVehicle and DoesEntityExist(laundryVehicle) then
 				RemoveLaundryVehicle()
-				Notification('Vehículo devuelto.')
+				Notification('VehÃ­culo devuelto.')
 			else
-				Notification('No tienes un vehículo para devolver.')
+				Notification('No tienes un vehÃ­culo para devolver.')
 			end
 			return
 		end
 		if laundryVehicle and DoesEntityExist(laundryVehicle) then
-			Notification('Ya tienes un vehículo activo.')
+			Notification('Ya tienes un vehÃ­culo activo.')
 			return
 		end
 		local spawn
@@ -136,7 +133,7 @@ function OpenLaundryVehicleMenu()
 			end
 		end
 		if not spawn then
-			Notification('No hay espacio para sacar el vehículo.')
+			Notification('No hay espacio para sacar el vehÃ­culo.')
 			return
 		end
 		LoadPropDict(Config.LaundryVehicleModel)
@@ -149,10 +146,11 @@ function OpenLaundryVehicleMenu()
 		SetVehicleDirtLevel(laundryVehicle, 0.0)
 		TriggerEvent('cd_garage:AddKeys', GetVehicleNumberPlateText(laundryVehicle))
 		SetModelAsNoLongerNeeded(Config.LaundryVehicleModel)
-		Notification('Keitora disponible.')
-	end, function(data, menu)
-		menu.close()
-	end)
+			Notification('Keitora disponible.')
+		end}
+	end
+	lib.registerContext({id = 'fixlife_prision_laundry_vehicle_menu', title = 'VehÃ­culo de lavanderÃ­a', options = options})
+	lib.showContext('fixlife_prision_laundry_vehicle_menu')
 end
 
 function TaskComplete(skipAnimation)
@@ -364,10 +362,10 @@ Citizen.CreateThread(function()
 		if time > 0 and not isDead and breakout4 then
 			Citizen.Wait(1000)
 			if breakout > 0 then
-				breakout = breakout - 1
+				if not serverTimeSync then breakout = breakout - 1 end
 				exports['Fixlife_hud']:setHudTimer(breakout / 60, 'Escapando, tiempo hasta que los guardias se den cuenta')
 				if breakout == 0 then
-					Notification('Se acabó el tiempo del escape')
+					Notification('Se acabÃ³ el tiempo del escape')
 					TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
 				end
 
@@ -394,7 +392,7 @@ Citizen.CreateThread(function()
 					end
 				end
 			elseif soltime > 0 then
-				soltime = soltime - 1
+				if not serverTimeSync then soltime = soltime - 1 end
 				exports['Fixlife_hud']:setHudTimer(soltime / 60, 'Celda de castigo')
 
 				if not Config.SimpleTime then
@@ -435,7 +433,7 @@ Citizen.CreateThread(function()
 					end
 				end
 			else
-				time = time - 1
+				if not serverTimeSync then time = time - 1 end
 
 				if not Config.SimpleTime then
 					local duration = time
@@ -507,7 +505,7 @@ Citizen.CreateThread(function()
 				local dist = Vdist(inMenu.coords.x, inMenu.coords.y, inMenu.coords.z, coords)
 
 				if dist > Config.MaxMenuDist then
-					NativeMenu.CloseAll()
+					lib.hideContext()
 					if inMenu.coords == Config.Cells[closestPoliceInv].InvLoc.Loc then
 						using = false
 					end
@@ -523,7 +521,7 @@ Citizen.CreateThread(function()
 				local dist = Vdist(inMenu.coords.x, inMenu.coords.y, inMenu.coords.z, coords)
 
 				if dist > Config.MaxMenuDist then
-					NativeMenu.CloseAll()
+					lib.hideContext()
 					if inMenu.coords == Config.Cells[closestPoliceInv].InvLoc.Loc then
 						using = false
 					end
@@ -582,19 +580,17 @@ function OpenJobManMenu()
 		table.insert(element, {label = Config.JobOptions[i].Name, value = i})
 	end
 	
-	NativeMenu.CloseAll()
+	lib.hideContext()
 
-	NativeMenu.Open('default', GetCurrentResourceName(), 'job_menu', {
-		title    = Config.Sayings[15],
-		align    = Config.MenuLoc,
-		elements = element
-	}, function(data, menu)
-		OpenManMenu(data.current.value)
-	end, function(data, menu)
-		menu.close()
+	local options = {}
+	for _, item in ipairs(element) do
+		options[#options + 1] = {title = item.label, onSelect = function() OpenManMenu(item.value) end}
+	end
+	lib.registerContext({id = 'fixlife_prision_job_menu', title = Config.Sayings[15], options = options, onExit = function()
 		inMenu.is = false
 		inMenu.coords = nil
-	end)
+	end})
+	lib.showContext('fixlife_prision_job_menu')
 end
 
 function OpenManMenu(numVal)
@@ -613,22 +609,17 @@ function OpenManMenu(numVal)
 		table.insert(element, {label = Config.Sayings[19] , value = 'confirm'})
 	end
 	
-	NativeMenu.CloseAll()
+	lib.hideContext()
 
 	if numVal ~= 0 then
-		NativeMenu.Open('default', GetCurrentResourceName(), 'job_menu2', {
-			title    = Config.JobOptions[numVal].Name,
-			align    = Config.MenuLoc,
-			elements = element
-		}, function(data, menu)
-			if data.current.value == 'confirm' then
-				menu.close()
-				StartJob(numVal, true)
-			end
-		end, function(data, menu)
-			menu.close()
-			OpenJobManMenu()
-		end)
+		local options = {}
+		for _, item in ipairs(element) do
+			options[#options + 1] = {title = item.label, onSelect = function()
+				if item.value == 'confirm' then StartJob(numVal, true) end
+			end}
+		end
+		lib.registerContext({id = 'fixlife_prision_job_menu2', title = Config.JobOptions[numVal].Name, options = options, onExit = OpenJobManMenu})
+		lib.showContext('fixlife_prision_job_menu2')
 	else
 		StartJob(numVal, true)
 	end
@@ -653,7 +644,6 @@ function OpenFood()
 		inAnim.Atr = 1
 		inAnim.Freeze = true
 		FreezeEntityPosition(ped, true)
-		-- exports.rprogress:Start(Config.Sayings[43] , Config.GrabFoodTime *1000)
 		lib.progressBar({ --tomando bandeja
 			duration =  Config.GrabFoodTime *1000,
 			label =  Config.Sayings[43],
@@ -668,7 +658,6 @@ function OpenFood()
 				mouse = false,
 			},
 		})
-		-- Citizen.Wait(Config.GrabFoodTime *1000)
 		FreezeEntityPosition(ped, false)
 		inAnim.Dict = nil
 		inAnim.Anim = nil

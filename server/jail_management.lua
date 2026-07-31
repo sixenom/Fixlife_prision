@@ -1,9 +1,9 @@
 RegisterServerEvent('HD_Jail:UnJailPlayer')
 AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
     local eventSource = tonumber(source) or 0
-    local xPlayer = Qbox.GetPlayer(tonumber(id))
+    local xPlayer = exports.qbx_core:GetPlayer(tonumber(id))
     if eventSource == 65535 and xPlayer then
-        local ident = xPlayer.identifier
+        local ident = xPlayer.PlayerData.citizenid
         local found = 0
         local found2 = 0
     
@@ -22,14 +22,14 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
             table.remove(inJail[found].Players, found2)
     
             if flip then
-                JailStorage.Get(xPlayer.identifier, function(newData)
+                JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                     local itemzz = nil
                     local clothie = nil
                     local data = nil
                     newData.cell = 0
                     newData.chest = {}
                     newData.job = 0
-                    xPlayer.setJob(newData.jobo, newData.grade)
+                    exports.qbx_core:SetJob(xPlayer.PlayerData.citizenid, newData.jobo, newData.grade)
                     newData.jobo = 'nil'
                     newData.grade = 0
                     newData.job = 0
@@ -60,16 +60,16 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                         sendToDiscord(this, 16515843, "Un-Jailing Player")
                     end
     
-                    JailStorage.Save(xPlayer.identifier, newData, function()
+                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData, function()
                         TriggerClientEvent('HD_Jail:UnnJail', id, itemzz, clothie)
                     end)
                 end)
             else
-                JailStorage.Get(xPlayer.identifier, function(newData)
+                JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                     newData.cell = 0
                     newData.chest = {}
                     newData.job = 0
-                    xPlayer.setJob(newData.jobo, newData.grade)
+                    exports.qbx_core:SetJob(xPlayer.PlayerData.citizenid, newData.jobo, newData.grade)
                     newData.jobo = 'nil'
                     newData.grade = 0
                     newData.soli = 0
@@ -77,15 +77,15 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                     newData.breaks = 0
                     newData.clothes = {}
                     newData.items = {}
-                    JailStorage.Save(xPlayer.identifier, newData)
+                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
                 end)
             end
         end
     else
         if CheckUser(source, 'unjail') then
-            local xPlayer = Qbox.GetPlayer(id)
+            local xPlayer = exports.qbx_core:GetPlayer(id)
             if not xPlayer then return end
-            local ident = xPlayer.identifier
+            local ident = xPlayer.PlayerData.citizenid
             local found = 0
             local found2 = 0
         
@@ -104,14 +104,14 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                 table.remove(inJail[found].Players, found2)
         
                 if flip then
-                    JailStorage.Get(xPlayer.identifier, function(newData)
+                    JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                         local itemzz = nil
                         local clothie = nil
                         local data = nil
                         newData.cell = 0
                         newData.chest = {}
                         newData.job = 0
-                        xPlayer.setJob(newData.jobo, newData.grade)
+                        exports.qbx_core:SetJob(xPlayer.PlayerData.citizenid, newData.jobo, newData.grade)
                         newData.jobo = 'nil'
                         newData.grade = 0
                         newData.job = 0
@@ -142,17 +142,17 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                             sendToDiscord(this, 16515843, "Un-Jailing Player")
                         end
         
-                        JailStorage.Save(xPlayer.identifier, newData, function()
+                        JailStorage.Save(xPlayer.PlayerData.citizenid, newData, function()
                             TriggerClientEvent('HD_Jail:UnnJail', id, itemzz, clothie)
                         end)
                     end)
                 else
-                    JailStorage.Get(xPlayer.identifier, function(newData)
+                    JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                         local data = nil
                         newData.cell = 0
                         newData.chest = {}
                         newData.job = 0
-                        xPlayer.setJob(newData.jobo, newData.grade)
+                        exports.qbx_core:SetJob(xPlayer.PlayerData.citizenid, newData.jobo, newData.grade)
                         newData.jobo = 'nil'
                         newData.grade = 0
                         newData.soli = 0
@@ -160,12 +160,12 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                         newData.breaks = 0
                         newData.clothes = {}
                         newData.items = {}
-                    JailStorage.Save(xPlayer.identifier, newData)
+                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
                     end)
                 end
             end
         else
-            TriggerClientEvent('HD_Jail:SendNotif', xTarget.source, Config.Sayings[159])
+            TriggerClientEvent('HD_Jail:SendNotif', xTarget.PlayerData.source, Config.Sayings[159])
         end
     end
 end)
@@ -176,11 +176,11 @@ AddEventHandler('HD_Jail:UpdateCell', function(cnum, player)
     cnum = math.floor(tonumber(cnum) or 0)
     if not inJail[cnum] then return end
     if eventSource ~= 65535 and tonumber(player) ~= eventSource then return end
-    local xPlayer = Qbox.GetPlayer(tonumber(player) or eventSource)
+    local xPlayer = exports.qbx_core:GetPlayer(tonumber(player) or eventSource)
     if not xPlayer or not IsPrisoner(tonumber(player) or eventSource, xPlayer) then return end
-    JailStorage.Get(xPlayer.identifier, function(newData)
+    JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
         newData.cell = cnum
-        JailStorage.Save(xPlayer.identifier, newData)
+        JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
 	end)
 end)
 
@@ -189,9 +189,9 @@ AddEventHandler('HD_Jail:AddSomeTime', function(id, timzu, reason)
     timzu = math.floor(tonumber(timzu) or 0)
     if timzu <= 0 then return end
     if CheckUser(source, 'add') then
-        local xPlayer = Qbox.GetPlayer(id)
+        local xPlayer = exports.qbx_core:GetPlayer(id)
         if not xPlayer then return end
-        local ident = xPlayer.identifier
+        local ident = xPlayer.PlayerData.citizenid
         local found = 0
         local found2 = 0
     
@@ -280,11 +280,11 @@ AddEventHandler('HD_Jail:AddSomeTime', function(id, timzu, reason)
                 end
             end
     
-            JailStorage.Get(xPlayer.identifier, function(newData)
+            JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                 inJail[found].Players[found2].Timie = inJail[found].Players[found2].Timie + timzu
                 newData.jailtime = inJail[found].Players[found2].Timie
                 TriggerClientEvent('HD_Jail:AddItUp', id, timzu)
-                JailStorage.Save(xPlayer.identifier, newData)
+                JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
             end)
         end
     else
@@ -298,9 +298,9 @@ AddEventHandler('HD_Jail:RemoveSomeTime', function(id, timzu, reason)
     timzu = math.floor(tonumber(timzu) or 0)
     if timzu <= 0 then return end
     if CheckUser(source, 'remove') then
-        local xPlayer = Qbox.GetPlayer(id)
+        local xPlayer = exports.qbx_core:GetPlayer(id)
         if not xPlayer then return end
-        local ident = xPlayer.identifier
+        local ident = xPlayer.PlayerData.citizenid
         local _source = source
         local found = 0
         local found2 = 0
@@ -391,11 +391,11 @@ AddEventHandler('HD_Jail:RemoveSomeTime', function(id, timzu, reason)
                     end
                 end
     
-                JailStorage.Get(xPlayer.identifier, function(newData)
+                JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                     inJail[found].Players[found2].Timie = inJail[found].Players[found2].Timie - timzu
                     newData.jailtime = inJail[found].Players[found2].Timie
                     TriggerClientEvent('HD_Jail:Removeit', id, timzu)
-                    JailStorage.Save(xPlayer.identifier, newData)
+                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
                 end)
             else
                 TriggerClientEvent('HD_Jail:SendNotif', _source, Config.Sayings[141])

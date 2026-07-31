@@ -1,29 +1,29 @@
-Qbox.RegisterCallback('HD_Jail:CheckItemMake', function(source, cb, num)
-	local xPlayer    = Qbox.GetPlayer(source)
-    if not xPlayer or not Config.Crafts[num] then cb(1); return end
+lib.callback.register('HD_Jail:CheckItemMake', function(source, num)
+	local xPlayer    = exports.qbx_core:GetPlayer(source)
+    if not xPlayer or not Config.Crafts[num] then return 1 end
     local totnum = 0
     for i = 1, #Config.Crafts[num].Needed, 1 do
         totnum = totnum + 1
-        if xPlayer.getInventoryItem(Config.Crafts[num].Needed[i].Item).count >= Config.Crafts[num].Needed[i].Amount then
+        if (exports.ox_inventory:GetItem(xPlayer.PlayerData.source, Config.Crafts[num].Needed[i].Item, nil, true) or 0) >= Config.Crafts[num].Needed[i].Amount then
             totnum = totnum - 1
         end
     end
 
     if totnum <= 0 then
-        if xPlayer.canCarryItem(Config.Crafts[num].MakeItem, 1) then
-            cb(3)
+        if exports.ox_inventory:CanCarryItem(xPlayer.PlayerData.source, Config.Crafts[num].MakeItem, 1) then
+            return 3
         else
-            cb(2)
+            return 2
         end
     else
-        cb(1)
+        return 1
     end
 end)
 
 local breakAttempts = {}
 
-Qbox.RegisterCallback('HD_Jail:CheckItemB', function(source, cb, num)
-	local xPlayer    = Qbox.GetPlayer(source)
+lib.callback.register('HD_Jail:CheckItemB', function(source, num)
+	local xPlayer    = exports.qbx_core:GetPlayer(source)
     local index = tonumber(num)
     local tool = index and Config.RoomTools[index]
     if not tool and type(num) == 'string' then
@@ -31,56 +31,56 @@ Qbox.RegisterCallback('HD_Jail:CheckItemB', function(source, cb, num)
             if Config.RoomTools[i].Item == num then index, tool = i, Config.RoomTools[i]; break end
         end
     end
-    if not xPlayer or not tool then cb(false); return end
+    if not xPlayer or not tool then return false end
 
-    if xPlayer.getInventoryItem(tool.Item).count >= 1 then
+    if (exports.ox_inventory:GetItem(xPlayer.PlayerData.source, tool.Item, nil, true) or 0) >= 1 then
         breakAttempts[source] = {tool = index, readyAt = GetGameTimer() + tool.Time * 1000}
-        cb(true)
+        return true
     else
-        cb(false)
+        return false
     end
 end)
 
-Qbox.RegisterCallback('HD_Jail:CheckLockdown', function(source, cb)
-	local xPlayer = Qbox.GetPlayer(source)
-    if not xPlayer then cb({}); return end
+lib.callback.register('HD_Jail:CheckLockdown', function(source)
+	local xPlayer = exports.qbx_core:GetPlayer(source)
+    if not xPlayer then return {} end
 
     local elo = {}
 
-    if CheckUser(xPlayer.source, 'jail') then
+    if CheckUser(xPlayer.PlayerData.source, 'jail') then
         table.insert(elo, {label = Config.Sayings[128], value = 'jailplayer'})
     end
-    if CheckUser(xPlayer.source, 'unjail') then
+    if CheckUser(xPlayer.PlayerData.source, 'unjail') then
         table.insert(elo, {label = Config.Sayings[129], value = 'unjail'})
     end
-    if CheckUser(xPlayer.source, 'add') then
+    if CheckUser(xPlayer.PlayerData.source, 'add') then
         table.insert(elo, {label = Config.Sayings[130], value = 'add'})
     end
-    if CheckUser(xPlayer.source, 'remove') then
+    if CheckUser(xPlayer.PlayerData.source, 'remove') then
         table.insert(elo, {label = Config.Sayings[131], value = 'remove'})
     end
-    if CheckUser(xPlayer.source, 'solitary') then
+    if CheckUser(xPlayer.PlayerData.source, 'solitary') then
         table.insert(elo, {label = Config.Sayings[132], value = 'solitary'})
     end
-    if CheckUser(xPlayer.source, 'unsolitary') then
+    if CheckUser(xPlayer.PlayerData.source, 'unsolitary') then
         table.insert(elo, {label = Config.Sayings[144], value = 'unsolitary'})
     end
-    if CheckUser(xPlayer.source, 'lockdown') then
+    if CheckUser(xPlayer.PlayerData.source, 'lockdown') then
         if lockDown then
             table.insert(elo, {label = Config.Sayings[145]..' <span style="color:green;">'..Config.Sayings[146], value = 'lockdown'})
         else
             table.insert(elo, {label = Config.Sayings[145]..' <span style="color:red;">'..Config.Sayings[147], value = 'lockdown'})
         end
     end
-    if CheckUser(xPlayer.source, 'message') then
+    if CheckUser(xPlayer.PlayerData.source, 'message') then
         table.insert(elo, {label = Config.Sayings[165], value = 'mssg'})
     end
-    cb(elo)
+    return elo
 end)
 
 RegisterServerEvent('HD_Jail:SwitchLock')
 AddEventHandler('HD_Jail:SwitchLock', function()
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     local _source = source
 
     if CheckUser(_source, 'lockdown') then
@@ -123,49 +123,49 @@ function StartLockDown()
     end)
 end
 
-Qbox.RegisterCallback('HD_Jail:CheckItemB2', function(source, cb, item)
-	local xPlayer    = Qbox.GetPlayer(source)
+lib.callback.register('HD_Jail:CheckItemB2', function(source, item)
+	local xPlayer    = exports.qbx_core:GetPlayer(source)
 
-    if xPlayer.getInventoryItem(item).count >= 1 then
-        cb(true)
+    if (exports.ox_inventory:GetItem(xPlayer.PlayerData.source, item, nil, true) or 0) >= 1 then
+        return true
     else
-        cb(false)
+        return false
     end
 end)
 
 RegisterServerEvent('HD_Jail:TakeItems4')
 AddEventHandler('HD_Jail:TakeItems4', function(itnuma)
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     local tool = Config.RoomTools[itnuma]
-    if not xPlayer or not IsPrisoner(source, xPlayer) or not tool or xPlayer.getInventoryItem(tool.Item).count < 1 then return end
+    if not xPlayer or not IsPrisoner(source, xPlayer) or not tool or (exports.ox_inventory:GetItem(xPlayer.PlayerData.source, tool.Item, nil, true) or 0) < 1 then return end
 
     breakAttempts[source] = nil
-    xPlayer.removeInventoryItem(tool.Item, 1)
+    exports.ox_inventory:RemoveItem(xPlayer.PlayerData.source, tool.Item, 1)
 end)
 
 RegisterServerEvent('HD_Jail:TakeItems2')
 AddEventHandler('HD_Jail:TakeItems2', function(item)
-    local xPlayer = Qbox.GetPlayer(source)
-    if not xPlayer or not IsPrisoner(source, xPlayer) or type(item) ~= 'string' or xPlayer.getInventoryItem(item).count < 1 then return end
+    local xPlayer = exports.qbx_core:GetPlayer(source)
+    if not xPlayer or not IsPrisoner(source, xPlayer) or type(item) ~= 'string' or (exports.ox_inventory:GetItem(xPlayer.PlayerData.source, item, nil, true) or 0) < 1 then return end
 
-    xPlayer.removeInventoryItem(item, 1)
+    exports.ox_inventory:RemoveItem(xPlayer.PlayerData.source, item, 1)
 end)
 
 RegisterServerEvent('HD_Jail:SuccessFul')
 AddEventHandler('HD_Jail:SuccessFul', function(toolIndex)
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     local tool = Config.RoomTools[tonumber(toolIndex)]
     local attempt = breakAttempts[source]
     local _, cell = xPlayer and GetJailedPlayer(source, xPlayer)
     local cellData = cell and Config.Cells[cell]
     local ped = GetPlayerPed(source)
-    if not xPlayer or not tool or not attempt or attempt.tool ~= tonumber(toolIndex) or GetGameTimer() < attempt.readyAt or not cellData or ped <= 0 or not IsPrisoner(source, xPlayer) or xPlayer.job.name ~= 'prisoner' then return end
+    if not xPlayer or not tool or not attempt or attempt.tool ~= tonumber(toolIndex) or GetGameTimer() < attempt.readyAt or not cellData or ped <= 0 or not IsPrisoner(source, xPlayer) or xPlayer.PlayerData.job.name ~= 'prisoner' then return end
 
     local coords = GetEntityCoords(ped)
-    if #(coords - cellData.BreakLoc.Loc) > 4.0 or xPlayer.getInventoryItem(tool.Item).count < 1 then return end
-    local ident = xPlayer.identifier
+    if #(coords - cellData.BreakLoc.Loc) > 4.0 or (exports.ox_inventory:GetItem(xPlayer.PlayerData.source, tool.Item, nil, true) or 0) < 1 then return end
+    local ident = xPlayer.PlayerData.citizenid
 
-    JailStorage.Get(xPlayer.identifier, function(newData)
+    JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
         if (tonumber(newData.jailtime) or 0) <= 0 or (tonumber(newData.breaks) or 0) >= Config.BreakHole or not CheckCooldown(source, 'breakout', 1000) then return end
         breakAttempts[source] = nil
 
@@ -207,21 +207,21 @@ AddEventHandler('HD_Jail:SuccessFul', function(toolIndex)
 
         newData.breaks = newData.breaks + 1
         TriggerClientEvent('HD_Jail:UpBreaks', source, newData.breaks, true, tool.Time * 1000)
-        JailStorage.Save(xPlayer.identifier, newData)
+        JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
     end)
 end)
 
 RegisterServerEvent('HD_Jail:TakeItems')
 AddEventHandler('HD_Jail:TakeItems', function(itnuma)
-    local xPlayer = Qbox.GetPlayer(source)
+    local xPlayer = exports.qbx_core:GetPlayer(source)
     local craft = Config.Crafts[itnuma]
     if not xPlayer or not IsPrisoner(source, xPlayer) or not craft then return end
     for _, needed in ipairs(craft.Needed) do
-        if xPlayer.getInventoryItem(needed.Item).count < needed.Amount then return end
+        if (exports.ox_inventory:GetItem(xPlayer.PlayerData.source, needed.Item, nil, true) or 0) < needed.Amount then return end
     end
-    if not xPlayer.canCarryItem(craft.MakeItem, 1) then return end
-    local ident = xPlayer.identifier
-    local id = xPlayer.source
+    if not exports.ox_inventory:CanCarryItem(xPlayer.PlayerData.source, craft.MakeItem, 1) then return end
+    local ident = xPlayer.PlayerData.citizenid
+    local id = xPlayer.PlayerData.source
     if Log.Craft then
         local this = {
             {
@@ -249,9 +249,9 @@ AddEventHandler('HD_Jail:TakeItems', function(itnuma)
     end
 
     for i = 1, #craft.Needed, 1 do
-        xPlayer.removeInventoryItem(craft.Needed[i].Item, craft.Needed[i].Amount)
+        exports.ox_inventory:RemoveItem(xPlayer.PlayerData.source, craft.Needed[i].Item, craft.Needed[i].Amount)
     end
-    xPlayer.addInventoryItem(craft.MakeItem, 1)
+    exports.ox_inventory:AddItem(xPlayer.PlayerData.source, craft.MakeItem, 1)
 end)
 
 
