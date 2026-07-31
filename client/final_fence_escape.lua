@@ -7,24 +7,7 @@ local animationDict = 'anim@scripted@heist@ig4_bolt_cutters@male@'
 local cutting = false
 local cutFences = {}
 
-local fencePoints = {
-    { type = 'internal', coords = vector3(3981.978, 64.45724, 12.9470), heading = 349.7489 },
-    { type = 'internal', coords = vector3(3837.69458, 51.7038956, 16.7824), heading = 101.3247 },
-    { type = 'internal', coords = vector3(3838.465, 46.06752, 16.7838), heading = 101.9936 },
-    { type = 'internal', coords = vector3(3843.57959, 9.834607, 15.9389), heading = 192.3398 },
-    { type = 'internal', coords = vector3(3849.36841, 0.06938955, 16.7824), heading = 180.2271 },
-    { type = 'external', coords = vector3(3976.97778, 69.66262, 13.2886), heading = 348.8672 },
-    { type = 'external', coords = vector3(3833.13574, 83.02484, 16.7824), heading = 2.0993 },
-    { type = 'external', coords = vector3(3827.314, 82.3715744, 16.7824), heading = 2.0993 },
-    { type = 'external', coords = vector3(3813.86548, -21.998167, 6.7070), heading = 166.1262 },
-    { type = 'external', coords = vector3(3819.22046, -23.7624683, 6.7070), heading = 166.1262 },
-    { type = 'external', coords = vector3(3902.096, -5.95140362, 6.9143), heading = 268.3939 },
-    { type = 'external', coords = vector3(3995.9668, -8.410812, 18.4995), heading = 176.0347 },
-    { type = 'external', coords = vector3(4001.72217, -8.238596, 18.4995), heading = 176.0347 },
-    { type = 'external', coords = vector3(4012.23364, -10.0916424, 19.1819), heading = 175.5624 },
-    { type = 'external', coords = vector3(4017.82813, -11.0751743, 19.1820), heading = 173.3065 },
-    { type = 'external', coords = vector3(4093.337, 38.43858, 19.9044), heading = 283.1995 },
-}
+local fencePoints = Config.FenceEscapePoints
 local function loadAsset(request, loaded, asset)
     request(asset)
     while not loaded(asset) do Wait(0) end

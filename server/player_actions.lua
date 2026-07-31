@@ -104,10 +104,10 @@ AddEventHandler('HD_Jail:UpdateBreaking', function()
 end)
 
 local function IsNearFinalFence(source)
-    for _, coords in ipairs(Config.FinalFenceLocs or {}) do
-        if IsNearPoint(source, coords, 5.0) then return true end
+    for _, point in ipairs(Config.FenceEscapePoints or {}) do
+        if point.type == 'external' and IsNearPoint(source, point.coords, 5.0) then return true end
     end
-    return Config.FinalFenceLoc and IsNearPoint(source, Config.FinalFenceLoc, 5.0) or false
+    return false
 end
 RegisterServerEvent('HD_Jail:EscapeComplete')
 AddEventHandler('HD_Jail:EscapeComplete', function()

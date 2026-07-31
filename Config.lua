@@ -3348,43 +3348,49 @@ Config.WatchMarkColor = {r = 255, g = 0, b = 0} -- Color del marcador de la torr
 
 Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, ConeColor = 0, Size = 0.7} -- Configuración del indicador de la cámara CCTV
 Config.MaxWatchDist = 150 -- Distancia necesaria para escapar por completo
-Config.FinalFenceLoc = vector3(3844.801, 9.686347, 15.5034666)
-Config.FinalFenceLocs = {
-    vector3(3976.97778, 69.66262, 13.2886),
-    vector3(3833.13574, 83.02484, 16.7824),
-    vector3(3827.314, 82.3715744, 16.7824),
-    vector3(3813.86548, -21.998167, 6.7070),
-    vector3(3819.22046, -23.7624683, 6.7070),
-    vector3(3902.096, -5.95140362, 6.9143),
-    vector3(3995.9668, -8.410812, 18.4995),
-    vector3(4001.72217, -8.238596, 18.4995),
-    vector3(4012.23364, -10.0916424, 19.1819),
-    vector3(4017.82813, -11.0751743, 19.1820),
-    vector3(4093.337, 38.43858, 19.9044),
+Config.FenceEscapePoints = {
+    { type = 'internal', coords = vector3(3981.978, 64.45724, 12.9470), heading = 349.7489 },
+    { type = 'internal', coords = vector3(3837.69458, 51.7038956, 16.7824), heading = 101.3247 },
+    { type = 'internal', coords = vector3(3838.465, 46.06752, 16.7838), heading = 101.9936 },
+    { type = 'internal', coords = vector3(3843.57959, 9.834607, 15.9389), heading = 192.3398 },
+    { type = 'internal', coords = vector3(3849.36841, 0.06938955, 16.7824), heading = 180.2271 },
+    { type = 'external', coords = vector3(3976.97778, 69.66262, 13.2886), heading = 348.8672 },
+    { type = 'external', coords = vector3(3833.13574, 83.02484, 16.7824), heading = 2.0993 },
+    { type = 'external', coords = vector3(3827.314, 82.3715744, 16.7824), heading = 2.0993 },
+    { type = 'external', coords = vector3(3813.86548, -21.998167, 6.7070), heading = 166.1262 },
+    { type = 'external', coords = vector3(3819.22046, -23.7624683, 6.7070), heading = 166.1262 },
+    { type = 'external', coords = vector3(3902.096, -5.95140362, 6.9143), heading = 268.3939 },
+    { type = 'external', coords = vector3(3995.9668, -8.410812, 18.4995), heading = 176.0347 },
+    { type = 'external', coords = vector3(4001.72217, -8.238596, 18.4995), heading = 176.0347 },
+    { type = 'external', coords = vector3(4012.23364, -10.0916424, 19.1819), heading = 175.5624 },
+    { type = 'external', coords = vector3(4017.82813, -11.0751743, 19.1820), heading = 173.3065 },
+    { type = 'external', coords = vector3(4093.337, 38.43858, 19.9044), heading = 283.1995 },
 }
 Config.SeeWatchDist = 75 -- Distancia necesaria para ver el círculo 3D
 Config.WatchCameras = { -- Ubicaciones de las cámaras
     [1] = vector4(3872.864, -31.87372, 35.5, 350.0),
-    [2] = vector4(3838.44263, -17.7937088, 35.5, 90.0),
+    [2] = vector4(3838.44263, -17.7937088, 35.5, 180.0),
     [3] = vector4(3817.32446, 11.1535282, 35.5, 20.0),
     [4] = vector4(3922.08838, -6.68391228, 35.5, 108.0),
-    [5] = vector4(4054.73584, -0.564636946, 35.5, 144.0),
+    [5] = vector4(4054.73584, -0.564636946, 35.5, 45.0),
     [6] = vector4(4065.01123, 28.1750088, 35.5, 0.0),--4064.3853, 27.1188, 18.7589, 319.1920
     [7] = vector4(3968.9834, 32.069313, 35.5, 90.0),
     [8] = vector4(3944.25049, 51.9409561, 35.5, 90),
     [9] = vector4(3967.12817, 54.20391, 35.5, 288.0),
-    [10] = vector4(3941.412, 18.7877922, 35.5, 270.0),
+    [10] = vector4(3941.412, 18.7877922, 35.5, 200.0),
     [11] = vector4(4023.2395, 29.6116, 48.6724, 119.4506), 
     [12] = vector4(3815.35645, 68.37755, 21.3922729, 45.0),
-    [13] = vector4(4064.81934, -20.7471161, 26.2662811, 180.0),  
-    [14] = vector4(3983.90454, 65.72903, 16.5224037, 180.0),  
+    [13] = vector4(4064.81934, -20.7471161, 26.2662811, 220.0),  
+    [14] = vector4(3983.90454, 65.72903, 16.5224037, 320.0),  
+    [15] = vector4(3978.74829, -17.6242466, 18.6436033, 150.0)  
+    
     
     
 }
 
 -- Heading inicial independiente por cámara; omite una entrada para usar el heading automático
 Config.WatchCameraDirections = {
-    [1] = 1,
+    [1] = -1,
     [2] = -1,
     [3] = 1,
     [4] = 1,
@@ -3394,10 +3400,12 @@ Config.WatchCameraDirections = {
     [8] = 1,
     [9] = 1,
     [10] = 1,
-    [11] = -1,
+    [11] = 1,
     [12] = -1,
     [13] = -1,
-    [13] = -1
+    [13] = -1,
+    [14] = -1,
+    [14] = 1
 }
 
 Config.WatchCameraSweepSpeed = 10.0
