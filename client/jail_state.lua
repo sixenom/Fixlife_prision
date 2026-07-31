@@ -1140,9 +1140,8 @@ Citizen.CreateThread(function()
 					Citizen.Wait(100)
 				elseif nearestDistance >= Config.MaxWatchDist then
 					watchSeenSince = nil
-					IEscaped()
+					TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
 					breakout2 = false
-					breakout4 = true
 				elseif breakout == 0 then
 					watchSeenSince = nil
 					Citizen.Wait(100)

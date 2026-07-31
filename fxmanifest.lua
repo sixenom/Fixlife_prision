@@ -1,4 +1,4 @@
-fx_version 'cerulean' 
+fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 client_scripts {
@@ -18,9 +18,10 @@ client_scripts {
     'client/transitions.lua',
     'client/jobs.lua',
     'client/client.lua',
-    'client/targetmenus.lua'
-    , 'client/toilet_escape.lua'
-    , 'client/toilet_utils.lua'
+    'client/targetmenus.lua',
+    'client/toilet_escape.lua',
+    'client/toilet_utils.lua',
+    'client/final_fence_escape.lua'
 }
 
 server_scripts {
@@ -39,7 +40,7 @@ server_scripts {
     'server/solitary.lua',
     'server/lockdown.lua',
     'server/server.lua',
-    'server/items.lua',
+    'server/items.lua'
 }
 
 dependencies {
@@ -48,7 +49,7 @@ dependencies {
     'ox_inventory',
     'oxmysql',
     'ox_target',
-    'illenium-appearance',
+    'illenium-appearance'
 }
 
 shared_scripts {'@ox_lib/init.lua'}
@@ -60,7 +61,7 @@ files {
     'stream/*.ycd',
     'client/minigame/camera_manager.lua',
     'client/minigame/animation_controller.lua',
-    'client/minigame/screw_game.lua',
+    'client/minigame/screw_game.lua'
 }
 
 ui_page 'web/index.html'

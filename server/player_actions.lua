@@ -103,6 +103,30 @@ AddEventHandler('HD_Jail:UpdateBreaking', function()
     end
 end)
 
+local function IsNearFinalFence(source)
+    for _, coords in ipairs(Config.FinalFenceLocs or {}) do
+        if IsNearPoint(source, coords, 5.0) then return true end
+    end
+    return Config.FinalFenceLoc and IsNearPoint(source, Config.FinalFenceLoc, 5.0) or false
+end
+RegisterServerEvent('HD_Jail:EscapeComplete')
+AddEventHandler('HD_Jail:EscapeComplete', function()
+    local src = source
+    local xPlayer = Qbox.GetPlayer(src)
+    if not xPlayer or not IsPrisoner(src, xPlayer) or not IsNearFinalFence(src) or not CheckCooldown(src, 'escape', 5000) then return end
+
+    for i = 1, #inJail do
+        local cell = inJail[i]
+        for j = 1, #(cell.Players or {}) do
+            local prisoner = cell.Players[j]
+            if prisoner and prisoner.Player == xPlayer.identifier and prisoner.Breako > 0 then
+                TriggerEvent('HD_Jail:UnJailPlayer', src, false)
+                return
+            end
+        end
+    end
+end)
+
 RegisterServerEvent('HD_Jail:TaskComplete1')
 AddEventHandler('HD_Jail:TaskComplete1', function(taskJob)
     local xPlayer = Qbox.GetPlayer(source)

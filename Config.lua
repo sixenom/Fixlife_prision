@@ -3348,6 +3348,20 @@ Config.WatchMarkColor = {r = 255, g = 0, b = 0} -- Color del marcador de la torr
 
 Config.WatchBlip = {Spawn = true, Sprite = 629, Color = 1, ConeColor = 0, Size = 0.7} -- Configuración del indicador de la cámara CCTV
 Config.MaxWatchDist = 150 -- Distancia necesaria para escapar por completo
+Config.FinalFenceLoc = vector3(3844.801, 9.686347, 15.5034666)
+Config.FinalFenceLocs = {
+    vector3(3976.97778, 69.66262, 13.2886),
+    vector3(3833.13574, 83.02484, 16.7824),
+    vector3(3827.314, 82.3715744, 16.7824),
+    vector3(3813.86548, -21.998167, 6.7070),
+    vector3(3819.22046, -23.7624683, 6.7070),
+    vector3(3902.096, -5.95140362, 6.9143),
+    vector3(3995.9668, -8.410812, 18.4995),
+    vector3(4001.72217, -8.238596, 18.4995),
+    vector3(4012.23364, -10.0916424, 19.1819),
+    vector3(4017.82813, -11.0751743, 19.1820),
+    vector3(4093.337, 38.43858, 19.9044),
+}
 Config.SeeWatchDist = 75 -- Distancia necesaria para ver el círculo 3D
 Config.WatchCameras = { -- Ubicaciones de las cámaras
     [1] = vector4(3872.864, -31.87372, 35.5, 350.0),
@@ -3361,6 +3375,11 @@ Config.WatchCameras = { -- Ubicaciones de las cámaras
     [9] = vector4(3967.12817, 54.20391, 35.5, 288.0),
     [10] = vector4(3941.412, 18.7877922, 35.5, 270.0),
     [11] = vector4(4023.2395, 29.6116, 48.6724, 119.4506), 
+    [12] = vector4(3815.35645, 68.37755, 21.3922729, 45.0),
+    [13] = vector4(4064.81934, -20.7471161, 26.2662811, 180.0),  
+    [14] = vector4(3983.90454, 65.72903, 16.5224037, 180.0),  
+    
+    
 }
 
 -- Heading inicial independiente por cámara; omite una entrada para usar el heading automático
@@ -3376,6 +3395,9 @@ Config.WatchCameraDirections = {
     [9] = 1,
     [10] = 1,
     [11] = -1,
+    [12] = -1,
+    [13] = -1,
+    [13] = -1
 }
 
 Config.WatchCameraSweepSpeed = 10.0

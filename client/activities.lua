@@ -312,62 +312,8 @@ function OpenBreakingMenu()
 end
 
 function IEscaped()
-	TriggerServerEvent('HD_Jail:UnJailPlayer', GetPlayerServerId(PlayerId()), false)
 	TriggerServerEvent('HD_Jail:PoliceNotify')
-	time = 0
-	exports['Fixlife_hud']:clearHudTimer()
-	soltime = 0
-	job = 0
-	doneTasks = 0
-	taskMax = 0
-	injail = false
-	jailCell = 0
-	solcell = 0
-	canGrab = false	
-	createdCamera = 0
-	local removes = {}
-	for i = 1, #blips, 1 do
-		table.insert(removes, i)
-	end
-	for i = 1, #removes, 1 do
-		if DoesBlipExist(blips[removes[i]].data) then
-			RemoveBlip(blips[removes[i]].data)
-		end
-		table.remove(blips[removes[i]])
-	end
-	removes = {}
-	for i = 1, #peds, 1 do
-		table.insert(removes, i)
-	end
-	for i = 1, #removes, 1 do
-		if DoesEntityExist(peds[removes[i]].data) then
-			SetPedAsNoLongerNeeded(peds[removes[i]].data)
-			DeletePed(peds[removes[i]].data)
-		end
-		table.remove(peds[removes[i]])
-	end
-	removes = {}
-	for i = 1, #PlayerHasProp, 1 do
-		table.insert(removes, i)
-	end
-	for i = 1, #removes, 1 do
-		if DoesEntityExist(PlayerHasProp[removes[i]].object) then
-			DeleteObject(PlayerHasProp[removes[i]].object)
-		end
-		table.remove(PlayerHasProp[removes[i]])
-	end
-	removes = {}
-	closestLoc = 1
-	breakout = 0
-	breakout2 = false
-	breakout3 = false
-	breakout4 = true
-	closestTower = 1
-	closestBreak = 1
-    Wait(500)
-	jailLocs = {}
-	inMenu = {is = false, coords = nil}
-	needsEat = false
+	TriggerServerEvent('HD_Jail:EscapeComplete')
 end
 
 function OpenWallMenu()
