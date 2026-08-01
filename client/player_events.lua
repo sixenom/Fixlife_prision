@@ -281,7 +281,8 @@ function DoLockCheck()
 							local ped = PlayerPedId()
 							local coords = GetEntityCoords(ped)
 							local dist = Vdist(Config.Cells[jailCell].SpawnLoc.Loc.x, Config.Cells[jailCell].SpawnLoc.Loc.y, Config.Cells[jailCell].SpawnLoc.Loc.z, coords)
-							if dist > Config.LockDownDist then
+							if dist > Config.LockDownDist and not escapePending then
+								if Config.DebugJail then print(('[Fixlife_prision][DEBUG][CLIENT] lockdown fuera de celda dist=%.1f; enviando SendToSol'):format(dist)) end
 								if Config.Solitary and Config.Sol4Lock then
 									using = true
 									TriggerServerEvent('HD_Jail:SendToSol', GetPlayerServerId(PlayerId()), Config.SolLockTime, Config.Sayings[150])

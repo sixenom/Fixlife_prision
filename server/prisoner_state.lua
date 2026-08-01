@@ -23,6 +23,10 @@ RegisterServerEvent('HD_Jail:UnBreak')
 AddEventHandler('HD_Jail:UnBreak', function(id)
     local eventSource = tonumber(source) or 0
     if eventSource > 0 and eventSource ~= 65535 and tonumber(id) ~= eventSource then return end
+    if escapeStarted and escapeStarted[tonumber(id)] then
+        if Config.DebugJail then print(('[Fixlife_prision][DEBUG][SERVER] UnBreak ignorado: fuga externa pendiente id=%s'):format(id)) end
+        return
+    end
     local xPlayer = exports.qbx_core:GetPlayer(id)
     if not xPlayer then return end
     local ident = xPlayer.PlayerData.citizenid
@@ -42,6 +46,7 @@ AddEventHandler('HD_Jail:UnBreak', function(id)
 
     if found1 ~= 0 then
         inJail[found1].Players[found2].Breako = 0
+        escapeStarted[id] = nil
         if Config.FailBreakToSol and Config.Solitary then
             SendToSolitary(id, Config.SolBreakTime, Config.Sayings[108], true)
         else

@@ -29,7 +29,6 @@ function OpenInfoMenu()
 	lib.hideContext()
 	lib.registerContext({id = 'fixlife_prision_info_menu', title = Config.Sayings[45], options = {
 		{title = Config.Sayings[47], onSelect = OpenMakeMenu},
-		{title = Config.Sayings[46], onSelect = OpenBreakMenu},
 	}, onExit = function()
 		inMenu.is = false
 		inMenu.coords = nil

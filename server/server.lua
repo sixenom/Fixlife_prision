@@ -172,8 +172,18 @@ AddEventHandler('onResourceStop', function(resource)
             for k = 1, #inJail[i].Players, 1 do
                 if inJail[i].Players[k].Player ~= nil then
                     local player = inJail[i].Players[k]
+                    local solcell = 0
+                    for cell = 1, #solJail do
+                        for index = 1, #solJail[cell].Players do
+                            if solJail[cell].Players[index].Player == player.Player then solcell = cell break end
+                        end
+                        if solcell ~= 0 then break end
+                    end
                     JailStorage.Get(player.Player, function(newData)
+                        newData.cell = i
                         newData.jailtime = player.Timie
+                        newData.soli = player.Sol
+                        newData.solcell = solcell ~= 0 and solcell or newData.solcell or 0
                         JailStorage.Save(player.Player, newData)
                     end)
                 end

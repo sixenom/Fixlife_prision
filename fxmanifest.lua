@@ -8,7 +8,6 @@ client_scripts {
     'client/appearance.lua',
     'client/interactions.lua',
     'client/utils.lua',
-    'client/breakout_menu.lua',
     'client/inventory_menu.lua',
     'client/police_menu.lua',
     'client/player_events.lua',
@@ -20,7 +19,7 @@ client_scripts {
     'client/targetmenus.lua',
     'client/toilet_escape.lua',
     'client/toilet_utils.lua',
-    'client/final_fence_escape.lua'
+    'client/final_fence_escape.lua',
 }
 
 server_scripts {

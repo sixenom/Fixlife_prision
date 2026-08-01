@@ -359,12 +359,12 @@ end
 
 Citizen.CreateThread(function()
 	while true do
-		if time > 0 and not isDead and breakout4 then
+		if injail and time > 0 and not isDead and breakout4 then
 			Citizen.Wait(1000)
 			if breakout > 0 then
 				if not serverTimeSync then breakout = breakout - 1 end
 				exports['Fixlife_hud']:setHudTimer(breakout / 60, 'Escapando, tiempo hasta que los guardias se den cuenta')
-				if breakout == 0 then
+				if breakout == 0 and not escapePending then
 					Notification('Se acabÃ³ el tiempo del escape')
 					TriggerServerEvent('HD_Jail:UnBreak', GetPlayerServerId(PlayerId()))
 				end
@@ -418,7 +418,7 @@ Citizen.CreateThread(function()
 					end
 				end
 
-				if Config.TpBack then
+				if Config.TpBack and Config.SolCells[solcell] then
 					local ped = PlayerPedId()
 					local coords = GetEntityCoords(ped)
 					local dist = Vdist(Config.SolCells[solcell].Loc.x, Config.SolCells[solcell].Loc.y, Config.SolCells[solcell].Loc.z, coords)
@@ -463,7 +463,8 @@ Citizen.CreateThread(function()
 					local ped = PlayerPedId()
 					local coords = GetEntityCoords(ped)
 					local dist = Vdist(Config.JailLoc.x, Config.JailLoc.y, Config.JailLoc.z, coords)
-					if dist > Config.MaxTpDist then
+					if dist > Config.MaxTpDist and not escapePending then
+						if Config.DebugJail then print(('[Fixlife_prision][DEBUG][CLIENT] fuera de prision sin fuga valida dist=%.1f; enviando SendToSol'):format(dist)) end
 						if Config.Sol4Run and Config.Solitary then
 							TriggerServerEvent('HD_Jail:SendToSol', GetPlayerServerId(PlayerId()), Config.SolRunTime, Config.Sayings[109])
 							Citizen.Wait(1000)

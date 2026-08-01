@@ -305,8 +305,25 @@ function OpenBreakingMenu()
 end
 
 function IEscaped()
+	escapePending = true
+	if Config.DebugJail then print(('[Fixlife_prision][DEBUG][CLIENT] IEscaped injail=%s escapePending=%s breakout=%s soltime=%s time=%s'):format(tostring(injail), tostring(escapePending), tostring(breakout), tostring(soltime), tostring(time))) end
 	TriggerServerEvent('HD_Jail:PoliceNotify')
-	TriggerServerEvent('HD_Jail:EscapeComplete')
+	CreateThread(function()
+		local lastBucket
+		while escapePending and injail do
+			Wait(1000)
+			local distance = #(GetEntityCoords(PlayerPedId()) - Config.JailLoc)
+			local bucket = math.floor(distance / 50)
+			if Config.DebugJail and bucket ~= lastBucket then
+				lastBucket = bucket
+				print(('[Fixlife_prision][DEBUG][CLIENT] fuga pendiente distancia=%.1f limite=%.1f'):format(distance, Config.MaxTpDist))
+			end
+			if distance > Config.MaxTpDist then
+				if Config.DebugJail then print('[Fixlife_prision][DEBUG][CLIENT] enviando EscapeComplete') end
+				TriggerServerEvent('HD_Jail:EscapeComplete')
+			end
+		end
+	end)
 end
 
 function OpenWallMenu()

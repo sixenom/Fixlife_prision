@@ -2,7 +2,7 @@ lib.locale()
 
 return {
     interaction = 'auto', -- 'auto' | 'ox_target' | 'qb-target' | 'textUI' (ox_lib textUI)
-    requiredItem = '', -- Item required to start the minigame, set to empty to disable item requirement (works only for ox_target or qb-target)
+    requiredItem = 'destornillador', -- Item required to start the toilet minigame
 
     uiLocation = 'middle-left', -- 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'middle-left' | 'middle-right' | 'center'
 

@@ -183,12 +183,16 @@ Citizen.CreateThread(function()
 end)
 
 RegisterNetEvent('HD_Jail:UnnJail')
-AddEventHandler('HD_Jail:UnnJail', function(itemie, clothesi)
+AddEventHandler('HD_Jail:UnnJail', function(itemie, clothesi, keepPosition)
 	Citizen.CreateThread(function()
+		itemie = itemie or {}
+		clothesi = clothesi or {}
 		if not using then
 			local ped = PlayerPedId()
-			DoScreenFadeOut(1000)
-			Citizen.Wait(1500)
+			if not keepPosition then
+				DoScreenFadeOut(1000)
+				Citizen.Wait(1500)
+			end
 			local removes = {}
 			for i = 1, #blips, 1 do
 				table.insert(removes, i)
@@ -241,12 +245,13 @@ AddEventHandler('HD_Jail:UnnJail', function(itemie, clothesi)
 			breakout2 = false
 			breakout3 = false
 			breakout4 = true
+			escapePending = false
 			closestTower = 1
 			closestBreak = 1
 			inMenu = {is = false, coords = nil}
 			needsEat = false
 			itemzie = itemie
-			if itemzie[1] ~= nil then
+			if next(itemzie) then
 				canGrab = true
 				local blip2 = AddBlipForCoord(Config.ItemLoc.Loc.x, Config.ItemLoc.Loc.y, Config.ItemLoc.Loc.z)
 				SetBlipSprite(blip2, Config.ItemBlip.Sprite)
@@ -258,14 +263,21 @@ AddEventHandler('HD_Jail:UnnJail', function(itemie, clothesi)
 				table.insert(blips, {id = 'items', data = blip2})
 			end
 			clothesi = {}
-			SetEntityCoords(ped, Config.LeaveLoc.Loc.x, Config.LeaveLoc.Loc.y, Config.LeaveLoc.Loc.z - 1, false, false, false, false)
-			SetEntityHeading(ped, Config.LeaveLoc.Heading)
+			if not keepPosition then
+				SetEntityCoords(ped, Config.LeaveLoc.Loc.x, Config.LeaveLoc.Loc.y, Config.LeaveLoc.Loc.z - 1, false, false, false, false)
+				SetEntityHeading(ped, Config.LeaveLoc.Heading)
+			end
 			FreezeEntityPosition(ped, false)
 			Citizen.Wait(500)
 			jailLocs = {}
 			RemovePrisonTargets()
 			RemovePrisonInteractionPoints()
-			DoScreenFadeIn(500)
+			if canGrab then CreateItemRecoveryPoint() end
+			if keepPosition then
+				Notification('Has escapado con éxito')
+			else
+				DoScreenFadeIn(500)
+			end
 		else
 			ResetLeave(itemie, clothesi)
 		end

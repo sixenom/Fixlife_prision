@@ -14,14 +14,22 @@ AddEventHandler('HD_Jail:CheckSol', function(id)
         TriggerClientEvent('HD_Jail:NotSol', id)
         return
     end
-    local cell = GetRandomCell(solJail, 1)
-    table.insert(solJail[cell].Players, {Player = ident})
-    TriggerClientEvent('HD_Jail:SendSol', id, inJail[found1].Players[found2].Sol, cell)
+    JailStorage.Get(ident, function(data)
+        local cell = tonumber(data.solcell)
+        if not solJail[cell] then
+            cell = GetRandomCell(solJail, 1)
+            data.solcell = cell
+            JailStorage.Save(ident, data)
+        end
+        table.insert(solJail[cell].Players, {Player = ident})
+        TriggerClientEvent('HD_Jail:SendSol', id, inJail[found1].Players[found2].Sol, cell)
+    end)
 end)
 
 function SendToSolitary(id, tima, reasons, internal)
     local caller = tonumber(source) or 0
     local target = tonumber(id) or 0
+    if Config.DebugJail then print(('[Fixlife_prision][DEBUG][SERVER] SendToSolitary caller=%s target=%s time=%s internal=%s reason=%s'):format(caller, target, tostring(tima), tostring(internal), tostring(reasons))) end
     if not internal and caller ~= 65535 and caller ~= target and not CheckUser(caller, 'solitary') then return end
     tima = math.floor(tonumber(tima) or 0)
     if tima <= 0 then return end
@@ -55,6 +63,7 @@ function SendToSolitary(id, tima, reasons, internal)
                 newData.soli = timaz
     
                 local lowest = {val = GetRandomCell(solJail, 1)}
+                newData.solcell = lowest.val
                 table.insert(solJail[lowest.val].Players, {Player = ident})
                 inJail[found].Players[found2].Sol = timaz
     
@@ -158,6 +167,7 @@ function SendToSolitary(id, tima, reasons, internal)
                     newData.soli = timaz
         
                     local lowest = {val = GetRandomCell(solJail, 1)}
+                    newData.solcell = lowest.val
                     table.insert(solJail[lowest.val].Players, {Player = ident})
                     inJail[found].Players[found2].Sol = timaz
         
@@ -312,6 +322,7 @@ AddEventHandler('HD_Jail:UnSol', function(id)
     
             JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                 newData.soli = 0
+                newData.solcell = 0
                 TriggerClientEvent('HD_Jail:UnnSol', id)
                 JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
             end)
@@ -375,6 +386,7 @@ AddEventHandler('HD_Jail:UnSol', function(id)
         
                 JailStorage.Get(xPlayer.PlayerData.citizenid, function(newData)
                     newData.soli = 0
+                    newData.solcell = 0
                     TriggerClientEvent('HD_Jail:UnnSol', id)
                     JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
                 end)

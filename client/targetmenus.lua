@@ -1,3 +1,4 @@
+local config = require 'config.config_c'
 local targetZones = {}
 
 function CreatePrisonTargets(cell)
@@ -14,6 +15,7 @@ function CreatePrisonTargets(cell)
             distance = 3.0,
             canInteract = function()
                 return injail and jailCell == cell and not using and not isDead and not breakout2
+                    and (exports.ox_inventory:Search('count', config.requiredItem) or 0) > 0
             end,
             onSelect = function()
                 StartToiletEscape()

@@ -1,8 +1,8 @@
 RegisterServerEvent('HD_Jail:UnJailPlayer')
 AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
-    local eventSource = tonumber(source) or 0
+    local xTarget = exports.qbx_core:GetPlayer(source)
     local xPlayer = exports.qbx_core:GetPlayer(tonumber(id))
-    if eventSource == 65535 and xPlayer then
+    if not xTarget and xPlayer then
         local ident = xPlayer.PlayerData.citizenid
         local found = 0
         local found2 = 0
@@ -35,10 +35,11 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                     newData.job = 0
                     newData.jailtime = 0
                     newData.soli = 0
+                    newData.solcell = 0
                     newData.breaks = 0
-                    clothie = newData.clothes
+                    clothie = newData.clothes or {}
                     newData.clothes = {}
-                    itemzz = newData.items
+                    itemzz = newData.items or {}
                     if Log.UnJail then
                         local this = {
                             {
@@ -73,11 +74,14 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                     newData.jobo = 'nil'
                     newData.grade = 0
                     newData.soli = 0
+                    newData.solcell = 0
                     newData.jailtime = 0
                     newData.breaks = 0
                     newData.clothes = {}
                     newData.items = {}
-                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData)
+                    JailStorage.Save(xPlayer.PlayerData.citizenid, newData, function()
+                        TriggerClientEvent('HD_Jail:UnnJail', id, {}, {}, true)
+                    end)
                 end)
             end
         end
@@ -117,10 +121,11 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                         newData.job = 0
                         newData.jailtime = 0
                         newData.soli = 0
+                        newData.solcell = 0
                         newData.breaks = 0
-                        clothie = newData.clothes
+                        clothie = newData.clothes or {}
                         newData.clothes = {}
-                        itemzz = newData.items
+                        itemzz = newData.items or {}
                         if Log.UnJail then
                             local this = {
                                 {
@@ -156,6 +161,7 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                         newData.jobo = 'nil'
                         newData.grade = 0
                         newData.soli = 0
+                        newData.solcell = 0
                         newData.jailtime = 0
                         newData.breaks = 0
                         newData.clothes = {}
@@ -165,7 +171,7 @@ AddEventHandler('HD_Jail:UnJailPlayer', function(id, flip)
                 end
             end
         else
-            TriggerClientEvent('HD_Jail:SendNotif', xTarget.PlayerData.source, Config.Sayings[159])
+            TriggerClientEvent('HD_Jail:SendNotif', source, Config.Sayings[159])
         end
     end
 end)

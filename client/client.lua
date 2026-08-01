@@ -40,6 +40,7 @@ diffBreak = {Hours = 0, Mins = 0, Seconds = 0}
 breakout2 = false
 breakout3 = false
 breakout4 = true
+escapePending = false
 closestTower = 1
 closestBreak = 1
 

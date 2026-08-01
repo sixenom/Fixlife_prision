@@ -472,6 +472,7 @@ local watchCamerasDebug = false
 local watchCameraDebugBlips = {}
 local watchCameraEntities = {}
 local watchCameraConeColors = {}
+local watchCameraAppliedConeColors = {}
 local GetWatchCameraHeading
 local GetWatchCameraBlipHeading
 
@@ -479,7 +480,34 @@ local function SetupWatchCameraCone(blip, heading, color)
 	color = color or Config.WatchBlip.ConeColor
 	local radians = (heading + 180.0) * math.pi / 180.0
 	Citizen.InvokeNative(0xF83D0FEBE75E62C9, blip, -1.0, 1.0, Config.WatchCameraConeWidth, 1.0, Config.WatchCameraConeLength, radians, 0, color)
-	SetBlipShowCone(blip, true, color)
+	if watchCameraAppliedConeColors[blip] ~= color then
+		SetBlipShowCone(blip, false)
+		SetBlipShowCone(blip, true, color)
+		watchCameraAppliedConeColors[blip] = color
+	end
+end
+
+local function RecreateWatchCameraBlip(entry, color, heading)
+	local oldBlip = entry.blip
+	local blip = AddBlipForEntity(entry.entity)
+	SetBlipSprite(blip, Config.WatchBlip.Sprite)
+	SetBlipScale(blip, Config.WatchBlip.Size)
+	SetBlipColour(blip, Config.WatchBlip.Color)
+	SetBlipDisplay(blip, 4)
+	SetupWatchCameraCone(blip, (GetWatchCameraBlipHeading(heading) + 180.0) % 360.0, color)
+	SetBlipAsShortRange(blip, false)
+	BeginTextCommandSetBlipName('STRING')
+	AddTextComponentString(('Camara %d'):format(entry.camera))
+	EndTextCommandSetBlipName(blip)
+
+	entry.blip = blip
+	for _, tracked in ipairs(blips) do
+		if tracked.id == 'tower' and tracked.camera == entry.camera then
+			tracked.data = blip
+		end
+	end
+	watchCameraAppliedConeColors[blip] = color
+	RemoveBlip(oldBlip)
 end
 
 function CreateWatchCameraBlip(camera, index)
@@ -596,7 +624,12 @@ CreateThread(function()
 				local heading = GetWatchCameraHeading(entry.camera)
 				local radarHeading = GetWatchCameraBlipHeading(heading)
 				SetEntityHeading(entry.entity, radarHeading)
-				SetupWatchCameraCone(entry.blip, (radarHeading + 180.0) % 360.0, watchCameraConeColors[entry.camera])
+				local color = watchCameraConeColors[entry.camera] or Config.WatchBlip.ConeColor
+				if watchCameraAppliedConeColors[entry.blip] ~= color then
+					RecreateWatchCameraBlip(entry, color, heading)
+				else
+					SetupWatchCameraCone(entry.blip, (radarHeading + 180.0) % 360.0, color)
+				end
 				SetBlipRotation(entry.blip, math.floor(radarHeading))
 			end
 		end

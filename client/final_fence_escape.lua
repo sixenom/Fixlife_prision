@@ -7,9 +7,14 @@ local animationDict = 'anim@scripted@heist@ig4_bolt_cutters@male@'
 local cutting = false
 local cutFences = {}
 
+local function JailDebug(message)
+    if Config.DebugJail then print(('[Fixlife_prision][DEBUG][CLIENT] %s'):format(message)) end
+end
+
 RegisterNetEvent('HD_Jail:ResetEscape', function()
     cutFences = {}
     cutting = false
+    escapePending = false
 end)
 
 local fencePoints = Config.FenceEscapePoints
@@ -35,6 +40,10 @@ local function cutFence(index)
     if not point or cutFences[index] or not isPointAvailable(point) then return end
 
     cutting, using = true, true
+    JailDebug(('cutFence index=%s type=%s injail=%s breakout2=%s breakout3=%s breakout=%s'):format(index, point.type, tostring(injail), tostring(breakout2), tostring(breakout3), tostring(breakout)))
+    if point.type == 'external' then
+        TriggerServerEvent('HD_Jail:EscapeStarted')
+    end
     local ped = PlayerPedId()
     local coords = point.coords
     SetEntityCoords(ped, coords.x, coords.y, coords.z - 1.0, false, false, false, false)
@@ -67,6 +76,7 @@ local function cutFence(index)
     using, cutting = false, false
 
     if point.type == 'external' then
+        JailDebug('reja externa terminada; llamando IEscaped()')
         IEscaped()
     else
         Notification('Has cortado una reja interna. Continúa hacia la salida.')
@@ -86,7 +96,7 @@ for index, point in ipairs(fencePoints) do
                 return injail and (breakout2 or breakout3) and not using and not cutFences[index] and isPointAvailable(point)
             end,
             onSelect = function()
-                if lib.callback.await('HD_Jail:CheckItemB2', false, 'hd_file') then
+                if lib.callback.await('HD_Jail:ConsumeEscapeTool', false, 'cizalla') then
                     cutFence(index)
                 else
                     Notification(Config.Sayings[95])

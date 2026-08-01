@@ -5,6 +5,7 @@ Config = {}
 -- ============================================================================
 -- No modificar
 Config.CurrentV = "1.0 HD" -- No modificar
+Config.DebugJail = true -- Temporal: muestra el flujo de fugas en consola/F8.
 
 -- Configuraciones Importantes
 Config.UsingHDBlips = true -- Esto es si estás usando mi script de manejo gratuito de indicadores (blips). Si es así, solo funcionará para el indicador de prisión.
@@ -297,130 +298,32 @@ Config.Crafts = { -- Todas las cosas que se pueden crear con el Viejo
     [1] = {
         Name = "Cuchillo improvisado",
         Time = 20,
-        MakeItem = 'hd_shank',
+        MakeItem = 'cuchillo_improvisado',
         Descripe = "¡Puedes usar esto para defensa personal!",
         Needed = {
-            [1] = {Name = "Cuchara rota", Amount = 1, Item = 'hd_jspoon'},
-            [2] = {Name = "Monedas", Amount = 2, Item = 'hd_schange'}
+            [1] = {Name = "Metal", Amount = 1, Item = 'metal'},
+            [2] = {Name = "Trapo", Amount = 1, Item = 'trapo'}
         }
     },
     [2] = {
-        Name = "Cuchara rota",
-        Time = 8,
-        MakeItem = 'hd_jspoon',
-        Descripe = "¡Puedes usar esto para escapar o para más creaciones!",
-        Needed = {[1] = {Name = "Cuchara", Amount = 1, Item = 'hd_spoon'}}
+        Name = "Destornillador",
+        Time = 20,
+        MakeItem = 'destornillador',
+        Descripe = "Herramienta necesaria para quitar los tornillos del inodoro.",
+        Needed = {
+            [1] = {Name = "Metal", Amount = 1, Item = 'metal'},
+            [2] = {Name = "Trapo", Amount = 1, Item = 'trapo'}
+        }
     },
     [3] = {
-        Name = "Cuchara rota con trapo húmedo",
-        Time = 5,
-        MakeItem = 'hd_bcloth',
-        Descripe = "¡Puedes usar esto para escapar!",
-        Needed = {
-            [1] = {Name = "Cuchara rota", Amount = 1, Item = 'hd_jspoon'},
-            [2] = {Name = "Tela húmeda", Amount = 1, Item = 'hd_wcloth'}
-        }
-    },
-    [4] = {
-        Name = "Tela húmeda",
-        Time = 10,
-        MakeItem = 'hd_wcloth',
-        Descripe = "¡Puedes usar esto para más creaciones!",
-        Needed = {
-            [1] = {Name = "Limpiador", Amount = 1, Item = 'hd_cleaner'},
-            [2] = {Name = "Tela", Amount = 1, Item = 'hd_cloth'}
-        }
-    },
-    [5] = {
-        Name = "Lima",
-        Time = 20,
-        MakeItem = 'hd_file',
-        Descripe = "¡Puedes usar esto para escapar o para más creaciones!",
-        Needed = {
-            [1] = {Name = "Roca", Amount = 2, Item = 'hd_rock'},
-            [2] = {Name = "Cucharón roto", Amount = 1, Item = 'hd_bladle'}
-        }
-    },
-    [6] = {
-        Name = "Cucharón roto",
-        Time = 5,
-        MakeItem = 'hd_bladle',
-        Descripe = "¡Puedes usar esto para más creaciones!",
-        Needed = {[1] = {Name = "Cucharón", Amount = 1, Item = 'hd_ladle'}}
-    },
-    [7] = {
-        Name = "Metal afilado",
-        Time = 20,
-        MakeItem = 'hd_smetal',
-        Descripe = "¡Puedes usar esto para escapar!",
-        Needed = {
-            [1] = {Name = "Metal", Amount = 1, Item = 'hd_metal'},
-            [2] = {Name = "Roca", Amount = 2, Item = 'hd_rock'},
-            [3] = {Name = "Lima", Amount = 1, Item = 'hd_file'}
-        }
-    },
-    [8] = {
-        Name = "Ácido",
+        Name = "Cizalla",
         Time = 30,
-        MakeItem = 'hd_acid',
-        Descripe = "¡Puedes usar esto para escapar!",
+        MakeItem = 'cizalla',
+        Descripe = "Herramienta necesaria para cortar las rejas de escape.",
         Needed = {
-            [1] = {Name = "Botella", Amount = 1, Item = 'hd_bottle'},
-            [2] = {Name = "Grasa", Amount = 3, Item = 'hd_grease'},
-            [3] = {Name = "Líquido sucio", Amount = 1, Item = 'hd_dliquid'},
-            [4] = {Name = "Limpiador", Amount = 1, Item = 'hd_cleaner'},
-            [5] = {Name = "Cuchara", Amount = 1, Item = 'hd_spoon'}
-        }
-    },
-    [9] = {
-        Name = "Mini martillo",
-        Time = 25,
-        MakeItem = 'hd_minih',
-        Descripe = "¡Puedes usar esto para escapar!",
-        Needed = {
-            [1] = {Name = "Metal", Amount = 1, Item = 'hd_metal'},
-            [2] = {Name = "Roca", Amount = 1, Item = 'hd_rock'},
-            [3] = {Name = "Cucharón", Amount = 1, Item = 'hd_ladle'},
-            [4] = {Name = "Tela", Amount = 1, Item = 'hd_cloth'}
-        }
-    },
-    [10] = {
-        Name = "Puñetazo de prisión",
-        Time = 10,
-        MakeItem = 'hd_ppunch',
-        Descripe = "¡Puedes usar esto para saciar tu sed!",
-        Needed = {
-            [1] = {Name = "Líquido sucio", Amount = 1, Item = 'hd_dliquid'},
-            [2] = {Name = "Sobre de sabor", Amount = 3, Item = 'hd_fpacket'},
-            [3] = {Name = "Botella", Amount = 1, Item = 'hd_bottle'}
-        }
-    },
-    [11] = {
-        Name = "Calentador de inmersión",
-        Time = 25,
-        MakeItem = 'hd_iheat',
-        Descripe = "¡Puedes usar esto para destilar alcohol!",
-        Needed = {
-            [1] = {Name = "Enchufe", Amount = 1, Item = 'hd_plug'},
-            [2] = {Name = "Monedas sueltas", Amount = 2, Item = 'hd_schange'}
-        }
-    },
-    [12] = {
-        Name = "Alcohol",
-        Time = 15,
-        MakeItem = 'hd_booze',
-        Descripe = "¡Puedes usar esto para embriagarte!",
-        Needed = {
-            [1] = {
-                Name = "Calentador de inmersión",
-                Amount = 1,
-                Item = 'hd_iheat'
-            },
-            [2] = {
-                Name = "Puñetazo de prisión",
-                Amount = 1,
-                Item = 'hd_ppunch'
-            }
+            [1] = {Name = "Metal", Amount = 2, Item = 'metal'},
+            [2] = {Name = "Tornillo", Amount = 1, Item = 'tornillo'},
+            [3] = {Name = "Trapo", Amount = 1, Item = 'trapo'}
         }
     }
 }
@@ -564,8 +467,7 @@ Config.JobOptions = {
         TimeRemove = 30,
         StealChance = 3,
         StealItems = {
-            [1] = {Name = "Limpiador", Item = 'hd_cleaner', Chance = 5},
-            [2] = {Name = "Líquido Sucio", Item = 'hd_dliquid', Chance = 5}
+            [1] = {Name = "Trapo", Item = 'trapo', Chance = 8}
         },
         Tasks = {
             [1] = {
@@ -1026,9 +928,7 @@ Config.JobOptions = {
         TimeRemove = 25,
         StealChance = 3,
         StealItems = {
-            [1] = {Name = "Limpiador", Item = 'hd_cleaner', Chance = 5},
-            [2] = {Name = "Tela", Item = 'hd_cloth', Chance = 3},
-            [3] = {Name = "Líquido sucio", Item = 'hd_dliquid', Chance = 7}
+            [1] = {Name = "Trapo", Item = 'trapo', Chance = 8}
         },
         Tasks = {
             [1] = {
@@ -1710,8 +1610,7 @@ Config.JobOptions = {
         TimeRemove = 10,
         StealChance = 2,
         StealItems = {
-            [1] = {Name = "Botella", Item = 'hd_bottle', Chance = 1},
-            [2] = {Name = "Tela", Item = 'hd_cloth', Chance = 6}
+            [1] = {Name = "Trapo", Item = 'trapo', Chance = 8}
         },
         Tasks = {
             [1] = {
@@ -2016,14 +1915,6 @@ Config.JobOptions = {
     --     Name = "Cocinero",
     --     TimeRemove = 25,
     --     StealChance = 4,
-    --     StealItems = {
-    --         [1] = {Name = "Botella", Item = 'hd_bottle', Chance = 2},
-    --         [2] = {Name = "Grasa", Item = 'hd_grease', Chance = 5},
-    --         [3] = {Name = "Líquido sucio", Item = 'hd_dliquid', Chance = 5},
-    --         [4] = {Name = "Cuchara", Item = 'hd_spoon', Chance = 8},
-    --         [5] = {Name = "Cucharón", Item = 'hd_ladle', Chance = 7},
-    --         [6] = {Name = "Sobre de sabor", Item = 'hd_fpacket', Chance = 10}
-    --     },
     --     Tasks = {
     --         [1] = {
     --             TaskName = "Agarrar sartén",
@@ -2452,13 +2343,8 @@ Config.JobOptions = {
         TimeRemove = 25,
         StealChance = 3,
         StealItems = {
-            [1] = {Name = "Botella", Item = 'hd_bottle', Chance = 2},
-            [2] = {Name = "Roca", Item = 'hd_rock', Chance = 5},
-            [3] = {Name = "Cucharón roto", Item = 'hd_bladle', Chance = 3},
-            [4] = {Name = "Metal", Item = 'hd_metal', Chance = 4},
-            [5] = {Name = "Cuchara rota", Item = 'hd_jspoon', Chance = 6},
-            [6] = {Name = "Monedas sueltas", Item = 'hd_schange', Chance = 6},
-            [7] = {Name = "Enchufe", Item = 'hd_plug', Chance = 4}
+            [1] = {Name = "Metal", Item = 'metal', Chance = 6},
+            [2] = {Name = "Tornillo", Item = 'tornillo', Chance = 6}
         },
         Tasks = {
             [1] = {
@@ -3200,7 +3086,7 @@ Config.BedLocs = {
 -- ============================================================================
 -- 9. ESCAPE Y TORRES DE VIGILANCIA
 -- ============================================================================
-Config.Breakout = true -- Si los prisioneros pueden escapar de la prisión
+Config.Breakout = true -- Escape mediante destornillador y cizalla
 Config.BreakHole = 2 -- Cantidad de excavaciones exitosas necesarias
 
 Config.BreakoutTime = 120 -- Tiempo disponible para escapar antes de ser atrapado (en segundos)
@@ -3256,64 +3142,6 @@ Config.BreakLocs =
         -- [33] = {StartLoc = {Loc = vector3(1722.103515625, 2759.9365234375, 43.389808654785), Heading = 5.83}, ExitLoc = {Loc = vector3(1721.8388671875, 2762.5234375, 45.469844818115), Heading = 5.83}, ExitFence = true},
         -- [34] = {StartLoc = {Loc = vector3(1811.4265136719, 2730.2138671875, 43.389869689941), Heading = 325.4}, ExitLoc = {Loc = vector3(1812.5876464844, 2731.9035644531, 45.41854095459), Heading = 324.84}, ExitFence = true},
         -- [35] = {StartLoc = {Loc = vector3(1832.2895507812, 2654.2846679688, 43.200504302979), Heading = 257.19}, ExitLoc = {Loc = vector3(11834.8247070312, 2653.7084960938, 45.467952728271), Heading = 257.19}, ExitFence = true}
-    }
-
-Config.RoomTools =
-    { -- Todas las herramientas para celdas y ubicaciones de salida
-        [1] = {
-            Name = "Cuchara Rota", -- Nombre de la herramienta
-            Item = 'hd_jspoon', -- Nombre del objeto en la base de datos de la herramienta
-            Time = 10, -- Cuánto tiempo lleva usarla
-            Percent = 2 -- Probabilidad en porcentaje de que funcione (por ejemplo, 2 = 20%)
-        },
-        [2] = {
-            Name = "Cuchara Rota con Paño Húmedo",
-            Item = 'hd_bcloth',
-            Time = 7,
-            Percent = 5
-        },
-        [3] = {
-            Name = "Metal Afilado",
-            Item = 'hd_smetal',
-            Time = 5,
-            Percent = 8
-        },
-        [4] = {Name = "Ácido", Item = 'hd_acid', Time = 20, Percent = 8},
-        [5] = {
-            Name = "Martillo Miniatura",
-            Item = 'hd_minih',
-            Time = 25,
-            Percent = 9
-        }
-    }
-
-Config.FenceTool =
-    { -- Herramientas para cercas que no son ubicaciones de salida
-        [1] = {
-            Name = "Lima", -- Nombre de la herramienta
-            Item = 'hd_file', -- Nombre en la base de datos de la herramienta
-            Time = 10, -- Cuánto tiempo lleva
-            Percent = 4 -- Probabilidad en porcentaje de que funcione (por ejemplo, 4 = 40%)
-        },
-        [2] = {
-            Name = "Metal Afilado",
-            Item = 'hd_smetal',
-            Time = 4,
-            Percent = 7
-        },
-        [3] = {Name = "Ácido", Item = 'hd_acid', Time = 20, Percent = 9},
-        [4] = {
-            Name = "Martillo Miniatura",
-            Item = 'hd_minih',
-            Time = 15,
-            Percent = 7
-        },
-        [5] = {
-            Name = "Calentador de Inmersión",
-            Item = 'hd_iheat',
-            Time = 20,
-            Percent = 9
-        }
     }
 
 Config.WatchMarkNum = 1 -- Número del marcador de la torre de vigilancia

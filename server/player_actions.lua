@@ -103,28 +103,64 @@ AddEventHandler('HD_Jail:UpdateBreaking', function()
     end
 end)
 
-local function IsNearFinalFence(source)
-    for _, point in ipairs(Config.FenceEscapePoints or {}) do
-        if point.type == 'external' and IsNearPoint(source, point.coords, 5.0) then return true end
-    end
-    return false
+local function IsOutsidePrison(source)
+    local ped = GetPlayerPed(source)
+    return ped > 0 and #(GetEntityCoords(ped) - Config.JailLoc) > Config.MaxTpDist
 end
+
+local function JailDebug(message)
+    if Config.DebugJail then print(('[Fixlife_prision][DEBUG][SERVER] %s'):format(message)) end
+end
+
+escapeStarted = escapeStarted or {}
+
+RegisterServerEvent('HD_Jail:EscapeStarted')
+AddEventHandler('HD_Jail:EscapeStarted', function()
+    local src = source
+    local xPlayer = exports.qbx_core:GetPlayer(src)
+    if not xPlayer or not IsPrisoner(src, xPlayer) then
+        JailDebug(('EscapeStarted RECHAZADO src=%s player=%s prisoner=%s'):format(src, tostring(xPlayer ~= nil), tostring(xPlayer and IsPrisoner(src, xPlayer))))
+        return
+    end
+
+    for i = 1, #inJail do
+        for j = 1, #(inJail[i].Players or {}) do
+            local prisoner = inJail[i].Players[j]
+            if prisoner and prisoner.Player == xPlayer.PlayerData.citizenid then
+                escapeStarted[src] = true
+                JailDebug(('EscapeStarted OK src=%s citizenid=%s cell=%s Breako=%s'):format(src, xPlayer.PlayerData.citizenid, i, prisoner.Breako or 0))
+                return
+            end
+        end
+    end
+    JailDebug(('EscapeStarted RECHAZADO src=%s citizenid=%s: no encontrado o Breako=0'):format(src, xPlayer.PlayerData.citizenid))
+end)
+
 RegisterServerEvent('HD_Jail:EscapeComplete')
 AddEventHandler('HD_Jail:EscapeComplete', function()
     local src = source
     local xPlayer = exports.qbx_core:GetPlayer(src)
-    if not xPlayer or not IsPrisoner(src, xPlayer) or not IsNearFinalFence(src) or not CheckCooldown(src, 'escape', 5000) then return end
+    local outside = IsOutsidePrison(src)
+    local prisoner = xPlayer and IsPrisoner(src, xPlayer)
+    local cooldown = CheckCooldown(src, 'escape', 5000)
+    if Config.DebugJail then
+        JailDebug(('EscapeComplete src=%s started=%s player=%s prisoner=%s outside=%s cooldown=%s'):format(src, tostring(escapeStarted[src] == true), tostring(xPlayer ~= nil), tostring(prisoner), tostring(outside), tostring(cooldown)))
+    end
+    if not escapeStarted[src] or not xPlayer or not prisoner or not outside or not cooldown then return end
+    escapeStarted[src] = nil
 
     for i = 1, #inJail do
         local cell = inJail[i]
         for j = 1, #(cell.Players or {}) do
             local prisoner = cell.Players[j]
-            if prisoner and prisoner.Player == xPlayer.PlayerData.citizenid and prisoner.Breako > 0 then
+            if prisoner and prisoner.Player == xPlayer.PlayerData.citizenid then
+                JailDebug(('EscapeComplete OK src=%s citizenid=%s; ejecutando UnJailPlayer(false)'):format(src, xPlayer.PlayerData.citizenid))
                 TriggerEvent('HD_Jail:UnJailPlayer', src, false)
                 return
             end
         end
     end
+    JailDebug(('EscapeComplete RECHAZADO src=%s: no encontrado en inJail'):format(src))
 end)
 
 RegisterServerEvent('HD_Jail:TaskComplete1')

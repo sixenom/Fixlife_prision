@@ -59,7 +59,9 @@ function StartToiletEscape()
     replacementToilet = toilet
     active, using = false, false
 
-    if completed then BreakOutStart(true) end
+    if completed and lib.callback.await('HD_Jail:ConsumeEscapeTool', false, config.requiredItem) then
+        BreakOutStart(true)
+    end
 end
 
 AddEventHandler('onResourceStop', function(resource)

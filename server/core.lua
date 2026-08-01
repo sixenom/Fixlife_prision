@@ -1,6 +1,6 @@
 local qbx = exports.qbx_core
 
-JailStorage = { Default = { cell = 0, chest = {}, jailtime = 0, items = {}, clothes = {}, job = 0, breaks = 0, soli = 0, jobo = 'nil', grade = 0 }, Cache = {}, LastSaved = {}, Gets = {}, Saves = {} }
+JailStorage = { Default = { cell = 0, solcell = 0, chest = {}, jailtime = 0, items = {}, clothes = {}, job = 0, breaks = 0, soli = 0, jobo = 'nil', grade = 0 }, Cache = {}, LastSaved = {}, Gets = {}, Saves = {} }
 
 local function copyStorage(data)
     return json.decode(json.encode(data))

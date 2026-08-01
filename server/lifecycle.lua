@@ -201,7 +201,7 @@ Citizen.CreateThread(function()
                     if not inJail[i].Players[k].Dead then
                         if inJail[i].Players[k].Breako > 0 then
                             inJail[i].Players[k].Breako = inJail[i].Players[k].Breako - 1
-                            if inJail[i].Players[k].Breako <= 0 then
+                            if inJail[i].Players[k].Breako <= 0 and not escapeStarted[inJail[i].Players[k].ID] then
                                 TriggerEvent('HD_Jail:UnBreak', inJail[i].Players[k].ID)
                             end
                         else
